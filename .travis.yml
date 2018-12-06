@@ -1,5 +1,9 @@
 language: latex
 
+branches:
+  only:
+  - master
+
 services:
   - docker
 
@@ -20,7 +24,7 @@ after_success:
   - ssh-add /tmp/deploy_rsa
   - git remote add target git@github.com:noah95/formulasheets.git
   - git checkout -b build
-  - rm .gitignore
+  - git add -f */*.pdf
   - git status
   - git commit -am "Build"
   - git push target build --force
