@@ -4,8 +4,7 @@ services:
   - docker
 
 before_install:
-- docker pull noah95/latex
-- docker run -ti noah95/latex
+  - docker pull noah95/latex
 
 script:
-- cd template && make
+  - cd template && make docker
