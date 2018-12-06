@@ -10,11 +10,16 @@ script:
   # - cd template && make docker
   - touch test.pdf
 
+addons:
+  ssh_known_hosts: github.com
+
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_<...>_key -iv $encrypted_<...>_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 /tmp/deploy_rsa
+  - ssh-add /tmp/deploy_rsa
+
 after_success:
-  - echo "${GIT_DEPLOY_KEY}">/tmp/key
-  - eval "$(ssh-agent -s)" #start the ssh agent
-  - chmod 600 /tmp/key # this key should have push access
-  - ssh-add /tmp/key
   - git remote add target git@github.com:noah95/formulasheets.git
   - git checkout -b build
   - rm .gitignore
