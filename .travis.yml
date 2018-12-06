@@ -5,8 +5,7 @@ services:
 
 before_install:
   # - docker pull noah95/latex
-  - openssl aes-256-cbc -K $encrypted_4cf96262ec67_key -iv $encrypted_4cf96262ec67_iv
-  -in deploy_rsa.enc -out /tmp/deploy_rsa -d
+  - openssl aes-256-cbc -K $encrypted_4cf96262ec67_key -iv $encrypted_4cf96262ec67_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
 
 
 script:
