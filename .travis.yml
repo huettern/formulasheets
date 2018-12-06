@@ -4,7 +4,20 @@ services:
   - docker
 
 before_install:
-  - docker pull noah95/latex
+  # - docker pull noah95/latex
 
 script:
-  - cd template && make docker
+  # - cd template && make docker
+  - touch test.pdf
+
+after_success:
+  - echo "${GIT_DEPLOY_KEY}" | base64 --decode >/tmp/key
+  - eval "$(ssh-agent -s)" #start the ssh agent
+  - chmod 600 /tmp/key # this key should have push access
+  - ssh-add /tmp/key
+  - git remote add target git@github.com:noah95/formulasheets.git
+  - git checkout -b build
+  - rm .gitignore
+  - git commit -am"Build"
+  - git push target build
+

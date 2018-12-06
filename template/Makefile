@@ -6,10 +6,8 @@ OUTPUT=formulasheet
 BIBER=biber
 PDFLATEX=pdflatex -file-line-error -interaction=nonstopmode -output-directory . -jobname $(OUTPUT) $(PROJECT)
 BIBTEX=bibtex
-GLOSSARY=makeglossaries $(OUTPUT)
-PDFVIEWER = evince
+RM = rm -rf
 
-OUT_DIR=build
  
 UNAME := $(shell uname)
  
@@ -26,11 +24,13 @@ all: $(OUTPUT).pdf
 $(OUTPUT).pdf : *.tex
 	$(PDFLATEX)
 	# $(BIBTEX) $(OUTPUT)
-	$(BIBER) $(OUTPUT).bcf
-	$(GLOSSARY)
+	# $(BIBER) $(OUTPUT).bcf
 	$(PDFLATEX)
 	$(PDFLATEX)
 
 docker: 
 	docker run -v `pwd`:/source noah95/latex /usr/bin/make
- 
+
+
+clean:
+	$(RM) *.aux *.bbl *.blg *.log *.out *.pdf
