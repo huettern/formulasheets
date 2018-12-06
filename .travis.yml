@@ -13,7 +13,7 @@ before_install:
 
 
 script:
-  - cd template && make docker
+  - cd template && make docker && cd ..
 
 addons:
   ssh_known_hosts: github.com
