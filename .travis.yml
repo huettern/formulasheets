@@ -4,13 +4,12 @@ services:
   - docker
 
 before_install:
-  # - docker pull noah95/latex
+  - docker pull noah95/latex
   - openssl aes-256-cbc -K $encrypted_4cf96262ec67_key -iv $encrypted_4cf96262ec67_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
 
 
 script:
-  # - cd template && make docker
-  - touch test.pdf
+  - cd template && make docker
 
 addons:
   ssh_known_hosts: github.com
@@ -22,6 +21,7 @@ after_success:
   - git remote add target git@github.com:noah95/formulasheets.git
   - git checkout -b build
   - rm .gitignore
-  - git commit -am"Build"
+  - git status
+  - git commit -am "Build"
   - git push target build --force
 
