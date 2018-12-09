@@ -34,3 +34,5 @@
 *.pdf 
 build
 
+*.DS_Store
+
