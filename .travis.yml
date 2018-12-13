@@ -13,8 +13,7 @@ before_install:
 
 
 script:
-  - cd template && make docker && cd ..
-  - cd Leistungselektronik && make docker && cd ..
+  - make docker
 
 addons:
   ssh_known_hosts: github.com
