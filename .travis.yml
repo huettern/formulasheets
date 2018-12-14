@@ -1,8 +1,8 @@
 language: latex
 
 branches:
-  only:
-  - master
+  except:
+  - build
 
 services:
   - docker
