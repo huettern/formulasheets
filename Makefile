@@ -7,9 +7,7 @@ all: revision */*.tex
 	cd Analysis\ III\ \-\ PDE && make && cd ..
 
 docker:
-	cd template && make docker && cd ..
-	cd Leistungselektronik && make docker && cd ..
-	cd Analysis\ III\ \-\ PDE && make docker && cd ..
+	docker run -v `pwd`:/source noah95/latex /usr/bin/make
 
 revision:
 	mkdir -p $(dir $(REVISION))
