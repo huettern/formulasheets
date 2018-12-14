@@ -13,6 +13,7 @@ before_install:
 
 
 script:
+  - make revision
   - make docker
 
 addons:
