@@ -48,6 +48,11 @@
                                 {\normalfont\small\bfseries}}
 \makeatother
 
+
+% make smaller enumerates
+\usepackage{enumitem}
+\setlist[enumerate]{itemsep=-1mm,leftmargin=3mm}
+
 % Define BibTeX command
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -80,6 +85,8 @@
 
  
 \begin{document}
+
+
 \raggedright
 \footnotesize
 \begin{multicols}{2}
@@ -233,7 +240,37 @@ Text
 \columnbreak
 \vspace{2mm}\hrule
 \section{Induktivität Dimensionierung}
-Text
+
+\begin{minipage}[h]{0.6\linewidth}
+  \begin{tabular}{l l l |}
+    $A_n$   & Wicklungsfenster      & $mm^2 = 10^{-6}m^2$ \\
+    $A_e$   & Eisenquerschnitt      & $mm^2 = 10^{-6}m^2$ \\
+    $B_S$   & Sättigungsinduktion   & $\approx 0.3T$ \\
+    $k_f$   & Füllfaktor            & $\approx 0.5$ \\
+    $S$     & zulässige Stromdichte & $\approx 5\frac{A}{mm^2}=5\cdot10^6\frac{A}{m^2}$ \\
+    $d$     & Luftspalt             & $m$ \\
+    $\mu_0$ & Vacuum permeability   & $1.256\cdot10^{-6}Vs/(Am)$
+  \end{tabular}
+\end{minipage}
+\begin{minipage}[h]{0.3\linewidth}
+\textbf{Vorgehen}
+  \begin{enumerate}
+    \item Berechne Flächenprodukt $A_e A_n$
+    \item Suche Kern mit grösserem Flächenprodukt
+    \item Berechne N
+    \item Berechne Luftspalt
+  \end{enumerate}
+\end{minipage}
+
+
+\eqn{h}{0.23\linewidth}{ A_e > \frac{L\hat{I}}{B_S N} }
+\eqn{h}{0.23\linewidth}{ A_n > \frac{NI_{rms}}{k_f S} }
+\eqn{h}{0.23\linewidth}{ A_e A_n = \frac{L \hat{I} I_{rms}}{B_S k_f S} }
+\eqn{h}{0.23\linewidth}{ \frac{L \hat{I} }{A_e S} < N < \frac{A_n k_f S}{I_{rms}} }
+
+\eqn{h}{0.23\linewidth}{ A_{cu} S = I_{max} }
+\eqn{h}{0.23\linewidth}{ d = \frac{R_{tot}\mu_0 A_e}{2} = \frac{N^2 \mu_0 A_e}{2L} }
+
 
 % -----------------------------------------------------------------------
 \vfill\null
