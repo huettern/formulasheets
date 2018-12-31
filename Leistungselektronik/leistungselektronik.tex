@@ -110,7 +110,12 @@
 \eqn{h}{0.23\linewidth}{ i_L(t) = \frac{1}{L}\int u_L(t)dt }
 \eqn{h}{0.23\linewidth}{ u_L(t) = L\frac{di_L(t)}{dt} }
 
+\eqn{h}{0.23\linewidth}{ V_{rms} = \sqrt{ \frac{1}{T} \int_T u^2(t)dt } }
+\eqn{h}{0.23\linewidth}{V_{rms,sin} = \hat{V} / \sqrt{2}} \eqn{h}{0.23\linewidth}{V_{rms,pwm} = \hat{V} \sqrt{D}}
+
 % -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \vspace{2mm}\hrule
 \section{Tiefsetzsteller}
 
@@ -120,11 +125,24 @@
 \end{center}
 
 \subsection{Kontinuierlicher Stromfluss}
-\eqn{h}{0.25\linewidth}{ D3 = \frac{I_1}{I_2} = \frac{U_2}{U_1} }
+
+\begin{tabular}{c c}
+  \includegraphics[width=0.4\linewidth]{img/buck/cont.png}%
+  &
+  \includegraphics[width=0.4\linewidth]{img/buck/out.png}%
+\end{tabular}
+
+\eqn{h}{0.25\linewidth}{ D = \frac{I_1}{I_2} = \frac{U_2}{U_1} }
 \eqn{h}{0.25\linewidth}{ \Delta i_{Lpp} = \frac{U_2}{L}(1-D)T_S}
 \eqn{h}{0.25\linewidth}{ \Delta u_{2pp}=\Delta U_C = \frac{U_2}{L}(1-D) T_S \frac{T_S}{8 \cdot C}}
 
 \subsection{Diskontinuierlicher Stromfluss}
+\begin{tabular}{c c}
+  \includegraphics[width=0.4\linewidth]{img/buck/discont.png}%
+  &
+  \includegraphics[width=0.4\linewidth]{img/buck/discplot.png}%
+\end{tabular}
+
 \eqn{h}{0.4\linewidth}{ I_{2g} = \frac{1}{2} \Delta i_{Lpp} = \frac{U_2}{2 \cdot L}(1-D)T_S}
 \eqn{h}{0.25\linewidth}{ R_{g} = \frac{2L}{(1-D) \cdot T_S}}
 \eqn{h}{0.25\linewidth}{ U_2=U_1 \frac{D_1}{D_1+D_2} }
@@ -133,6 +151,8 @@
 \eqn{h}{0.25\linewidth}{ D = \frac{1}{2} \sqrt{\frac{I_2/I_{2g,max}}{U_1/U_2-1}} }
 
 % -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \vspace{2mm}\hrule
 \section{Hochsetzsteller}
 
@@ -155,6 +175,8 @@
 
 % \eqn{h}{0.25\linewidth}{ }
 % -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \vspace{2mm}\hrule
 \section{Tief-Hochsetzsteller}
 
@@ -176,6 +198,8 @@
 
 
 % -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \vspace{2mm}\hrule
 \section{PFC Einphasen Gleichrichter}
 
@@ -192,36 +216,74 @@
 
 
 % -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \vspace{2mm}\hrule
 \section{Netzgeführte Stromrichter}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth]{img/sch_netz_dreiphase.png}%
+\captionof{figure}{Dreiphasen netzgeführte Stromrichter}%
+\end{center}
+
 Text
 
 % -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \vspace{2mm}\hrule
 \section{Induktivität Dimensionierung}
 Text
 
 % -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \vspace{2mm}\hrule
 \section{Trafo Dimensionierung}
 Text
 
 % -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \vspace{2mm}\hrule
 \section{Sperrwandler}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth]{img/sch_sperr.png}%
+\captionof{figure}{Sperrwandler}%
+\end{center}
+
 Text
 
 % -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \vspace{2mm}\hrule
 \section{Durchflusswandler}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth]{img/sch_durchfluss.png}%
+\captionof{figure}{Zwei-Transistor Durchflusswandler}%
+\end{center}
+
 Text
 
 % -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \vspace{2mm}\hrule
 \section{Einphasen Gleichspannungswechselrichter}
+
+\begin{center}
+\includegraphics[width=0.8\linewidth]{img/sch_fullbridge.png}%
+\captionof{figure}{Einphasiger Gleichspannungswechselrichter}%
+\end{center}
+
 Text
 
 % -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \vspace{2mm}\hrule
 \section{Dreiphasen Gleichspannungswechselrichter}
 Text
