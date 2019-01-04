@@ -114,7 +114,12 @@
 \vspace{2mm}\hrule
 \section{Allgemein}
 \eqn{h}{0.23\linewidth}{ i_L(t) = \frac{1}{L}\int u_L(t)dt }
-\eqn{h}{0.23\linewidth}{ u_L(t) = L\frac{di_L(t)}{dt} }
+\eqn{h}{0.23\linewidth}{ u_L(t) = L\frac{d}{dt}i_L(t) }
+\eqn{h}{0.23\linewidth}{ i_C(t) = C\frac{d}{dt}u_C(t) }
+\eqn{h}{0.23\linewidth}{ u_C(t) = \frac{1}{C}\int i_C(t)dt }
+
+
+\eqn{h}{0.15\linewidth}{ Q=C\cdot U }
 
 \eqn{h}{0.23\linewidth}{ V_{rms} = \sqrt{ \frac{1}{T} \int_T u^2(t)dt } }
 \eqn{h}{0.23\linewidth}{V_{rms,sin} = \hat{V} / \sqrt{2}} \eqn{h}{0.23\linewidth}{V_{rms,pwm} = \hat{V} \sqrt{D}}
@@ -201,6 +206,7 @@
 \eqn{h}{0.3\linewidth}{ I_{2g,max} = -\frac{1}{2} \frac{U_2}{L}T_s }
 
 \eqn{h}{0.3\linewidth}{ D = -\frac{U_2}{U_1} \sqrt{\frac{I_2}{I_{2g,max}}} }
+\eqn{h}{0.65\linewidth}{ P_2 = E_L f_s = \frac{1}{2}L \cdot i_{Lmax}^2 \cdot f_s = \frac{L}{2} f_s \left( \frac{U_1 D T_s}{L} \right)^2 = \frac{U_1^2D^2}{2L}T_s }
 
 
 % -----------------------------------------------------------------------
