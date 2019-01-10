@@ -9,6 +9,7 @@
 \usepackage[font=scriptsize,labelfont=bf]{caption}
 \usepackage{wrapfig}
 \usepackage{graphicx,calc}
+\usepackage{empheq}
 %\usepackage{pbox}
 
 \pdfinfo{
@@ -88,7 +89,8 @@
 \newcommand{\Pabl}[2] {\frac{\partial#1}{\partial#2}}
 \newcommand{\MATR}[1]{ \displaystyle \left( \begin{matrix} #1 \end{matrix} \right)}
 \newcommand{\MATRABS}[1]{ \displaystyle \left| \begin{matrix} #1 \end{matrix} \right|}
- 
+\newcommand{\Int}{\int\limits}
+
 \begin{document}
 \raggedright
 \footnotesize
@@ -155,6 +157,9 @@ the ODE can be solved using an integrating factor $\mu(t)$
 \end{tabular}
 
 
+\subsection{Inequalities}
+If $[a,b]$ is some interval, $f(a)<g(a)$, and $f'(x) \leq g'(x)$ on the interval, then $f(x)<g(x)$ on the interval. This implication cannot be reversed.
+
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
@@ -195,7 +200,7 @@ PDE is homogeneous if $F(x,y)$ = 0.
 
 % -----------------------------------------------------------------------
 \vspace{2mm}\hrule
-\section{Method of Characteristics}
+\section{First Order PDE: Method of Characteristics}
 \subsection{Problem}
 $\begin{cases}
     a(x,y,u)u_x + b(x,y,u)u_y & = c(x,y,u) \\
@@ -301,8 +306,146 @@ If $h(s)$ (the initial value) has a discontinuity (e.g. a step), $y_c = 0$: the 
 % \subsubsection{Case dilution wave: $u^- < u^+$} 
 
 
-\clearpage
+% -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
+\vspace{2mm}\hrule
+\section{Second Order PDE}
+\begin{align*}
+  L [u] = a \cdot u_{xx} + 2b\cdot u_{xy} + c\cdot u_{yy} + d\cdot u_x + e\cdot u_y + f\cdot u = g
+\end{align*}
 
+\subsection{Classification}
+Discriminant $\delta$:
+\begin{align*}
+  \delta(L)(x,y) &= b^2(x,y) - a(x,y)\cdot c(x,y) & L[u]
+  \begin{cases}
+    \text{elliptic} & \delta(L)<0 \\
+    \text{parabolic} & \delta(L)=0 \\
+    \text{hyperbolic} & \delta(L)>0 
+  \end{cases}
+\end{align*}
+
+
+% -----------------------------------------------------------------------
+\vspace{2mm}\hrule
+\section{1D Wave Equation}
+Cauchy problem
+\begin{align*}
+  \begin{cases}
+    \begin{aligned}
+      u_{tt} -c^2u_{xx} &= 0 & &(x,t) \in \mathbb{R} \times (0,\infty), \\
+      u(x,0) &= f(x) & &x \in \mathbb{R}, \\
+      u_t(x,0) &= g(x) & &x \in \mathbb{R}.
+    \end{aligned}
+  \end{cases}
+\end{align*}
+
+Coordinate transformation to $\xi,\eta$. Solution $u(x,t)$ consists of forwards $F(x-ct)$ and backwards $G(c+xt)$ travelling wave.
+
+\begin{align*}
+  \xi &= x+ct & \eta &= x-ct & \omega(\xi,\eta) &= u(x(\xi,\eta),y(\xi,\eta)) \\
+  -4c^2\omega_{\xi\eta}&=0 & \omega(\xi,\eta)&=F(\xi)+G(\eta) &  u(x,t) &= F(x-ct)+G(x+ct)
+\end{align*}
+
+\subsection{d'Alembert Formula}
+General solution to the 1D wave equation.
+\begin{align*}
+\eqbox{u(x,t)=\frac{1}{2}\left( f(x+ct) + f(x-ct) \right) + \frac{1}{2c}\Int^{x+ct}_{x-ct}g(s)\mathrm{d}s}
+\end{align*}
+
+\subsection{Nonhomogeneous case}
+\begin{align*}
+  \begin{cases}
+    \begin{aligned}
+      u_{tt} -c^2u_{xx} &= F(x,t) &&(x,t) \in \mathbb{R} \times (0,\infty), \\
+      u(x,0) &= f(x) & &x \in \mathbb{R}, \\
+      u_t(x,0) &= g(x) & &x \in \mathbb{R}.
+    \end{aligned}
+  \end{cases}
+\end{align*}
+
+Using d'Alembert and extending with the integral on the triangle $\Delta_{x_0,t_0}$:
+\begin{align*}
+u(x,t)=\frac{1}{2}\left( f(x+ct) + f(x-ct) \right) + \frac{1}{2c}\Int^{x+ct}_{x-ct}g(s)\mathrm{d}s + 
+\frac{1}{2c} \iint_{\Delta x_0,t_0}F(x,t)\mathrm{d}x\mathrm{d}t
+\end{align*}
+
+Explicit form:
+\begin{align*}
+\eqbox{u(x,t)=\frac{1}{2}\left( f(x+ct) + f(x-ct) \right) + \frac{1}{2c}\Int^{x+ct}_{x-ct}g(s)\mathrm{d}s + 
+\frac{1}{2c} \Int_0^t \mathrm{d}\tau \Int_{x-c(t-\tau)}^{x+c(t-\tau)}F(s,\tau)\mathrm{d}s}
+\end{align*}
+
+\subsection{Odd initial data}
+If the problem is stated for $x>0$ instead of $x\in\mathbb(R)$, the initial data $f(x)$ and $g(x)$ have to be extended oddly around zero.
+\begin{align*}
+  &
+  \begin{cases}
+    \begin{aligned}
+      u_{tt} -c^2u_{xx} &= 0 & &(x,t) \in (0,\infty) \times (0,\infty), \\
+      u(0,t) &= 0 & &t \in (0,\infty), \\
+      u(x,0) &= f(x) & &x \in [0,\infty), \\
+      u_t(x,0) &= g(x) & &x \in [0,\infty).
+    \end{aligned}
+  \end{cases} &
+  f(-x) &= f(x) &
+  g(-x) &= g(x) &
+\end{align*}
+For example:
+\begin{align*}
+  x^2 &\mapsto x|x| & x^4 &\mapsto x^3|x| & \sin(x) &\mapsto \sin(x)
+\end{align*}
+
+\subsection{Domain of dependance}
+\begin{minipage}[h]{0.4\linewidth}
+\includegraphics[width=\linewidth]{img/domaindep.png}
+\captionof{figure}{Domain of dependence.}
+\end{minipage}
+\begin{minipage}[h]{0.55\linewidth}
+The values at $(x_0,y_0)$ depend only on the initial data at \begin{align*}[a=x_0-ct,b=x_0+ct]\end{align*} Therefore if the initial data live in $[a,b]$ then a point $(x_0,y_0)$ will feel them only if \begin{align*}x_0-ct_0,x_0+ct_0]\cap[a,b]\neq\emptyset\end{align*}
+\end{minipage}
+
+\subsection{Domain of influence}
+\begin{align*}
+  \text{DOI} = [x_0-ct,x_0+ct]
+\end{align*}
+
+\subsection{Wave equation in interval}
+If the problem is stated in an interval $x\in(a,b)$ with zero boundary conditions, a global problem must be found whose solution $\tilde{u}(x,t)$ must coincide with $u$ in the interval. 
+\begin{align*}
+  \begin{cases}
+    \begin{aligned}
+      u_{tt} -c^2u_{xx} &= 0 & &(x,t) \in (a,b) \times (0,\infty), \\
+      u(a,t) &= 0 & &t \in (0,\infty), \\
+      u(b,t) &= 0 & &t \in (0,\infty), \\
+      u(x,0) &= f(x) & &x \in (a,b), \\
+      u_t(x,0) &= g(x) & &x \in (a,b).
+    \end{aligned}
+  \end{cases}
+\end{align*}
+Therefore extend $f(x)$ to be odd with respect to $a$ and $b$. That is
+\begin{align*}
+  \tilde{u}(-(x-a),t) &= -\tilde{u}((x-a),t) & \tilde{u}(-(x-b),t) &= -\tilde{u}((x-b),t) &
+\end{align*}
+Then solve the new Cauchy problem:
+\begin{align*}
+  \begin{cases}
+    \begin{aligned}
+      \tilde{u}_{tt} -c^2\tilde{u}_{xx} &= 0 & &(x,t) \in \mathbb{R} \times (0,\infty), \\
+      \tilde{u}(x,0) &= \tilde{f}(x) & &x \in \mathbb{R}, \\
+      \tilde{u}_t(x,0) &= \tilde{g}(x) & &x \in \mathbb{R}.
+    \end{aligned}
+  \end{cases}
+  &&
+  u(x,t)&=\tilde{u}(x,t) \quad \text{for} \quad x\in(a,b)
+\end{align*}
+
+
+
+
+
+\clearpage
 % You can even have references
 \rule{0.3\linewidth}{0.25pt}
 %\scriptsize
