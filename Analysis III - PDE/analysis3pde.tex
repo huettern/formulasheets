@@ -131,13 +131,18 @@
 \subsection{Some ODE}
 \begin{tabular}{l l l}
   \textbf{First order} & & \\
-  $ax + x' = 0$ & & $x = c_1e^{ax}$\\
-
+  $x' + ax = c$ & & $x = c_1 e^{-ax} + \frac{c}{a}$\\
   \textbf{Second order} & & \\
   $ax'' + bx' + cx = 0$ & $b^2 > 4ac$ &  $x = a_1 e^{\lambda_1 x} + a_2 e^{\lambda_2 x}$\\
   $ax'' + bx' + cx = 0$ & $b^2 = 4ac$ &  $x = (a_1 + a_2x) e^{\lambda x}$\\
   $ax'' + bx' + cx = 0$ & $b^2 < 4ac$ &  $x = $\\
 \end{tabular}
+
+% \subsection{Some PDE}
+% \begin{tabular}{l l l}
+%   \textbf{First order} & & \\
+%   $ax + x' = 0$ & & $x = c_1e^{ax}$\\
+% \end{tabular}
 
 \subsection{Solve linear ODE with Integrating Factor}
 Problem: \eqbox{y' + p(t)y = q(t)}
@@ -486,22 +491,53 @@ Then solve the new Cauchy problem:
     \lambda_n&=\left(\frac{n\pi}{L}\right)^2 & u(x,t)&=\sum_{n=0}^{\infty}B_n\cdot\sin\left(\frac{n\pi}{L}x\right)e^{-\kappa\left(\frac{n\pi}{L}\right)^2t}
   \end{align*}
 
-\subsection{Boundary conditions}
+\subsection{Boundary conditions} \label{ch:boundcond}
   \begin{align*}
     u(0,t)   &= u(L,t)    && \rightarrow \text{Dirichlet} && X_n(x)=\alpha_n\sin(\sqrt{\lambda}x)\\
-    u_t(0,t) &= u_t(L,t)  && \rightarrow \text{Neumann} && X_n(x)=\alpha_n\cos(\sqrt{\lambda}x)\\
-    \text{combination}&    && \rightarrow \text{Mixed/Robin}
+    u_x(0,t) &= u_x(L,t)  && \rightarrow \text{Neumann} && X_n(x)=\alpha_n\cos(\sqrt{\lambda}x)\\
+    \text{combination}&    && \rightarrow \text{Mixed/Robin} && X_n(x)=\alpha_n\sin((n+\frac{1}{2})\frac{\pi}{L}x)
   \end{align*}
 
+\subsection{Nonhomogeneous case}
+  \begin{align*}
+    \begin{cases}
+      \begin{aligned}
+        u_t - u_{xx} &= h(x,t), & &0<x<L, t>0,\\
+        u_x(0,t) = u_x(L,t) &= 0,     & &t\geq0,\\
+        u(x,0)  &= f(x),          & &0\leq x\leq L.
+      \end{aligned}
+    \end{cases}
+  \end{align*}
+
+  \begin{enumerate}
+    \item Check boundary conditions and decide which $X_n(x)$ to use (See \ref{ch:boundcond}). Here Dirichlet is used.
+    \item Look for linear combination and make derivatives of $u(x,y)$.
+      \begin{align*}
+        u(x,t) &= \sum_{n\geq0} T_n(t)cos(\sqrt{\lambda}x) & u_t(x,t) &= \sum_{n\geq0} T_n'(t)cos(\sqrt{\lambda}x) & u_{xx}(x,t) &= \sum_{n\geq0} -\lambda T_n(t)cos(\sqrt{\lambda}x)
+      \end{align*}
+    \item From the initial condition $u(x,0)=f(x)$ the initial values of $T_n(0)$ can be derived
+      \begin{align*}
+        u(x,0) &= \sum_{n\geq0} T_n(0)cos(\sqrt{\lambda}x) = f(x) & &\longrightarrow T_n(0)=..
+      \end{align*}
+    \item Imposing $u_t-u_{xx} = h(x,t)$ using the ansatz we get a set of ODE:
+      \begin{align*}
+        \sum_{n\geq0} (T_n'(t)+\lambda T_n(t) ) cos(\sqrt{\lambda}x) = h(x,t) & &\longrightarrow T_n'(t)=..
+      \end{align*}
+    \item Use $T_n'(t)$ and $T_n(0)$ to solve for all $T_n(t)$
+    \item Put solution together
+    \item Check solution
+  \end{enumerate}
 
 
 
 
 
 
-\clearpage
+
+\vspace*{\fill}
 % You can even have references
-\rule{0.3\linewidth}{0.25pt}
+\rule{0.3\linewidth}{0.25pt}\\
+Good Luck!
 %\scriptsize
 %\bibliographystyle{abstract}
 %\bibliography{refFile}
