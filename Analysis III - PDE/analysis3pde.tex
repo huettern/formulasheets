@@ -442,6 +442,60 @@ Then solve the new Cauchy problem:
 \end{align*}
 
 
+% -----------------------------------------------------------------------
+\vspace{2mm}\hrule
+\section{Separation of variables}
+\subsection{Ansatz}
+\begin{enumerate}
+  \item Write solution as product
+    \begin{align*}
+      u(x,t)&=X(x)T(t) & u_t(x,t)&=X(x)T'(t) & u_{tt}(x,t)&=X(x)T''(t) \\
+      && u_x(x,t)&=X(x)'T(t) & u_{xx}(x,t)&=X(x)''T(t)
+    \end{align*}
+  \item Substitute into problem
+    \begin{align*}
+      & u_{t}-u_{xx}=0 &  \frac{T'}{T}=\frac{X''}{X} &= -\lambda = \text{const} &
+      &u_{tt}-u_{xx}=0 & \frac{T''}{T}=\frac{X''}{X} &= -\lambda = \text{const}
+    \end{align*}
+  \item Solve ODE
+    \begin{align*}
+      X'' &= -\lambda X & \lambda &> 0 & X(x)&=\alpha\sin(\sqrt{\lambda}x)+\beta\cos(\sqrt{\lambda}x) \\
+      &&                  \lambda &= 0 & X(x)&=\alpha+\beta x \\
+      &&                  \lambda &< 0 & X(x)&=\alpha\sinh(\sqrt{-\lambda}x)+\beta\cosh(\sqrt{-\lambda}x) \\
+      T' &= -\lambda T  & &&             T(t)&=e^{-\lambda t}
+    \end{align*}
+  \item Write $u(x,t)$ as sum and impose initial condition
+    \begin{align*}
+      u(x,t) &= \sum_{n=0}^\infty X_n(x)T_n(t) & u(x,0) &= \sum_{n=0}^\infty X_n(0)T_n(t)
+    \end{align*}
+\end{enumerate}
+
+\subsection{Application: Heat equation}
+  \begin{align*}
+    \begin{cases}
+      \begin{aligned}
+        u_t - \kappa u_{xx} &= 0, & &0<x<L, t>0,\\
+        u(0,t) = u(L,t) &= 0,     & &t\geq0,\\
+        u(x,0)  &= f(x),          & &0\leq x\leq L.
+      \end{aligned}
+    \end{cases}
+  \end{align*}
+
+  There exists only a solution for $\lambda > 0$. And hence $u(0,t) = u(L,t) = 0$ the boundary conditions are zero, the $\sin$ is chosen.
+  \begin{align*}
+    \lambda_n&=\left(\frac{n\pi}{L}\right)^2 & u(x,t)&=\sum_{n=0}^{\infty}B_n\cdot\sin\left(\frac{n\pi}{L}x\right)e^{-\kappa\left(\frac{n\pi}{L}\right)^2t}
+  \end{align*}
+
+\subsection{Boundary conditions}
+  \begin{align*}
+    u(0,t)   &= u(L,t)    && \rightarrow \text{Dirichlet} && X_n(x)=\alpha_n\sin(\sqrt{\lambda}x)\\
+    u_t(0,t) &= u_t(L,t)  && \rightarrow \text{Neumann} && X_n(x)=\alpha_n\cos(\sqrt{\lambda}x)\\
+    \text{combination}&    && \rightarrow \text{Mixed/Robin}
+  \end{align*}
+
+
+
+
 
 
 
