@@ -90,6 +90,10 @@
 \newcommand{\MATR}[1]{ \displaystyle \left( \begin{matrix} #1 \end{matrix} \right)}
 \newcommand{\MATRABS}[1]{ \displaystyle \left| \begin{matrix} #1 \end{matrix} \right|}
 \newcommand{\Int}{\int\limits}
+\newcommand\warning{%
+ \makebox[1.4em][c]{%
+ \makebox[0pt][c]{\raisebox{.1em}{\small!}}%
+ \makebox[0pt][c]{\color{red}\Large$\bigtriangleup$}}}%
 
 \begin{document}
 \raggedright
@@ -493,9 +497,12 @@ Then solve the new Cauchy problem:
 
 \subsection{Boundary conditions} \label{ch:boundcond}
   \begin{align*}
-    u(0,t)   &= u(L,t)    && \rightarrow \text{Dirichlet} && X_n(x)=\alpha_n\sin(\sqrt{\lambda}x)\\
-    u_x(0,t) &= u_x(L,t)  && \rightarrow \text{Neumann} && X_n(x)=\alpha_n\cos(\sqrt{\lambda}x)\\
-    \text{combination}&    && \rightarrow \text{Mixed/Robin} && X_n(x)=\alpha_n\sin((n+\frac{1}{2})\frac{\pi}{L}x)
+    u(0,t)   &= u(L,t)    && \rightarrow \text{Dirichlet} && X_n(x)=\alpha_n\sin(\sqrt{\lambda}x) & 
+    \sqrt{\lambda}&=\frac{n\pi}{L}\\
+    u_x(0,t) &= u_x(L,t)  && \rightarrow \text{Neumann} && X_n(x)=\alpha_n\cos(\sqrt{\lambda}x) & 
+    \sqrt{\lambda}&=\frac{n\pi}{L}\\
+    \text{combination}&    && \rightarrow \text{Mixed/Robin} && X_n(x)=\alpha_n\sin((n+\frac{1}{2})\frac{\pi}{L}x) & 
+    \sqrt{\lambda}&=\left(n+\frac{1}{2}\right)\frac{\pi}{L}
   \end{align*}
 
 \subsection{Nonhomogeneous case}
@@ -528,7 +535,37 @@ Then solve the new Cauchy problem:
     \item Check solution
   \end{enumerate}
 
+\subsection{Nonhomogeneous boundary conditions}
+  \begin{align*}
+    \begin{cases}
+      \begin{aligned}
+        u_t - u_{xx} &= h(x,t), & &0<x<L, t>0,\\
+        u_x(0,t) &= a(t),     & &t\geq0,\\
+        u_x(L,t) &= b(t),     & &t\geq0,\\
+        u(x,0)  &= f(x),          & &0\leq x\leq L.
+      \end{aligned}
+    \end{cases}
+    &&
+    \begin{cases}
+      \begin{aligned}
+        B_a[u]&=\alpha u(a,t)+\beta  u_x(a,t)&=a(t),\ t\geq0 \\ 
+        B_b[u]&=\gamma u(b,t)+\delta u_x(b,t)&=b(t),\ t\geq0
+      \end{aligned}
+    \end{cases}
+  \end{align*}
 
+  Find new functino $w(x,t)$ satisfying such non-homogeneous boundary conditions and study the problem being satisfied by $v(x,t)=u(x,t)-w(x,t)$. If the boundary condition is of the following form, table \ref{tab:bound} provides $w(x,t)$.
+  \warning\textcolor{red}{Resubstitute to $u(x,t) = v(x,t)+w(x,t)$}
+  \begin{tabular}{l l l l}
+    \hline\hline
+    \multicolumn{3}{c}{Boundary condition} & \multicolumn{1}{c}{$w(x,t)$} \\ \hline
+    Dirichlet & $u(0,t)=a(t)$   & $u(L,t)=b(t)$   & $w(x,t)=a(t)+\frac{x}{L}[b(t)-a(t)]$ \\
+    Neumann   & $u_x(0,t)=a(t)$ & $u_x(L,t)=b(t)$ & $w(x,t)=xa(t)+\frac{x^2}{2L}[b(t)-a(t)]$ \\
+    Mixed     & $u(0,t)=a(t)$   & $u_x(L,t)=b(t)$ & $w(x,t)=a(t)+xb(t)$ \\
+    Mixed     & $u_x(0,t)=a(t)$ & $u(L,t)=b(t)$   & $w(x,t)=(x-L)a(t)+b(t)$ \\\hline
+
+  \end{tabular}
+  \captionof{table}{Boundary conditions} \label{tab:bound}
 
 
 
