@@ -656,7 +656,7 @@ Let $D\subset\mathbb{R}^n$. A function $f:D\to\mathbb{R}^n$ is harmonic in $D$ i
 \textbf{strong maximum principle:} Let $u$ be a harmonic function in a domain $D$. If $u$ attains its maximum (minimum) at an interior point of $D$, then $u$ is constant.
 
 \subsection{Mean value Principle}
-Let $(x_0,y_0)$ be a point in $D$. Assume that $B_R$ is a disk of radius $R$ centered at $(X_0,y_0)$, fully contained in D. For any $r>0$ set $C_r=\partial B_r$. Then the value of u at $(x_0,y_0)$ is the average of the values of $u$ on the circle $C_R$:
+Let $(x_0,y_0)$ be a point in $D$. Assume that $B_R$ is a disk of radius $R$ centered at $(x_0,y_0)$, fully contained in $D$. For any $r>0$ set $C_r=\partial B_r$. Then the value of u at $(x_0,y_0)$ is the average of the values of $u$ on the circle $C_R$:
 \begin{align*}
   u(x_0,y_0)  &= \frac{1}{2\pi R} \oint_{C_R}u(x(s),y(s))\mathrm{d}s \\
               &= \frac{1}{2\pi} \int_{0}^{2\pi}u(x_0+R\cos(\theta),y_0+R\sin\theta)\mathrm{d}\theta
@@ -729,11 +729,97 @@ Then use the following and introduce boundaries $u(x,c)$ and $u(x,d)$.
 
   Ansatz: If the boundary datum depends only on sine, the sine only ansatz can be chosen. \textcolor{red}{Provide reason!} Then introduce boundary conditions and solve for $A_n,B_n, \dots$
   \begin{align*}
-    \text{General} && u(t,\theta) &= \sum_{n>0}\left(A_nr^2+B_nr^{-n}\right)\sin(n\theta) + C_0 + D_0\log(r) \\
-                               && &+ \sum_{n>0}\left(C_nr^2+D_nr^{-n}\right)\cos(n\theta) \\
-    \text{sin only} && u(t,\theta) &= \sum_{n>0}\left(A_nr^2+B_nr^{-n}\right)\sin(n\theta) \\
-    \text{cos only} && u(t,\theta) &= \sum_{n>0}\left(C_nr^2+D_nr^{-n}\right)\cos(n\theta) + C_0 + D_0\log(r)
+    \text{General} && u(t,\theta) &= \sum_{n>0}\left(A_nr^n+B_nr^{-n}\right)\sin(n\theta) + C_0 + D_0\log(r) \\
+                               && &+ \sum_{n>0}\left(C_nr^n+D_nr^{-n}\right)\cos(n\theta) \\
+    \text{sin only} && u(t,\theta) &= \sum_{n>0}\left(A_nr^n+B_nr^{-n}\right)\sin(n\theta) \\
+    \text{cos only} && u(t,\theta) &= \sum_{n>0}\left(C_nr^n+D_nr^{-n}\right)\cos(n\theta) + C_0 + D_0\log(r)
   \end{align*}
+
+
+% -----------------------------------------------------------------------
+% 
+% -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
+\section{Common Tables}
+\subsection{Derivatives and Integrals}
+  \begin{align*}
+        &[c]' = 0  &&\int0\mathrm{d}x = c \\
+        &[x]' = 1 && \int1 \mathrm{d}x = x+c\\
+        &[x^{n+1}]' = (n+1)x^n, n\neq-1 && \int x^n \mathrm{d}x = \frac{1}{n+1}x^{n+1}+x, n\neq -1\\
+        &[\ln x]' = \frac{1}{x}, x>0 && \int \frac{1}{x}\mathrm{d}x = ln|x|+c\\
+        &[\ln(-x)]' = \frac{-1}{-x}=\frac{1}{x},x<0 &&\int\frac{1}{x}\mathrm{d}x = ln|x|+c \\
+        \cline{1-4}
+        &[e^x]' = e^x && \int e^x \mathrm{d}x = e^x + c\\
+        &[a^x]' = a^x\ln a && \int a^x \mathrm{d}x = \frac{1}{\ln a}a^x + c, a \neq 1\\
+        \cline{1-4}
+        &[\sin x]' = \cos x && \int \cos x \mathrm{d}x = \sin x + x\\
+        &[\cos x]' = -\sin x && \int \sin x \mathrm{d}x = -\cos x + x\\
+        &[\tan x]' = \frac{1}{\cos^2 x} = 1 + \tan^2x && \int \frac{1}{\cos^2x}\mathrm{d}x = \tan x + c\\
+        & && \int \tan^2x\mathrm{d}x = \tan x - x+ c\\
+        &[\cot x]' = -\frac{1}{\sin^2x} = -1-\cot^2x && \int \frac{1}{\sin^2x}\mathrm{d}x = -\cot x + c\\
+        & && \int \cot^2x\mathrm{d}x = -\cot x - x + c\\
+        \cline{1-4}
+        &[\arcsin x]' = \frac{1}{\sqrt{1-x^2}} && \int \frac{1}{\sqrt{1-x^2}} \mathrm{d}x = \arcsin x + c_1\\
+        &[\arccos x]' = -\frac{1}{\sqrt{1-x^2}} && \int \frac{1}{\sqrt{1-x^2}} \mathrm{d}x = -\arccos x + c_2\\
+        &[\arctan x]' = \frac{1}{1+x^2} && \int \frac{1}{1+x^2} \mathrm{d}x = \arctan x + c_1\\
+        &[\mathrm{arccot} x]' = -\frac{1}{1+x^2} && \int \frac{1}{1+x^2} \mathrm{d}x = \mathrm{arccot} x + c_2\\
+        \cline{1-4}
+        &[\sinh x]' = \cosh x  &&\int \cosh x \mathrm{d}x = \sinh x + c \\
+        &[\cosh x]' = \sinh x  &&\int \sinh x \mathrm{d}x = \cosh x  + c \\
+        &[\tanh x]' = \frac{1}{\cosh^2x} = 1-\tanh^2x  &&\int \frac{1}{\cosh^2x} \mathrm{d}x = \tanh x + c \\
+        &[\coth x]' = -\frac{1}{\sinh^2x} =1-\coth^2x &&\int \frac{1}{\sinh^2x} \mathrm{d}x = -\coth x  + c \\
+        \cline{1-4}
+  \end{align*}
+  \begin{align*}
+        &[\mathrm{arsinh}x]' =  \frac{1}{\sqrt{x^2+1}} &&\int \frac{1}{\sqrt{x^2+1}} \mathrm{d}x = \mathrm{arsinh}x  + c = \ln(x+\sqrt{x^2+1}) \\
+        &[\mathrm{arcosh}x]' =  \frac{1}{\sqrt{x^2-1}} &&\int \frac{1}{\sqrt{x^2-1}} \mathrm{d}x = \mathrm{arcosh}x  + c = \ln(x+\sqrt{x^2-1}) \\
+        &[\mathrm{artanh}x]' = \frac{1}{\sqrt{1-x^2}},|x|<1 &&\int \frac{1}{\sqrt{1-x^2}},|x|<1 \mathrm{d}x = \mathrm{artanh}x+c=\frac{1}{2}\ln\frac{1+x}{1-x}+c,|x|<1  + c \\
+        &[\mathrm{arcoth}x]' = \frac{1}{\sqrt{1-x^2}},|x|>1 &&\int \frac{1}{\sqrt{1-x^2}} \mathrm{d}x = \mathrm{arcoth}x+c=\frac{1}{2}\ln\frac{x+1}{x-1}+c,|x|>1 + c \\
+        \cline{1-4}
+        &\int \sin^2(x) \mathrm{d}x = - \frac{1}{4}\sin(2x) +\frac{1}{2}x+c && \int \cos^2(x) \mathrm{d}x = \frac{1}{4}\sin(2x) +\frac{1}{2}x+c
+  \end{align*}
+
+\subsection{Derivative rules}
+\begin{align*}
+  (f+g)' &= f'+g' & (cf)' &= cf' & (fg)' &= f'g + g'f \\
+  (\frac{f}{g})' &= \frac{f'g-fg'}{g^2} 
+\end{align*}
+
+\subsection{Integral rules}
+\begin{align*}
+  &\text{substitution}      & &\int_{a}^{b}f[u(x)]u'(x)\mathrm{d}x = \int_{u(a)}^{u(b)}f(z)\mathrm{d}z \quad z = u(x) \\
+  &\text{partial integral}  & &\int_a^b u(x)v'(x)\mathrm{d}x=u(x)v(x)|_a^b-\int_a^bu'(x)v(x)\mathrm{d}x
+\end{align*}
+
+\subsection{Trigonometric identities}
+\begin{align*}
+  & \sin(x) = \frac{e^{ix}-e^{-ix}}{2i} && \cos(x) = \frac{e^{ix}+e^{-ix}}{2} \\
+  & \sin^2(x) + \cos^2(x) = 1 && \sin(\alpha+\beta)=\sin(\alpha)\cos(\beta)+\sin{\beta}\cos(\alpha) \\
+  & \cos(2x) = \cos^2(x)-\sin^2(x) && \sin(\alpha-\beta)=\sin(\alpha)\cos(\beta)-\sin{\beta}\cos(\alpha) \\
+  & \sin(2x) = 2\sin(x)\cos(x) && \cos(\alpha+\beta)=\cos(\alpha)\cos(\beta)-\sin{\alpha}\sin(\beta) \\
+  & c^2=a^2+b^2-2ab\cos(\gamma) && \cos(\alpha-\beta)=\cos(\alpha)\cos(\beta)+\sin{\alpha}\sin(\beta) \\
+  & \frac{a}{\sin{\alpha}}=\frac{b}{\sin{\beta}}=\frac{c}{\sin{\gamma}} && \cos^2(x) = \frac{1+\cos(2x)}{2}
+\end{align*}
+
+\subsection{Hyperbolic identities}
+\begin{align*}
+  & \sinh(x) = \frac{e^{x}-e^{-x}}{2} && \cosh(x) = \frac{e^{x}+e^{-x}}{2} \\
+  & \cosh^2(x) - \sinh^2(x) = 1 && \sinh(x\pm y)=\sinh(x)\cosh(y)\pm\sinh{y}\cosh(x) \\
+  & \sinh(2x) =2\sinh(x)\cosh(x) && \cosh(x\pm y)=\cosh(x)\cosh(y)\pm\sinh{x}\sinh(y) \\
+  & \cosh(2x) =\cosh^2(x) + \sinh^2(x) && \\
+  & \sinh(-x) =-\sinh{x} && \\
+  & \cosh(-x) = \cosh{x} && \\
+\end{align*}
+
+\subsection{Sums}
+\begin{align*}
+\sum_{k=1}^{n}k&=\frac{n(n+1)}{2} & \sum_{k=1}^{n}k^2&=\frac{n(n+1)(2n+1)}{6} & \sum_{k=1}^{n}k^3 &= \frac{n^2(n+1)^2}{4} \\
+\sum_{k=0}^{n-1}q^{k}&=\frac{1-q^n}{1-q} & \sum_{k=0}^{\infty}q^k&=\frac{1}{1-q}, \text{for}|q|<1 & \binom{n}{k} &= \frac{n!}{k!(n-k)!}
+\end{align*}
+
+
+
 
 
 \vspace*{\fill}
