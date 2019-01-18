@@ -1,4 +1,4 @@
-\documentclass[10pt,landscape]{article}
+\documentclass[10pt,landscape]{scrartcl}
 \usepackage{multicol}
 \usepackage{calc}
 \usepackage{ifthen}
@@ -10,6 +10,7 @@
 \usepackage{wrapfig}
 \usepackage{graphicx,calc}
 \usepackage{empheq}
+\usepackage{xcolor}
 %\usepackage{pbox}
 
 \pdfinfo{
@@ -19,6 +20,23 @@
   /Author (Noah Huetter)
   /Subject (Analysis III - PDE)
   /Keywords (Analysis, ETH, PDE)}
+
+
+\definecolor{section}{RGB}{28,82,83}
+\definecolor{titletext}{RGB}{0,0,0}
+\definecolor{formula}{RGB}{249,220,155}
+
+\setkomafont{section}{\mysection}
+\newcommand{\mysection}[1]{%
+    \Large\bf%
+    \setlength{\fboxsep}{0cm}%already boxed
+    \fcolorbox{black}{gray!40}{%
+        \begin{minipage}{\linewidth}%
+            \vspace*{2pt}%Space before
+            #1
+            \vspace*{2pt}%Space after
+        \end{minipage}%
+    }}
 
 % This sets page margins to .5 inch if using letter paper, and to 1cm
 % if using A4 paper. (This probably isn't strictly necessary.)
@@ -35,10 +53,10 @@
 
 % Redefine section commands to use less space
 \makeatletter
-\renewcommand{\section}{\@startsection{section}{1}{0mm}%
-                                {-1ex plus -.5ex minus -.2ex}%
-                                {0.5ex plus .2ex}%x
-                                {\normalfont\large\bfseries}}
+% \renewcommand{\section}{\@startsection{section}{1}{0mm}%
+%                                 {-1ex plus -.5ex minus -.2ex}%
+%                                 {0.5ex plus .2ex}%x
+%                                 {\normalfont\large\bfseries}}
 \renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
                                 {-1explus -.5ex minus -.2ex}%
                                 {0.5ex plus .2ex}%
@@ -48,6 +66,18 @@
                                 {1ex plus .2ex}%
                                 {\normalfont\small\bfseries}}
 \makeatother
+
+% bring the old commands back as needed via:
+\makeatletter
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+\makeatother
+
 
 % make smaller enumerates
 \usepackage{enumitem}
@@ -64,7 +94,6 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{1pt plus 0.5ex}
 
-\definecolor{formula}{RGB}{249,220,155}
 
 %My Environments
 \newtheorem{example}[section]{Example}
@@ -122,7 +151,7 @@
 % -----------------------------------------------------------------------
 
 % -----------------------------------------------------------------------
-\vspace{2mm}\hrule
+\vspace{2mm} \hrule
 \section{General}
 
 \subsection{Derivative Rules}
@@ -142,11 +171,18 @@
   $ax'' + bx' + cx = 0$ & $b^2 < 4ac$ &  $x = $\\
 \end{tabular}
 
-% \subsection{Some PDE}
-% \begin{tabular}{l l l}
-%   \textbf{First order} & & \\
-%   $ax + x' = 0$ & & $x = c_1e^{ax}$\\
-% \end{tabular}
+\subsection{Some PDE}
+Using $\frac{\partial }{\partial t}x(t,s) = x'(t)$ partial derivatives. Further $x = x(t,s)$, $y = y(t,s)$
+
+\begin{tabular}{l l l}
+  \textbf{First order} & & \\
+  % $ax + x' = 0$ & & $x = c_1e^{ax}$\\
+  $x' = x^2 $&$ x = \frac{1}{c_1 - t} $ \\
+  $x' - tx = 0$&$x = c(s)e^{-t^2/2}$\\
+  \textbf{Rules} & & \\
+  $[\log(x)]_t$ & $ = \frac{x_t}{x}$ \\
+  % $$&$$\\
+\end{tabular}
 
 \subsection{Solve linear ODE with Integrating Factor}
 Problem: \eqbox{y' + p(t)y = q(t)}
@@ -178,7 +214,6 @@ Area of a disk $B_R$ with radius $R$ around $(x_0,y_0)$
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Notation of PDE}
 unknown function $u: D \subset \mathbb{R}^n \to \mathbb{R}$
 
@@ -187,7 +222,6 @@ $F(x_1,x_2,\dots, x_n, u(x1_,\dots,x_n), u_{x_1}, \dots, u_{x_n}, u_{x_1 x_1}, \
 Short form: \eqbox{F(x)=0}
 
 % -----------------------------------------------------------------------
-\vspace{2mm}\hrule
 \section{Classification of PDE}
 
 \subsection{Order}
@@ -197,7 +231,10 @@ Order = order of highest derrivative in equation
 PDE is linear if $F$ is a linear function of the unknown function $u$
 
 \begin{tabular}{l l l}
-  \textbf{Quasilinear} & linear in $u_x,u_y$ & $a(x,y,u)u_x+b(x,y,u)u_y=c(x,y,u)$ \\
+  \textbf{Semilinear} & \multicolumn{2}{l}{All derivatives are linear (Nonlin. only in $u$)} \\
+  & \multicolumn{2}{l}{ $a(x,y,u)\frac{\partial u}{\partial x} + b(x,y,u)\frac{\partial u}{\partial y} + c(x,y)\frac{\partial^3 u}{\partial x^2 \partial y} = d(x,y,u)$ } \\
+  \textbf{Quasilinear} & \multicolumn{2}{l}{Highest-order derivative are linear} \\
+  & \multicolumn{2}{l}{$a(x,y,u,u+x)\frac{\partial u}{\partial x} + a(x,y,u,u_y)\frac{\partial u}{\partial y} + c(x,y,u,u_x,u_y)\frac{\partial^2 u}{\partial x^2} = d(x,y,u) $} \\
   \textbf{Linear} & linear in $u$ & $a(x,y)u_x+b(x,y)u_y=c_0(x,y)+c_1(x,y)$ \\
    & \multicolumn{2}{l}{if $u_1,u_2$ are sol. then $\lambda u_1 + (1-\lambda)u_2$ is a sol.}
 \end{tabular}
@@ -214,7 +251,6 @@ PDE is homogeneous if $F(x,y)$ = 0.
 
 
 % -----------------------------------------------------------------------
-\vspace{2mm}\hrule
 \section{First Order PDE: Method of Characteristics}
 \subsection{Problem}
 $\begin{cases}
@@ -257,21 +293,31 @@ $J
 Must be $\neq0$ for $x,y$ to be invertable and the method of characteristics to work.
 
 \subsection{Existence and uniqueness}
-\textbf{Def:} Die Projektionen der charakteristischen Kurven in x,y-Ebene heissen Charakteristiken.
+\subsubsection{Transversality condition}
+For $a,b$ replace $x,y$ by $x_0,y_0$. If transversality condition is fulfilled the PDE has a unique solution.
+\begin{align*}
+J = \det \left(
+\begin{bmatrix}
+    a & b \\
+    \frac{\partial x_0}{\partial s} & \frac{\partial y_0}{\partial s} 
+  \end{bmatrix}
+  \right) = (y_0)_sa - (x_0)_sb \neq 0
+\end{align*}
 
-\textbf{Transversalitätsbedingung (TB)} in $\Gamma(s)$:
-Projektion $\Gamma'$ von $\Gamma$ und der charakt. Kurve (Charakteristik) schneiden sich transversal 
-(Tangenten verschieden in diesem Punkt). 
+% \textbf{Def:} Die Projektionen der charakteristischen Kurven in x,y-Ebene heissen Charakteristiken.
+% \textbf{Transversalitätsbedingung (TB)} in $\Gamma(s)$:
+% Projektion $\Gamma'$ von $\Gamma$ und der charakt. Kurve (Charakteristik) schneiden sich transversal 
+% (Tangenten verschieden in diesem Punkt). 
 
-\textbf{Satz:} (erfüllt für $\det\Big(J\big(x(t,s),y(t,s)\big)\Big)|_{t=0}=\MATRABS{a & b \\[4pt] (x_0)_s & (y_0)_s }\neq0$) \\
+% \textbf{Satz:} (erfüllt für $\det\Big(J\big(x(t,s),y(t,s)\big)\Big)|_{t=0}=\MATRABS{a & b \\[4pt] (x_0)_s & (y_0)_s }\neq0$) \\
 
-\begin{enumerate}
-  \item Ist die TB für $s \in [s_0, s_1] $ erfüllt, d.h. $J(s) \neq 0$, dann gibt es ein 
-  $\varepsilon > 0$ und Funktionen $x(t,s), y(t,s), u(t,s)$ definiert für $(t,s) \in (-\varepsilon,
-  \varepsilon) \times (s_0, s_1)$ welche die eindeutige Lösung des Cauchy-Problems darstellen.
-  \item Gilt $J(s) \equiv 0$ auf einem Intervall $[s_0,s_1]$, dann hat das Cauchy-Problem entweder
-  unendlich viele oder gar keine Lösungen. 
-\end{enumerate}
+% \begin{enumerate}
+%   \item Ist die TB für $s \in [s_0, s_1] $ erfüllt, d.h. $J(s) \neq 0$, dann gibt es ein 
+%   $\varepsilon > 0$ und Funktionen $x(t,s), y(t,s), u(t,s)$ definiert für $(t,s) \in (-\varepsilon,
+%   \varepsilon) \times (s_0, s_1)$ welche die eindeutige Lösung des Cauchy-Problems darstellen.
+%   \item Gilt $J(s) \equiv 0$ auf einem Intervall $[s_0,s_1]$, dann hat das Cauchy-Problem entweder
+%   unendlich viele oder gar keine Lösungen. 
+% \end{enumerate}
 
 \subsection{Conservation law \& shock waves}
 
@@ -303,7 +349,7 @@ Characteristics must enter the shock curve, and are not allowed to emanate from 
 Applying this rule to the special case $F(u)=\frac{1}{2}u^2$ we obtain that the shock solution is valid only if $u^- > u^+$.
 \\
 \subsubsection{Case shock wave: $u^- > u^+$} 
-The characteristics intersect and it results in a shock wave. The shock wave $\gamma(y)$ describes the curve along which $u(x,y)$ assumes different values. $\gamma_y(y)$ descirbes the speed at which the discontinuity is moving.  The schock wave is given by
+The characteristics intersect and it results in a shock wave. The shock wave $\gamma(y)$ describes the curve along which $u(x,y)$ assumes different values. $\gamma_y(y)$ descirbes the speed at which the discontinuity is moving (Rankine-Hugoniot condition).  The schock wave is given by
 \begin{align*}
   u(x,y) &= \begin{cases} u^- & x < \gamma(y) \\ u^+ & x > \gamma(y) \end{cases} &
   \gamma_y(y) &= \frac{F(u^+) - F(u^-)}{u^+-u^-} &
@@ -324,7 +370,6 @@ If $h(s)$ (the initial value) has a discontinuity (e.g. a step), $y_c = 0$: the 
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Second Order PDE}
 \begin{align*}
   L [u] = a \cdot u_{xx} + 2b\cdot u_{xy} + c\cdot u_{yy} + d\cdot u_x + e\cdot u_y + f\cdot u = g
@@ -343,7 +388,6 @@ Discriminant $\delta$:
 
 
 % -----------------------------------------------------------------------
-\vspace{2mm}\hrule
 \section{1D Wave Equation}
 Cauchy problem
 \begin{align*}
@@ -458,7 +502,6 @@ Then solve the new Cauchy problem:
 
 
 % -----------------------------------------------------------------------
-\vspace{2mm}\hrule
 \section{Separation of variables}
 \subsection{Ansatz}
 \begin{enumerate}
@@ -563,16 +606,18 @@ Then solve the new Cauchy problem:
 
   Find new functino $w(x,t)$ satisfying such non-homogeneous boundary conditions and study the problem being satisfied by $v(x,t)=u(x,t)-w(x,t)$. If the boundary condition is of the following form, table \ref{tab:bound} provides $w(x,t)$.
   \warning\textcolor{red}{Resubstitute to $u(x,t) = v(x,t)+w(x,t)$}
-  \begin{tabular}{l l l l}
-    \hline\hline
-    \multicolumn{3}{c}{Boundary condition} & \multicolumn{1}{c}{$w(x,t)$} \\ \hline
-    Dirichlet & $u(0,t)=a(t)$   & $u(L,t)=b(t)$   & $w(x,t)=a(t)+\frac{x}{L}[b(t)-a(t)]$ \\
-    Neumann   & $u_x(0,t)=a(t)$ & $u_x(L,t)=b(t)$ & $w(x,t)=xa(t)+\frac{x^2}{2L}[b(t)-a(t)]$ \\
-    Mixed     & $u(0,t)=a(t)$   & $u_x(L,t)=b(t)$ & $w(x,t)=a(t)+xb(t)$ \\
-    Mixed     & $u_x(0,t)=a(t)$ & $u(L,t)=b(t)$   & $w(x,t)=(x-L)a(t)+b(t)$ \\\hline
+  \begin{center}
+    \begin{tabular}{l l l l}
+      \hline\hline
+      \multicolumn{3}{c}{Boundary condition} & \multicolumn{1}{c}{$w(x,t)$} \\ \hline
+      Dirichlet & $u(0,t)=a(t)$   & $u(L,t)=b(t)$   & $w(x,t)=a(t)+\frac{x}{L}[b(t)-a(t)]$ \\
+      Neumann   & $u_x(0,t)=a(t)$ & $u_x(L,t)=b(t)$ & $w(x,t)=xa(t)+\frac{x^2}{2L}[b(t)-a(t)]$ \\
+      Mixed     & $u(0,t)=a(t)$   & $u_x(L,t)=b(t)$ & $w(x,t)=a(t)+xb(t)$ \\
+      Mixed     & $u_x(0,t)=a(t)$ & $u(L,t)=b(t)$   & $w(x,t)=(x-L)a(t)+b(t)$ \\\hline
 
-  \end{tabular}
-  \captionof{table}{Boundary conditions} \label{tab:bound}
+    \end{tabular}
+    \captionof{table}{Boundary conditions} \label{tab:bound}
+  \end{center}
 
 \section{Elliptic Equation}
 \subsection{Harmonic functions}
