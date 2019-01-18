@@ -574,11 +574,11 @@ Then solve the new Cauchy problem:
       \end{align*}
     \item From the initial condition $u(x,0)=f(x)$ the initial values of $T_n(0)$ can be derived
       \begin{align*}
-        u(x,0) &= \sum_{n\geq0} T_n(0)cos(\sqrt{\lambda}x) = f(x) & &\longrightarrow T_n(0)=..
+        u(x,0) &= \sum_{n\geq0} T_n(0)cos(\sqrt{\lambda}x) = f(x) & &\longrightarrow T_n(0)=\dots
       \end{align*}
     \item Imposing $u_t-u_{xx} = h(x,t)$ using the ansatz we get a set of ODE:
       \begin{align*}
-        \sum_{n\geq0} (T_n'(t)+\lambda T_n(t) ) cos(\sqrt{\lambda}x) = h(x,t) & &\longrightarrow T_n'(t)=..
+        \sum_{n\geq0} (T_n'(t)+\lambda T_n(t) ) cos(\sqrt{\lambda}x) = h(x,t) & &\longrightarrow T_n'(t)=\dots
       \end{align*}
     \item Use $T_n'(t)$ and $T_n(0)$ to solve for all $T_n(t)$
     \item Put solution together
@@ -715,7 +715,25 @@ Then use the following and introduce boundaries $u(x,c)$ and $u(x,d)$.
   \eqbox{u(x,y) = \alpha_0y+\beta_0+\sum_{n\leq1}\cos(\sqrt{\lambda}x)\left[\alpha_n\sinh(\sqrt{\lambda}(y-c))+\beta_n\sinh(\sqrt{\lambda}(y-d))\right]}
 \end{align*}
 
+\subsection{Laplace eq. in circular domain}
+  Problem:
+  \begin{align*}
+    &\begin{cases}
+      \Delta u = 0, & \text{in} \quad D,\\
+      u(r_a,\theta) = f(\theta), & \text{for} \quad 0 \leq \theta \leq 2\pi,\\
+      u(r_b,\theta) = g(\theta), & \text{for} \quad 0 \leq \theta \leq 2\pi.
+    \end{cases}
+    &
+    \Delta &= \frac{\partial^2}{\partial r^2} \frac{1}{r}\frac{\partial}{\partial r} + \frac{1}{r^2} \frac{\partial^2}{\partial \theta^2}
+  \end{align*}
 
+  Ansatz: If the boundary datum depends only on sine, the sine only ansatz can be chosen. \textcolor{red}{Provide reason!} Then introduce boundary conditions and solve for $A_n,B_n, \dots$
+  \begin{align*}
+    \text{General} && u(t,\theta) &= \sum_{n>0}\left(A_nr^2+B_nr^{-n}\right)\sin(n\theta) + C_0 + D_0\log(r) \\
+                               && &+ \sum_{n>0}\left(C_nr^2+D_nr^{-n}\right)\cos(n\theta) \\
+    \text{sin only} && u(t,\theta) &= \sum_{n>0}\left(A_nr^2+B_nr^{-n}\right)\sin(n\theta) \\
+    \text{cos only} && u(t,\theta) &= \sum_{n>0}\left(C_nr^2+D_nr^{-n}\right)\cos(n\theta) + C_0 + D_0\log(r)
+  \end{align*}
 
 
 \vspace*{\fill}
