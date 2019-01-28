@@ -1,4 +1,4 @@
-\documentclass[10pt,landscape]{article}
+\documentclass[10pt,landscape]{scrartcl}
 \usepackage{multicol}
 \usepackage{calc}
 \usepackage{ifthen}
@@ -9,6 +9,8 @@
 \usepackage[font=scriptsize,labelfont=bf]{caption}
 \usepackage{wrapfig}
 \usepackage{graphicx,calc}
+\usepackage{empheq}
+\usepackage{xcolor}
 %\usepackage{pbox}
 
 \pdfinfo{
@@ -18,6 +20,22 @@
   /Author (Noah Huetter)
   /Subject (Leistungelektronik)
   /Keywords (Leistungelektronik,ETH)}
+
+\definecolor{section}{RGB}{28,82,83}
+\definecolor{titletext}{RGB}{0,0,0}
+\definecolor{formula}{RGB}{249,220,155}
+
+\setkomafont{section}{\mysection}
+\newcommand{\mysection}[1]{%
+    \Large\bf%
+    \setlength{\fboxsep}{0cm}%already boxed
+    \fcolorbox{black}{gray!40}{%
+        \begin{minipage}{\linewidth}%
+            \vspace*{2pt}%Space before
+            #1
+            \vspace*{2pt}%Space after
+        \end{minipage}%
+    }}
 
 % This sets page margins to .5 inch if using letter paper, and to 1cm
 % if using A4 paper. (This probably isn't strictly necessary.)
@@ -34,10 +52,10 @@
 
 % Redefine section commands to use less space
 \makeatletter
-\renewcommand{\section}{\@startsection{section}{1}{0mm}%
-                                {-1ex plus -.5ex minus -.2ex}%
-                                {0.5ex plus .2ex}%x
-                                {\normalfont\large\bfseries}}
+% \renewcommand{\section}{\@startsection{section}{1}{0mm}%
+%                                 {-1ex plus -.5ex minus -.2ex}%
+%                                 {0.5ex plus .2ex}%x
+%                                 {\normalfont\large\bfseries}}
 \renewcommand{\subsection}{\@startsection{subsection}{2}{0mm}%
                                 {-1explus -.5ex minus -.2ex}%
                                 {0.5ex plus .2ex}%
@@ -46,6 +64,17 @@
                                 {-1ex plus -.5ex minus -.2ex}%
                                 {1ex plus .2ex}%
                                 {\normalfont\small\bfseries}}
+\makeatother
+
+% bring the old commands back as needed via:
+\makeatletter
+\DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+\DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+\DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+\DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+\DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+\DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+\DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
 \makeatother
 
 % make smaller enumerates
@@ -80,12 +109,23 @@
   \end{minipage}
 }
 }
+
+% equation box        
+\newcommand{\eqbox}[1]{\fcolorbox{black}{formula}{\hspace{0.5em}$\displaystyle#1$\hspace{0.5em}}}
+
+\newcommand{\Pabl}[2] {\frac{\partial#1}{\partial#2}}
+\newcommand{\MATR}[1]{ \displaystyle \left( \begin{matrix} #1 \end{matrix} \right)}
+\newcommand{\MATRABS}[1]{ \displaystyle \left| \begin{matrix} #1 \end{matrix} \right|}
+\newcommand{\Int}{\int\limits}
+\newcommand\warning{%
+ \makebox[1.4em][c]{%
+ \makebox[0pt][c]{\raisebox{.1em}{\small!}}%
+ \makebox[0pt][c]{\color{red}\Large$\bigtriangleup$}}}%
+
  
 
  
 \begin{document}
-
-
 \raggedright
 \footnotesize
 \begin{multicols}{2}
@@ -111,7 +151,7 @@
 
 
 % -----------------------------------------------------------------------
-\vspace{2mm}\hrule
+ \vspace{2mm} \hrule
 \section{Allgemein}
 \eqn{h}{0.23\linewidth}{ i_L(t) = \frac{1}{L}\int u_L(t)dt }
 \eqn{h}{0.23\linewidth}{ u_L(t) = L\frac{d}{dt}i_L(t) }
@@ -127,12 +167,11 @@
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Tiefsetzsteller}
 
 \begin{center}
 \includegraphics[width=0.8\linewidth]{img/sch_buck.png}%
-\captionof{figure}{Tiefsetzsteller}%
+% \captionof{figure}{Tiefsetzsteller}%
 \end{center}
 
 \subsection{Kontinuierlicher Stromfluss}
@@ -154,6 +193,8 @@
   \includegraphics[width=0.4\linewidth]{img/buck/discplot.png}%
 \end{tabular}
 
+Lückender Betrieb für $I_L < I_{2g}$.
+
 \eqn{h}{0.4\linewidth}{ I_{2g} = \frac{1}{2} \Delta i_{Lpp} = \frac{U_2}{2 \cdot L}(1-D)T_S}
 \eqn{h}{0.25\linewidth}{ R_{g} = \frac{2L}{(1-D) \cdot T_S}}
 \eqn{h}{0.25\linewidth}{ U_2=U_1 \frac{D_1}{D_1+D_2} }
@@ -164,15 +205,20 @@
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Hochsetzsteller}
 
-\begin{center}
-\includegraphics[width=0.8\linewidth]{img/sch_boost.png}%
-\captionof{figure}{Hochsetzsteller}%
-\end{center}
+% \begin{center}
+% \includegraphics[width=0.8\linewidth]{img/sch_boost.png}%
+% \captionof{figure}{Hochsetzsteller}%
+% \end{center}
 
 \subsection{Kontinuierlicher Stromfluss}
+\begin{tabular}{c c}
+  \includegraphics[width=0.4\linewidth]{img/sch_boost.png}%
+  &
+  \includegraphics[width=0.4\linewidth]{img/boost/cont.png}%
+\end{tabular}
+
 \eqn{h}{0.23\linewidth}{ D = 1 - \frac{U_1}{U_2} }
 \eqn{h}{0.23\linewidth}{ \frac{U_2}{U_1} = \frac{1}{1-D}}
 \eqn{h}{0.23\linewidth}{ \frac{I_2}{I_1}=1-D }
@@ -181,6 +227,12 @@
 \eqn{h}{0.23\linewidth}{ \Delta U_{2pp} = \frac{U_2}{R}\frac{DT_s}{C_2} }
 
 \subsection{Diskontinuierlicher Stromfluss}
+\begin{tabular}{c c}
+  \includegraphics[width=0.4\linewidth]{img/boost/disc1.png}%
+  &
+  \includegraphics[width=0.4\linewidth]{img/boost/disc2.png}%
+\end{tabular}
+
 \eqn{h}{0.3\linewidth}{ I_{Lg} = \frac{1}{2} \frac{(U_2-U_1)}{L}(1-D)T_s }
 \eqn{h}{0.3\linewidth}{ I_{2g} = \frac{1}{2} \frac{U_2}{L}D(1-D)^2T_s }
 \eqn{h}{0.3\linewidth}{ I_{2g,max} = I_{2g}|_{D=1/3} = \frac{2}{27}\frac{U_2}{L}T_S }
@@ -192,12 +244,11 @@
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Tief-Hochsetzsteller}
 
 \begin{center}
 \includegraphics[width=0.8\linewidth]{img/sch_invers.png}%
-\captionof{figure}{Tief-Hochsetzsteller}%
+% \captionof{figure}{Tief-Hochsetzsteller}%
 \end{center}
 
 \subsection{Kontinuierlicher Stromfluss}
@@ -206,6 +257,12 @@
 \eqn{h}{0.23\linewidth}{ \frac{I_2}{I_1}=\frac{1-D}{D} }
 
 \subsection{Diskontinuierlicher Stromfluss}
+\begin{tabular}{c c}
+  \includegraphics[width=0.4\linewidth]{img/inv/disc.png}%
+  &
+  % \includegraphics[width=0.4\linewidth]{img/boost/disc2.png}%
+\end{tabular}
+
 \eqn{h}{0.3\linewidth}{ I_{Lg} = \frac{1}{2} \frac{-U_2}{L}(1-D)T_s }
 \eqn{h}{0.3\linewidth}{ I_{2g} = \frac{1}{2} \frac{-U_2}{L}(1-D)^2T_s }
 \eqn{h}{0.3\linewidth}{ I_{2g,max} = -\frac{1}{2} \frac{U_2}{L}T_s }
@@ -217,12 +274,29 @@
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
+\section{Dioden-Gleichrichter}
+
+\begin{tabular}{c c}
+  \includegraphics[width=0.49\linewidth]{img/dioderect/sch.png}%
+  &
+  \includegraphics[width=0.49\linewidth]{img/dioderect/dia.png}%
+\end{tabular}
+
+\begin{align*}
+  \alpha &= \arcsin(U_d/\hat{U_1}) = \arctan\left(\frac{1-\cos(\beta)}{\beta-\sin(\beta)}\right) & \\
+  I_d &= \frac{1}{\pi}\int_{\alpha}^{\alpha+\beta}i_d(\omega t)\mathrm{d}\omega t = \frac{1}{\pi}\frac{\hat{U_1}}{\omega L_1} \left[\frac{\hat{U_1}}{U_d}(1-\cos(\beta))-\frac{U_d}{\hat{U_1}}\frac{\beta^2}{2}\right]
+\end{align*}
+
+
+
+% -----------------------------------------------------------------------
+\vfill\null
+\columnbreak
 \section{PFC Einphasen Gleichrichter}
 
 \begin{center}
 \includegraphics[width=0.8\linewidth]{img/sch_pfc.png}%
-\captionof{figure}{PFC Einphasen Gleichrichter}%
+% \captionof{figure}{PFC Einphasen Gleichrichter}%
 \end{center}
 
 \subsection{Toleranzbandregelung}
@@ -235,12 +309,11 @@
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Netzgeführte Stromrichter}
 
 \begin{center}
 \includegraphics[width=0.8\linewidth]{img/sch_netz_dreiphase.png}%
-\captionof{figure}{Dreiphasen netzgeführte Stromrichter}%
+% \captionof{figure}{Dreiphasen netzgeführte Stromrichter}%
 \end{center}
 
 Text
@@ -248,7 +321,6 @@ Text
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Induktivität Dimensionierung}
 
 \begin{minipage}[h]{0.6\linewidth}
@@ -285,19 +357,17 @@ Text
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Trafo Dimensionierung}
 Text
 
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Sperrwandler}
 
 \begin{center}
 \includegraphics[width=0.8\linewidth]{img/sch_sperr.png}%
-\captionof{figure}{Sperrwandler}%
+% \captionof{figure}{Sperrwandler}%
 \end{center}
 
 Text
@@ -305,12 +375,11 @@ Text
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Durchflusswandler}
 
 \begin{center}
 \includegraphics[width=0.8\linewidth]{img/sch_durchfluss.png}%
-\captionof{figure}{Zwei-Transistor Durchflusswandler}%
+% \captionof{figure}{Zwei-Transistor Durchflusswandler}%
 \end{center}
 
 Text
@@ -318,12 +387,11 @@ Text
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Einphasen Gleichspannungswechselrichter}
 
 \begin{center}
 \includegraphics[width=0.8\linewidth]{img/sch_fullbridge.png}%
-\captionof{figure}{Einphasiger Gleichspannungswechselrichter}%
+% \captionof{figure}{Einphasiger Gleichspannungswechselrichter}%
 \end{center}
 
 Text
@@ -331,7 +399,6 @@ Text
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
-\vspace{2mm}\hrule
 \section{Dreiphasen Gleichspannungswechselrichter}
 Text
 
