@@ -358,8 +358,61 @@ Text
 \vfill\null
 \columnbreak
 \section{Trafo Dimensionierung}
-Text
 
+\begin{minipage}[h]{0.6\linewidth}
+  \begin{tabular}{l l l |}
+    $A_n/A_w$   & Wicklungsfenster      & $mm^2 = 10^{-6}m^2$ \\
+    $A_e$   & Eisenquerschnitt      & $mm^2 = 10^{-6}m^2$ \\
+    $B_S$   & Sättigungsinduktion   & $\approx 0.3T$ \\
+    $k_f$   & Füllfaktor            & $\approx 0.5$ \\
+    $S$     & zulässige Stromdichte & $\approx 5\frac{A}{mm^2}=5\cdot10^6\frac{A}{m^2}$ \\
+    $d$     & Luftspalt             & $m$ \\
+    $\mu_0$ & Vacuum permeability   & $1.256\cdot10^{-6}Vs/(Am)$
+  \end{tabular}
+\end{minipage}
+\begin{minipage}[h]{0.3\linewidth}
+\textbf{Vorgehen}
+  \begin{enumerate}
+    \item Berechne Flächenprodukt $A_e A_n$
+    \item Suche Kern mit grösserem Flächenprodukt
+    \item Berechne N
+    \item Berechne Luftspalt
+  \end{enumerate}
+\end{minipage}
+
+\textbf{Dimensionierung}
+\begin{align*}
+  A_EA_W &= \frac{U_1}{f_p}\frac{D}{B_S}\frac{2\frac{I_{1,avg}}{\sqrt{D}}}{k_f S_{rms}} \approx \frac{U_1I_{1,avg}}{f_p} & 
+  \left\lceil \frac{\hat{\Psi}_{phys}}{A_EB_{sat}} \right\rceil &\leq N \leq
+  \left\lfloor \frac{1}{2}\frac{S_{rms}}{I_{p,rms}k_f A_w} \right\rfloor &
+  \hat{\Psi}_{phys} &= \max\int_{T}^{}u_p(t)\mathrm{d}t
+\end{align*}
+Typisch: $N$ das Minimum nehmen. Falls kein $N$ wählbar ist, anderen Kern wählen.
+
+\textbf{Hauptinduktivität}
+\begin{align*}
+  L_h &= N_p^2\frac{1}{R_m} = \frac{N_p^2A_e\mu_r\mu_0}{l_e} & l_e \quad \text{Mittlere Wdg.länge}
+\end{align*}
+
+\textbf{Verluste}
+\begin{align*}
+  P_{cu} &= R_{cu,p}I_{1,rms}^2+R_{cu,s}I_{2,rms}^2 &
+  R_{cu} &= \rho_{cu} \frac{l_{cu}}{A_{cu}} &
+  l_{cu} &= N\cdot l_n &
+  A_{cu} &= \frac{I_{rms}}{S_{rms}}
+\end{align*}
+
+\textbf{Streuung}
+Problem: Nicht alle Induktionslinien von einer Seite sind mit der anderen Seite verkettet. 
+
+\begin{minipage}[h]{0.6\linewidth}
+  \includegraphics[width=\linewidth]{img/trafo/trafo_tech_esb.png}%
+\end{minipage}
+\begin{minipage}[h]{0.3\linewidth}\begin{align*}
+      &\oint_{\partial A}\vec{H}\mathrm{d}\vec{s} = H\cdot h \\
+      W_m &= \frac{1}{2}\mu_0 \iiint_V H^2\mathrm{d}V
+    \end{align*}
+\end{minipage}
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
