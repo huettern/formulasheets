@@ -162,14 +162,17 @@
 
 
 \subsection{Some ODE}
-\begin{tabular}{l l l}
-  \textbf{First order} & & \\
-  $x' + ax = c$ & & $x = c_1 e^{-ax} + \frac{c}{a}$\\
-  \textbf{Second order} & & \\
-  $ax'' + bx' + cx = 0$ & $b^2 > 4ac$ &  $x = a_1 e^{\lambda_1 x} + a_2 e^{\lambda_2 x}$\\
-  $ax'' + bx' + cx = 0$ & $b^2 = 4ac$ &  $x = (a_1 + a_2x) e^{\lambda x}$\\
-  $ax'' + bx' + cx = 0$ & $b^2 < 4ac$ &  $x = $\\
-\end{tabular}
+\begin{align*}
+  % &\textbf{First order} \\
+  &x' + ax = c & x &= c_1 e^{-ax} + \frac{c}{a} \\
+  % &\textbf{Second order} \\
+  &ax'' + bx' + cx = 0 & b^2 &> 4ac &  x &= a_1 e^{\lambda_1 x} + a_2 e^{\lambda_2 x} &
+  &\lambda_{1,2} = \frac{-b\pm\sqrt{b^2-4ac}}{2a} \\
+  &ax'' + bx' + cx = 0 & b^2 &= 4ac &  x &= (a_1 + a_2x) e^{\lambda x} &
+  &\rho =\frac{b}{2a} \\
+  &ax'' + bx' + cx = 0 & b^2 &< 4ac &  x &= a_1e^{\rho t}\cos(\omega t)+a_2e^{\rho t}\sin(\omega t) &
+  &\omega = \left| \frac{\sqrt{b^2-4ac}}{2a} \right|\\
+\end{align*}
 
 \subsection{Some PDE}
 Using $\frac{\partial }{\partial t}x(t,s) = x'(t)$ partial derivatives. Further $x = x(t,s)$, $y = y(t,s)$
@@ -294,11 +297,11 @@ Must be $\neq0$ for $x,y$ to be invertable and the method of characteristics to 
 
 \subsection{Existence and uniqueness}
 \subsubsection{Transversality condition}
-For $a,b$ replace $x,y$ by $x_0,y_0$. If transversality condition is fulfilled the PDE has a unique solution.
+For $a,b$ replace $x,y$ by $x_0,y_0$. If transversality condition is fulfilled the PDE has a unique solution. Set $t=0$.
 \begin{align*}
 J = \det \left(
 \begin{bmatrix}
-    a & b \\
+    a_0 & b_0 \\
     \frac{\partial x_0}{\partial s} & \frac{\partial y_0}{\partial s} 
   \end{bmatrix}
   \right) = (y_0)_sa - (x_0)_sb \neq 0
@@ -408,7 +411,7 @@ Coordinate transformation to $\xi,\eta$. Solution $u(x,t)$ consists of forwards 
 \end{align*}
 
 \subsection{d'Alembert Formula}
-General solution to the 1D wave equation.
+General solution to the 1D wave equation for $x\in\mathbb{R}$. (Not to be used for $x$ in an interval, use seperation of variables.)
 \begin{align*}
 \eqbox{u(x,t)=\frac{1}{2}\left( f(x+ct) + f(x-ct) \right) + \frac{1}{2c}\Int^{x+ct}_{x-ct}g(s)\mathrm{d}s}
 \end{align*}
@@ -462,7 +465,7 @@ For example:
 \captionof{figure}{Domain of dependence.}
 \end{minipage}
 \begin{minipage}[h]{0.55\linewidth}
-The values at $(x_0,y_0)$ depend only on the initial data at \begin{align*}[a=x_0-ct,b=x_0+ct]\end{align*} Therefore if the initial data live in $[a,b]$ then a point $(x_0,y_0)$ will feel them only if \begin{align*}x_0-ct_0,x_0+ct_0]\cap[a,b]\neq\emptyset\end{align*}
+The values at $(x_0,t_0)$ depend only on the initial data at \begin{align*}[a=x_0-ct,b=x_0+ct]\end{align*} Therefore if the initial data live in $[a,b]$ then a point $(x_0,y_0)$ will feel them only if \begin{align*}x_0-ct,x_0+ct]\cap[a,b]\neq\emptyset\end{align*}
 \end{minipage}
 
 \subsection{Domain of influence}
@@ -694,8 +697,9 @@ From Theorem (7.12):
 
 \textbf{Neumann $\exists$ sol. if:} For $u_x()/u_y()$. The neccessary condition must hold that the integral over the boundary is zero. \warning\textcolor{red}{Mind the integral limits/direction}
   \begin{align*}
-      0 = \int_{\partial D} \frac{\partial u}{\partial v} = 
-      \Int^c_dg(s)\mathrm{d}s+ \Int^b_ak(s)\mathrm{d}s+\Int^d_cf(s)\mathrm{d}s+ \Int^a_bh(s)\mathrm{d}s
+    0 = -\Int_a^bh\mathrm{d}x+\Int_c^dg\mathrm{d}y+\Int_a^bk\mathrm{d}x-\Int_c^df\mathrm{d}y
+      % 0 = \int_{\partial D} \frac{\partial u}{\partial v} = 
+      % \Int^c_dg(s)\mathrm{d}s+ \Int^b_ak(s)\mathrm{d}s+\Int^d_cf(s)\mathrm{d}s+ \Int^a_bh(s)\mathrm{d}s
   \end{align*}
 
 \textbf{Ansatz:} $u(x,y)=X(x)Y(y)$ For $X(x)$ proceed as in \ref{ch:boundcond}. For $Y(y)$ The following are equivalent:
@@ -734,6 +738,8 @@ Then use the following and introduce boundaries $u(x,c)$ and $u(x,d)$.
     \text{sin only} && u(t,\theta) &= \sum_{n>0}\left(A_nr^n+B_nr^{-n}\right)\sin(n\theta) \\
     \text{cos only} && u(t,\theta) &= \sum_{n>0}\left(C_nr^n+D_nr^{-n}\right)\cos(n\theta) + C_0 + D_0\log(r)
   \end{align*}
+
+  If origin ($r=0$) is inside domain $D$ then $D_n=D_0=0 \quad \forall n$ because $r^{-n}$ and $\log(r)$ blow up for $r\to0$.
 
 
 % -----------------------------------------------------------------------
