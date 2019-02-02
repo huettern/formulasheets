@@ -122,7 +122,8 @@
  \makebox[0pt][c]{\raisebox{.1em}{\small!}}%
  \makebox[0pt][c]{\color{red}\Large$\bigtriangleup$}}}%
 
- 
+% \DeclareSIUnit[]\\textup{rms}
+% {\text{\ensuremath{m_{\textup{p}}}}}
 
  
 \begin{document}
@@ -153,16 +154,25 @@
 % -----------------------------------------------------------------------
  \vspace{2mm} \hrule
 \section{Allgemein}
-\eqn{h}{0.23\linewidth}{ i_L(t) = \frac{1}{L}\int u_L(t)dt }
-\eqn{h}{0.23\linewidth}{ u_L(t) = L\frac{d}{dt}i_L(t) }
-\eqn{h}{0.23\linewidth}{ i_C(t) = C\frac{d}{dt}u_C(t) }
-\eqn{h}{0.23\linewidth}{ u_C(t) = \frac{1}{C}\int i_C(t)dt }
+\subsection{Spule und Kondensator}
+\begin{align*}
+   i_L(t) &= \frac{1}{L}\int u_L(t)\mathrm{d}t &
+   u_L(t) &= L\frac{\mathrm{d}}{\mathrm{d}t}i_L(t) &
+   i_C(t) &= C\frac{\mathrm{d}}{\mathrm{d}t}u_C(t) &
+   u_C(t) &= \frac{1}{C}\int i_C(t)\mathrm{d}t 
+\end{align*}
 
 
 \eqn{h}{0.15\linewidth}{ Q=C\cdot U }
 
-\eqn{h}{0.23\linewidth}{ V_{rms} = \sqrt{ \frac{1}{T} \int_T u^2(t)dt } }
-\eqn{h}{0.23\linewidth}{V_{rms,sin} = \hat{V} / \sqrt{2}} \eqn{h}{0.23\linewidth}{V_{rms,pwm} = \hat{V} \sqrt{D}}
+
+\subsection{Effektiv- und Mittelwerte}
+\begin{align*}
+  V_{\textup{rms}} &= \sqrt{ \frac{1}{T} \int_T u^2(t)dt} &
+  V_{\textup{rms,sin}} &= \hat{V} / \sqrt{2} &
+  V_{\textup{rms,pwm}} &= \hat{V} \sqrt{D} \\
+  V_{\textup{avg}} &= \hat{V}\frac{1}{2\pi}\Int_{0}^{2\pi}|\sin(x)| \mathrm{d}x =\hat{V}\frac{2}{\pi}
+\end{align*}
 
 % -----------------------------------------------------------------------
 \vfill\null
@@ -299,6 +309,34 @@ Lückender Betrieb für $I_L < I_{2g}$.
 % \captionof{figure}{PFC Einphasen Gleichrichter}%
 \end{center}
 
+\subsection{Stationärer Betrieb}
+L wählen mit $D(\omega t)=1$ and $U_{1,\textup{rms}}=$max. $M$: Minimales Spannungsübersetzungsverhältnis ($[M\dots\infty]$).
+\begin{align*}
+  D(\omega t) &= \left(1-\frac{U_1(\omega t)}{U_d}\right) & 
+  \Delta i_{Lpp} (\omega t) &= D(\omega t) T_s \frac{\hat{U_1}\sin(\omega t)}{L} &
+  \overline{i_L}(\omega t) &= \hat{I_1} |\sin(\omega t)| = \sqrt{2} \frac{P_d}{U_{1,\textup{rms}}}|\sin(\omega t)| \\
+  \Aboxed {\overline{i_L}(\omega t) &\geq \frac{1}{2}\Delta i_{Lpp}} &
+  L &\geq \frac{U_{1,\textup{rms}}^2T_s}{2P_d} &
+  M &= \frac{U_d}{\sqrt{2} \cdot U_{1,\textup{rms}} }, D=\left(1-\frac{1}{M}\right) \\
+  C_d &> \frac{1}{2\omega\hat{U}_{Cd}/U_d}\frac{P_d}{U_d^2} &
+  \hat{U}_{Cd} &= \frac{P_d}{U_d}\frac{1}{2\omega C_d}
+\end{align*}
+
+$M$: Minimales Spannungsübersetzungsverhältnis ($[M\dots\infty]$). Das maximum des Eingangsstromrippels $\Delta i'_{pp}$ tritt auf bei $D_{\textup{max}}$. Die Phase berechnet sich durch Umformen von $D(\omega t)$.
+\begin{align*}
+  D_{\textup{max}} &= \begin{cases} M, & M > 2,\\ 0.5, &M < 2. \end{cases} &
+  \Delta i'_{pp} &= DT_s\frac{\sqrt{2}U_{1,\textup{rms}}}{L} &
+\end{align*}
+
+\subsection{Bauteilbelastung}
+\begin{align*}
+  I_{\text{TH,avg}} &= \left(\frac{2}{\pi}-\frac{1}{2M}\right)\hat{I_1} &
+  I_{\text{TH,rms}} &= \sqrt{\left(\frac{1}{2}-\frac{4}{3\pi M}\right)\hat{I_1^2}} &
+  I_{\text{D,avg}} &= \frac{1}{2M}\hat{I_1} &
+  I_{\text{D,rms}} &= \sqrt{\frac{4}{3\pi M}\hat{I_1^2}} \\
+  I_{\text{Cd,rms}} &= \sqrt{\frac{1}{M}\left(\frac{4}{3\pi}-\frac{1}{4M}\right)\hat{I}_1^2} 
+\end{align*}
+
 \subsection{Toleranzbandregelung}
 \eqn{h}{0.23\linewidth}{ i'_{max}=(1+k)i'^* }
 \eqn{h}{0.23\linewidth}{ i'_{min}=(1-k)i'^* }
@@ -346,9 +384,9 @@ Text
 
 
 \eqn{h}{0.23\linewidth}{ A_e > \frac{L\hat{I}}{B_S N} }
-\eqn{h}{0.23\linewidth}{ A_n > \frac{NI_{rms}}{k_f S} }
-\eqn{h}{0.23\linewidth}{ A_e A_n = \frac{L \hat{I} I_{rms}}{B_S k_f S} }
-\eqn{h}{0.23\linewidth}{ \frac{L \hat{I} }{A_e S} < N < \frac{A_n k_f S}{I_{rms}} }
+\eqn{h}{0.23\linewidth}{ A_n > \frac{NI_{\textup{rms}}}{k_f S} }
+\eqn{h}{0.23\linewidth}{ A_e A_n = \frac{L \hat{I} I_{\textup{rms}}}{B_S k_f S} }
+\eqn{h}{0.23\linewidth}{ \frac{L \hat{I} }{A_e S} < N < \frac{A_n k_f S}{I_{\textup{rms}}} }
 
 \eqn{h}{0.23\linewidth}{ A_{cu} S = I_{max} }
 \eqn{h}{0.23\linewidth}{ d = \frac{R_{tot}\mu_0 A_e}{2} = \frac{N^2 \mu_0 A_e}{2L} }
@@ -382,9 +420,9 @@ Text
 
 \textbf{Dimensionierung}
 \begin{align*}
-  A_EA_W &= \frac{U_1}{f_p}\frac{D}{B_S}\frac{2\frac{I_{1,avg}}{\sqrt{D}}}{k_f S_{rms}} \approx \frac{U_1I_{1,avg}}{f_p} & 
+  A_EA_W &= \frac{U_1}{f_p}\frac{D}{B_S}\frac{2\frac{I_{1,avg}}{\sqrt{D}}}{k_f S_{\textup{rms}}} \approx \frac{U_1I_{1,avg}}{f_p} & 
   \left\lceil \frac{\hat{\Psi}_{phys}}{A_EB_{sat}} \right\rceil &\leq N \leq
-  \left\lfloor \frac{1}{2}\frac{S_{rms}}{I_{p,rms}k_f A_w} \right\rfloor &
+  \left\lfloor \frac{1}{2}\frac{S_{\textup{rms}}}{I_{p,\textup{rms}}k_f A_w} \right\rfloor &
   \hat{\Psi}_{phys} &= \max\int_{T}^{}u_p(t)\mathrm{d}t
 \end{align*}
 Typisch: $N$ das Minimum nehmen. Falls kein $N$ wählbar ist, anderen Kern wählen.
@@ -396,10 +434,10 @@ Typisch: $N$ das Minimum nehmen. Falls kein $N$ wählbar ist, anderen Kern wähl
 
 \textbf{Verluste}
 \begin{align*}
-  P_{cu} &= R_{cu,p}I_{1,rms}^2+R_{cu,s}I_{2,rms}^2 &
+  P_{cu} &= R_{cu,p}I_{1,\textup{rms}}^2+R_{cu,s}I_{2,\textup{rms}}^2 &
   R_{cu} &= \rho_{cu} \frac{l_{cu}}{A_{cu}} &
   l_{cu} &= N\cdot l_n &
-  A_{cu} &= \frac{I_{rms}}{S_{rms}}
+  A_{cu} &= \frac{I_{\textup{rms}}}{S_{\textup{rms}}}
 \end{align*}
 
 \textbf{Streuung}
