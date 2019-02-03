@@ -11,6 +11,7 @@
 \usepackage{graphicx,calc}
 \usepackage{empheq}
 \usepackage{xcolor}
+\usepackage{siunitx}
 %\usepackage{pbox}
 
 \pdfinfo{
@@ -167,12 +168,60 @@
 
 
 \subsection{Effektiv- und Mittelwerte}
-\begin{align*}
-  V_{\textup{rms}} &= \sqrt{ \frac{1}{T} \int_T u^2(t)dt} &
-  V_{\textup{rms,sin}} &= \hat{V} / \sqrt{2} &
-  V_{\textup{rms,pwm}} &= \hat{V} \sqrt{D} \\
-  V_{\textup{avg}} &= \hat{V}\frac{1}{2\pi}\Int_{0}^{2\pi}|\sin(x)| \mathrm{d}x =\hat{V}\frac{2}{\pi}
-\end{align*}
+
+\begin{tabular}{p{0.2\linewidth} p{0.2\linewidth} p{0.2\linewidth} p{0.2\linewidth} }
+  \includegraphics[width=1.0\linewidth]{img/rms/signal_a.png}%
+  &
+  \includegraphics[width=1.0\linewidth]{img/rms/signal_c.png}%
+  &
+  \includegraphics[width=1.0\linewidth]{img/rms/signal_d.png}%
+  &
+  \includegraphics[width=1.0\linewidth]{img/rms/signal_e.png}%
+  \\
+  {\begin{align*}
+    a_{\textup{avg}}   &= \frac{1}{2}\hat{g}_a D \\
+    a_{\textup{rms}}^2 &= \frac{1}{3}\hat{g}_a^2 D
+  \end{align*}}
+  &
+  {\begin{align*}
+    c_{\textup{avg}}   &= \hat{g}_c D \\
+    c_{\textup{rms}}^2 &= \hat{g}_c^2 D
+  \end{align*}}
+  &
+  {\begin{align*}
+    d_{\textup{avg}}   &= 0 \\
+    d_{\textup{rms}}^2 &= \frac{1}{2}\hat{g}_d^2
+  \end{align*}}
+  &
+  {\begin{align*}
+    e_{\textup{avg}}   &= \frac{1}{\pi}\hat{g}_e \\
+    e_{\textup{rms}}^2 &= \frac{1}{4}\hat{g}_e^2
+  \end{align*}}
+\end{tabular}
+\begin{center}
+\begin{tabular}{p{0.2\linewidth} p{0.2\linewidth} p{0.2\linewidth} }
+  \includegraphics[width=1.0\linewidth]{img/rms/signal_f.png}%
+  &
+  \includegraphics[width=1.0\linewidth]{img/rms/signal_g.png}%
+  &
+  \includegraphics[width=1.0\linewidth]{img/rms/signal_h.png}%
+  \\
+  {\begin{align*}
+    f_{\textup{avg}}   &= \frac{2}{\pi}\hat{g}_f \\
+    f_{\textup{rms}}^2 &= \frac{1}{2}\hat{g}_f^2
+  \end{align*}}
+  &
+  {\begin{align*}
+    g_{\textup{avg}}   &= \frac{1}{2}(\hat{g}_1+\hat{g}_2) D \\
+    g_{\textup{rms}}^2 &= \frac{1}{3}(\hat{g}_1^2 + \hat{g}_1\hat{g}_2+\hat{g}_2^2) D
+  \end{align*}}
+  &
+  {\begin{align*}
+    h_{\textup{avg}}   &= \frac{1}{2}(\hat{g}_1+\hat{g}_2) D_3 \\
+    h_{\textup{rms}}^2 &= \frac{1}{3}(\hat{g}_1^2 + \hat{g}_1\hat{g}_2+\hat{g}_2^2) D_3
+  \end{align*}}
+\end{tabular}
+\end{center}
 
 % -----------------------------------------------------------------------
 \vfill\null
@@ -348,13 +397,50 @@ $M$: Minimales Spannungsübersetzungsverhältnis ($[M\dots\infty]$). Das maximum
 \vfill\null
 \columnbreak
 \section{Netzgeführte Stromrichter}
+\subsection{B6}
 
-\begin{center}
-\includegraphics[width=0.8\linewidth]{img/sch_netz_dreiphase.png}%
-% \captionof{figure}{Dreiphasen netzgeführte Stromrichter}%
-\end{center}
+\begin{tabular}{b{0.49\linewidth} p{0.45\linewidth}}
+  \includegraphics[width=\linewidth]{img/3p/b6.png}%
+  
+  Für $\alpha=\ang{0}$ ist die maximale Spannung an der Last. Für $\alpha\in[\ang{0},\ang{90}]$ wird die Spannung immer kleiner. Für $\alpha=\ang{90}$ ist die Spannung an der Last $=0$. Mit $\alpha\in[\ang{90},\ang{180}]$ bleibt die Stromrichtung dieselbe aber die Spannung wechselt das Vorzeiechen. Es wird Leistung zurückgespeist.
+  
+  \textbf{Zeichnen:} Ab Schnitt von $u_1,u_2$ $\alpha$ oben und unten abtragen.
 
-Text
+  $Q$: Grundschwingungsblindleistung
+  &
+  \includegraphics[width=\linewidth]{img/3p/graph.png}%
+\end{tabular}
+
+
+\begin{align*}
+  U_{\textup{di,}\alpha} &= \frac{3\sqrt{6}}{\pi} U_1\cos{\alpha} &
+  I_{1,\textup{rms}} &= \sqrt{\frac{2}{3}}I_M &
+  \hat{I}_{1,(1)} &= \frac{1}{\pi}\Int_0^{2\pi}i_1(t)\cos(\omega t) \mathrm{d}\omega t = \frac{2\sqrt{3}}{\pi}I_d \\
+  Q_1 &= U_1I_{1,(1)}\sin(\alpha) &
+\end{align*}
+
+
+\subsection{Netzgeführte Stromrichter}
+
+\begin{tabular}{b{0.69\linewidth} p{0.29\linewidth}}
+  \begin{center}
+  \includegraphics[width=0.5\linewidth]{img/sch_netz_dreiphase.png}%
+  \end{center}
+    {\begin{align*}
+      % U&=RI
+      U_{\textup{di,}\alpha}&=\frac{3}{\pi}\sqrt{\frac{3}{2}} U_1 \cos(\alpha) &
+      \frac{U_{\textup{di,}\alpha}}{U_{\textup{di,}0}} &= \cos(\alpha)
+    \end{align*}}
+
+    Lückender Betrieb (für $\ang{30}<\alpha<\ang{150}$):
+    {\begin{align*}
+      U_{\textup{di,}\alpha}&=\frac{3}{\pi}\sqrt{\frac{3}{2}} U_1 \frac{1-\sin(\alpha-\pi/3)}{2\sin(\pi/3)}
+    \end{align*}}
+  &
+  \includegraphics[width=\linewidth]{img/3p/graph2.png}%
+\end{tabular}
+  
+
 
 % -----------------------------------------------------------------------
 \vfill\null
@@ -456,12 +542,28 @@ Problem: Nicht alle Induktionslinien von einer Seite sind mit der anderen Seite 
 \columnbreak
 \section{Sperrwandler}
 
-\begin{center}
-\includegraphics[width=0.8\linewidth]{img/sch_sperr.png}%
-% \captionof{figure}{Sperrwandler}%
-\end{center}
+\begin{tabular}{b{0.30\linewidth} b{0.61\linewidth}}
+  \includegraphics[width=1.0\linewidth]{img/flyback/sch.png}%
+  {\begin{align*}
+    \hat{I}_1 &= \frac{U_1}{L_1}D_1T_p & \hat{I}_1N_1 &= \hat{I}_2N_2
+  \end{align*}}
+  &
+  \includegraphics[width=\linewidth]{img/flyback/g1g2.png}%
 
-Text
+  Wird üblicherweis im diskontinuierlichen Betrieb betrieben. Die Leistung entspricht der pro Taktperiode gepseicherten Energie im Kern der Induktivität (Ersatzschaltbild).
+  {\begin{align*}
+    P_2 &= \frac{W_m}{T_p} = \frac{1}{2}\frac{U_1^2}{L_1}D_1^2T_p &
+    W_m &= \frac{1}{2}L_1\hat{I}_1 &
+    \hat{I}_1 &= \frac{U_1}{L_1}D_1T_p
+  \end{align*}}
+
+\end{tabular}
+  
+\subsection{Kontinuierlicher Betrieb / Lückgrenze}
+\begin{align*}
+  D_1 &= \frac{U_2N_1}{U_2N_1 + U_1N_2} &
+  \frac{U_2}{U_1} &= \frac{N_2}{N_1}\frac{D_1}{1-D_1}
+\end{align*}
 
 % -----------------------------------------------------------------------
 \vfill\null
