@@ -241,7 +241,7 @@
   \includegraphics[width=0.4\linewidth]{img/buck/out.png}%
 \end{tabular}
 
-\eqn{h}{0.25\linewidth}{ D = \frac{I_1}{I_2} = \frac{U_2}{U_1} }
+\feqn{h}{0.25\linewidth}{ D = \frac{I_1}{I_2} = \frac{U_2}{U_1} }
 \eqn{h}{0.25\linewidth}{ \Delta i_{Lpp} = \frac{U_2}{L}(1-D)T_S}
 \eqn{h}{0.25\linewidth}{ \Delta u_{2pp}=\Delta U_C = \frac{U_2}{L}(1-D) T_S \frac{T_S}{8 \cdot C}}
 
@@ -278,8 +278,8 @@ Lückender Betrieb für $I_L < I_{2g}$.
   \includegraphics[width=0.4\linewidth]{img/boost/cont.png}%
 \end{tabular}
 
-\eqn{h}{0.23\linewidth}{ D = 1 - \frac{U_1}{U_2} }
-\eqn{h}{0.23\linewidth}{ \frac{U_2}{U_1} = \frac{1}{1-D}}
+\feqn{h}{0.23\linewidth}{ D = 1 - \frac{U_1}{U_2} }
+\feqn{h}{0.23\linewidth}{ \frac{U_2}{U_1} = \frac{1}{1-D}}
 \eqn{h}{0.23\linewidth}{ \frac{I_2}{I_1}=1-D }
 \eqn{h}{0.23\linewidth}{ \Delta i_{Lpp} = \frac{U_1}{L}DT_S}
 
@@ -311,8 +311,8 @@ Lückender Betrieb für $I_L < I_{2g}$.
 \end{center}
 
 \subsection{Kontinuierlicher Stromfluss}
-\eqn{h}{0.23\linewidth}{ \frac{U_2}{U_1} = -\frac{D}{1-D} }
-\eqn{h}{0.23\linewidth}{ D = \frac{U_2}{U_2 - U_1} }
+\feqn{h}{0.23\linewidth}{ \frac{U_2}{U_1} = -\frac{D}{1-D} }
+\feqn{h}{0.23\linewidth}{ D = \frac{U_2}{U_2 - U_1} }
 \eqn{h}{0.23\linewidth}{ \frac{I_2}{I_1}=\frac{1-D}{D} }
 
 \subsection{Diskontinuierlicher Stromfluss}
@@ -570,35 +570,119 @@ Problem: Nicht alle Induktionslinien von einer Seite sind mit der anderen Seite 
 \columnbreak
 \section{Durchflusswandler}
 
-\begin{center}
-\includegraphics[width=0.8\linewidth]{img/sch_durchfluss.png}%
-% \captionof{figure}{Zwei-Transistor Durchflusswandler}%
-\end{center}
+\begin{tabular}{b{0.30\linewidth} b{0.61\linewidth}}
+  \includegraphics[width=1.0\linewidth]{img/fwd/sch.png}%
+  % {\begin{align*}
+  %   \hat{I}_1 &= \frac{U_1}{L_1}D_1T_p & \hat{I}_1N_1 &= \hat{I}_2N_2
+  % \end{align*}}
 
-Text
+  Der Trafo dient nur dem Energietransfer. Ideal wird keine Energie gespeichert. Der Magnetkern sollte möglichst hohe Permeabilitäte, also keinen Luftspalt, aufweisen. 
+  &
+  \includegraphics[width=\linewidth]{img/fwd/phasen.png}%
+\end{tabular}
+  
+\subsection{Ideale Kopplung}
+Zum Abbau der Magnetisierungsenergie wird die Entmag.Wicklung $N_3$ eingeführt. Sie führt die Mag.Energie durch einen Strom $i_3$ in $U_1$ oder an Ausgang.
 
+
+\begin{tabular}{p{0.30\linewidth}|p{0.65\linewidth}}
+  $0<t<t_1$ Leitphase, $T_1$, $D_2$ leitet, $D_F$ sperrt &
+  {\begin{align*}
+    u_p &= U_1 & 
+    U_s &= \frac{N_2}{N_1}u_p = \frac{N_2}{N_1}U_1 & 
+    u_{DF} &= \frac{N_2}{N_1}U_1
+    \\
+    i_\mu &= \frac{U_1}{L_\mu}t &
+    i_1 &= i_p = i_\mu + i_s' &
+    \frac{\mathrm{d}}{\mathrm{d}t}i_s' &= \frac{\mathrm{d}}{\mathrm{d}t}i_2' = \frac{U_1-u_2'}{L}
+  \end{align*}} \\ \hline
+
+  $t_1<t<t_2$ Sperrphase, $T_1$, $D_2$ sperrt, $D_F$ leitet &
+  {\begin{align*}
+    u_p &= -U_1 & 
+    u_{DF} &= 0
+    \\
+    i_\mu &= \hat{I}_\mu-\frac{U_1}{L_{1,\mu}}(t-t_2) &
+    i_p &= i_\mu = -i_1
+  \end{align*}} \\\hline
+
+  $t_2<t<T_p$ Entmagnetisiert &
+  {\begin{align*}
+    u_p &= 0 & 
+    u_{DF} &= 0
+    \\
+    \frac{\mathrm{d}}{\mathrm{d}t}i_2' &= -\frac{u_2'}{L}
+    i_p &= i_\mu = i_1 = 0
+  \end{align*}}
+\end{tabular}
+  
+  $D_{D1,max}$: In der Sperrphase liegt $U_1$ an der dritten Wicklung an, welche eine Spannung an der Sekundärwicklung verursacht.
+  \begin{align*}
+    U_{T1,max} &= U_1 - U_p &
+    U_p &= -\frac{N_P}{N_T}U_T = -\frac{N_P}{N_T}U_1
+    \Aboxed{D_1T_p\frac{U_1}{L} &= D_2T_p \frac{N_P}{N_T}\frac{U_1}{L} }
+    \\
+    U_{D_{Fs},max} &= \frac{N_S}{N_P}U_1 &
+    D_{D1,max} &= \frac{N_S}{N_P}\frac{N_P}{N_T}U_1
+  \end{align*}
+  
 % -----------------------------------------------------------------------
 \vfill\null
 \columnbreak
 \section{Einphasen Gleichspannungswechselrichter}
 
-\begin{center}
-\includegraphics[width=0.8\linewidth]{img/sch_fullbridge.png}%
-% \captionof{figure}{Einphasiger Gleichspannungswechselrichter}%
-\end{center}
+\begin{tabular}{b{0.51\linewidth} b{0.4\linewidth}}
+  \includegraphics[width=0.8\linewidth]{img/sch_fullbridge.png}%
+  % {\begin{align*}
+  %   \hat{I}_1 &= \frac{U_1}{L_1}D_1T_p & \hat{I}_1N_1 &= \hat{I}_2N_2
+  % \end{align*}}
 
-Text
+  % Der Trafo dient nur dem Energietransfer. Ideal wird keine Energie gespeichert. Der Magnetkern sollte möglichst hohe Permeabilitäte, also keinen Luftspalt, aufweisen. 
+  &
+  \includegraphics[width=\linewidth]{img/dcac/mod.png}%
+\end{tabular}
+  
+
+\subsection{Bipolare Steuerung}
+Das Steuersignal $m(t)$ wird mit einem Truagersignal $u_D$ mit Pulsperiode $T_P$ verschnitten. $\alpha(t) relative Einschaltdauer$. $m_s,\alpha_s$ für sinusförmigen Mittelwert $\bar{u}_2$. $M$ Modulationstiefe.
+
+\begin{align*}
+  u_2 &= \begin{cases} +U_1,&u_D < m(t),\\-U_1, & u_D > m(t). \end{cases} &
+  \alpha(t) &= \frac{1+m(t)}{2} &
+  \bar{u}_2 &= \frac{2}{T_P}\Int_{0}^{T_P/2}u_2(t)\mathrm{d}t = m(t)U_1
+  \\
+  m_s(t) &= \frac{\bar{u}_2}{U_1} = M\sin(\omega_2t+\delta) &
+  \alpha_s(t) &= \frac{1}{2} + \frac{1}{2}M\sin(\omega_2t+\delta) &
+  M &= \frac{\hat{U}_{2,(1)}}{U_1}
+\end{align*}
+
+\subsection{Unipolare Steuerung}
+Es wird neben $m(t)$ eine invertierte Modulationsfunktion $-m(t)$ verwendet. Umschalten zwischen $+U_1$ und $0$ für $\bar{u}_2>0$ oder $-U_1$ und $0$ für $\bar{u}_2<0$. Die Frequenz der Ausgangsspannungsschwankund wird verdoppelt. Es gelten dieselben Beziehungen wie bei der bipolaren Steuerung.
+
+\subsection{Vergleich}
+
+\begin{align*}
+  \textup{THD} &= \frac{U_{2,n,\textup{rms}}} {U_{2,(1),\textup{rms}}} = \frac{\sqrt{U_{2,\textup{rms}}^2-U_{2,(1),\textup{rms}}^2}}{U_{2,(1)\textup{rms}}}
+\end{align*}
+\begin{align*}
+  &\text{Unipolar} \\
+  &u_{2,\textup{rms}}^2 = U_1^2m(t) &
+  U_{2,\textup{rms}}^2 &= \frac{2}{\pi}U_1M &
+  U_{2,(1),\textup{rms}} &= \frac{1}{\sqrt{2}}U_1M &
+  \textup{THD} &= \sqrt{\frac{4}{M\pi}-1}
+  \\
+  &\text{Grundfrequenztaktung} \\
+  &U_{2,\textup{rms}}^2 = U_1^2 &
+  U_{2,(1),\textup{rms}} &= \frac{1}{\sqrt{2}}\hat{U}_{2,(1)} = \frac{2\sqrt{2}}{\pi}U_1 &
+  \textup{THD} &= \sqrt{\frac{\pi^2}{8}-1}
+\end{align*}
 
 % -----------------------------------------------------------------------
-\vfill\null
-\columnbreak
-\section{Dreiphasen Gleichspannungswechselrichter}
-Text
 
-\clearpage
-
+\vspace*{\fill}
 % You can even have references
-\rule{0.3\linewidth}{0.25pt}
+\rule{0.3\linewidth}{0.25pt}\\
+Good Luck!
 %\scriptsize
 %\bibliographystyle{abstract}
 %\bibliography{refFile}
