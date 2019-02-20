@@ -5,6 +5,7 @@ all: revision */*.tex
 	cd template && make && cd ..
 	cd Leistungselektronik && make && cd ..
 	cd Analysis\ III\ \-\ PDE && make && cd ..
+	cd Semiconductor\ Devices/ && make && cd ..
 
 docker:
 	docker run -v `pwd`:/source noah95/latex /usr/bin/make
