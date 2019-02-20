@@ -1,4 +1,4 @@
-# Formulasheets
+# Formulasheets [![Build Status](https://travis-ci.org/noah95/formulasheets.svg?branch=master)](https://travis-ci.org/noah95/formulasheets)
 
 ## Formulasheets
 | Name          | Download      |
