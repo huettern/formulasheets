@@ -165,6 +165,18 @@
         \end{minipage}%
     }}
 
+%subsubsection color box
+\setkomafont{subsubsection}{\mysubsubsection}
+\newcommand{\mysubsubsection}[1]{%
+	\normalsize \sffamily\bfseries%
+	\setlength{\fboxsep}{0cm}%already boxed
+	\colorbox{\StyleColor!10}{%
+		\begin{minipage}{\linewidth}%
+			\vspace*{2pt}%Space before
+			#1
+			\vspace*{-1pt}%Space after
+		\end{minipage}%
+}}
 % highlighter
 \newcommand{\hilight}[1]{\colorbox{\StyleColor}{#1}}
 \newcommand{\highlighty}[1]{%
