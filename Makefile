@@ -23,3 +23,4 @@ clean:
 	cd template && make clean && cd ..
 	cd Leistungselektronik && make clean && cd ..
 	cd Analysis\ III\ \-\ PDE && make clean && cd ..
+	cd Semiconductor\ Devices && make clean && cd ..

@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-02-20 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-02-20 17:45:14
+% @Last Modified time: 2019-02-21 15:32:41
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -18,7 +18,13 @@
 \pagestyle{fancy}
 \footskip 20pt
 
-\rhead{Noah Huetter}
+
+% -----------------------------------------------------------------------
+\IfFileExists{../build/revision.tex}{
+  \input{../build/revision.tex}
+  \rhead{Compiled: \compiledate \hspace{1em} Commit: \revision \hspace{1em} Noah Huetter}
+}{\rhead{Noah Huetter}}
+
 \lhead{ETH Semiconductor Devices}
 \chead{\thepage}
 \cfoot{}
@@ -33,7 +39,8 @@
 \begin{multicols*}{4}
 	\section*{Disclaimer}
 	This summary is part of the lecture ``ETH Semiconductor Devices'' by Prof. Dr. Colombo Bolognesi (FS19). It is based on the lecture. \\[6pt]
-	Please report errors to \href{mailto:huettern@student.ethz.ch}{huettern@student.ethz.ch} such that others can benefit as well.\\			
+	Please report errors to \href{mailto:huettern@student.ethz.ch}{huettern@student.ethz.ch} such that others can benefit as well.\\[6pt]	
+  The upstream repository can be found at \href{https://github.com/noah95/formulasheets}{https://github.com/noah95/formulasheets}
 	\vfill\null
 	\pagebreak
   \maketitle 
