@@ -1,0 +1,105 @@
+%
+% General packages and settings
+% ===========================================================================
+% Author:			Silvano Cortesi (cortesis@student.ethz.ch)
+% Version:			1.2
+% Last changed:		03.01.2018
+%
+% ---------------------------------------------------------------------------
+
+
+
+
+\usepackage[german,british]{babel} %choose your language \usepackage[german]{babel}
+%\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+%\usepackage{lastpage}
+%\usepackage{lmodern}
+%\usepackage{enumerate}
+%\usepackage{float} % for positioning of figures
+\usepackage[landscape, margin=1cm]{geometry}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{pdfpages}
+
+
+%% Math %%
+\usepackage{amscd}
+\usepackage{blindtext}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{parskip}
+\usepackage{empheq}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+%\usepackage{dsfont}
+%\usepackage{esint} % provides \oiint
+\usepackage{mathrsfs}
+%\usepackage{trfsigns}
+%\numberwithin{equation}{subsection}
+%\usepackage{numprint}
+
+%% Graphics & Charts %%
+\usepackage{graphicx}
+%\usepackage{pdfpages}
+%\usepackage{booktabs}
+%\usepackage{array}
+%\usepackage{paralist}
+%\usepackage{framed}
+%\usepackage{trfsigns}
+\usepackage{tikz}
+%\usepackage[lofdepth,lotdepth]{subfig}
+%\usepackage{tikz}  %Graphen zeichnen
+%\usetikzlibrary{decorations.pathmorphing}
+%\usetikzlibrary{arrows.meta,arrows}
+%\usepackage{pgfplots}
+%% General Settings %%
+%\setlength{\parindent}{0px}
+%\setkomafont{captionlabel}{\normalfont\bfseries}
+
+%\pagestyle{fancy}
+%\lfoot{\tiny \today}
+%\rfoot{\thepage\  / \pageref{LastPage}}
+%\cfoot{}
+%\renewcommand{\footrulewidth}{0.4pt}
+
+%% provides command \uline{} for underlining words
+%\usepackage{ulem}
+
+%% colour headings
+%\usepackage{color}
+%\definecolor{bluen}{cmyk}{1,0.5,0,0}
+%\definecolor{bloodorange}{cmyk}{0,.92,1,.2}
+%\addtokomafont{section}{\color{bloodorange}}
+%\addtokomafont{subsection}{\color{bloodorange}}
+%\addtokomafont{subsubsection}{\color{bloodorange}}
+%\addtokomafont{paragraph}{\small\color{bloodorange}}
+%\addtokomafont{subparagraph}{\small\color{bloodorange}}
+
+%% Signs & Special Formating %%
+%\usepackage{ulem} %normalem: \emph{Text} is italic again.
+%\usepackage{multicol,multirow}
+%\usepackage{tabularx}
+%\usepackage{stackrel}
+%\usepackage{makeidx}
+%\usepackage{mparhack} % bessere margiale bei seitenumbruch
+
+% make document compact
+\usepackage[compact]{titlesec}
+\titlespacing{\section}{0pt}{*1}{*1}
+\titlespacing{\subsection}{0pt}{*1}{*1}
+\titlespacing{\subsubsection}{0pt}{*1}{*1}
+
+\parindent 0pt
+\pagestyle{empty}
+\setlength{\unitlength}{1cm}
+\setlist{leftmargin = *}
+
+%include also newer PDF
+\pdfminorversion=6
+
+% Set the color of your style
+% Avaiable are: Apricot, Aquamarine, Bittersweet, Black, Blue, blue, BlueGreen, BlueViolet, BrickRed, Brown, BurntOrange, CadetBlue, CarnationPink, Cerulean, CornflowerBlue, Cyan, Dandelion, DarkOrchid, Emerald, ForestGreen, Fuchsia, Goldenrod, Gray, Green, GreenYellow, JungleGreen, Lavender, ... (more at: http://en.wikibooks.org/wiki/LaTeX/Colors)
+\def\StyleColor{BrickRed}
