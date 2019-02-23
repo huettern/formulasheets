@@ -1,0 +1,176 @@
+%
+% Zusammenfassung Communication Networks D-ITET
+% ===========================================================================
+% Author:			Marco Dober
+% Version:			0.1
+% Last changed: 	19.02.2019	
+% ---------------------------------------------------------------------------
+
+\documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
+\usepackage{lastpage}
+\usepackage{hyperref}
+\usepackage{graphicx}
+% Include general settings and customized commands
+\input{settings/general}
+\input{settings/commands}
+%change page style for header
+\pagestyle{fancy}
+\footskip 20pt
+\rhead{Marco Dober}
+\lhead{Communication Networks}
+\chead{\thepage}
+\cfoot{}
+\headheight 17pt \headsep 10pt
+\title{Communication Networks}
+\author{Marco Dober}
+\date{\today}
+
+
+\begin{document}
+	\setcounter{secnumdepth}{2} %no enumeration of sections
+	\begin{multicols*}{4}
+		%
+		\section*{Disclaimer}
+			This should be a summary of the Communication Networks course. The goal is to update it weekly with the currently taught material.  	
+			\pagebreak
+
+		\maketitle 
+		\thispagestyle{fancy}
+		
+		\section{Overview}
+			\subsection{What is a network made of?}
+				Networks are composed of three basic components:
+				\begin{itemize}
+					\item \textbf{End-systems} $\vert$ send \& receive data $\vert$  PC, Server, Smartphone, car navigation
+					\item \textbf{Switches/Routers} $\vert$ forward data to destination $\vert$ vary in size and usage (home to data center)
+					\item \textbf{Links} $\vert$ connect end-systems to switches and switches to each other $\vert$ copper, wireless, optical-fiber
+				\end{itemize}
+				\includegraphics[width= \columnwidth]{images/Overview/network_components.png}
+				The internet is a network of networks. The Internet Service Providers (ISP) provide internet to their customers.\\
+				\includegraphics[width= \columnwidth]{images/Overview/ISP.png}
+				\columnbreak
+			
+				There exists a huge amount of \textbf{access technologies: }
+				\begin{itemize}[noitemsep]
+					\item \textbf{Ethernet} $\vert$ most common, symmetric (Up- and Down-stream same bandwidth)
+					\item \textbf{DSL} $\vert$ phone lines, asymmetric (Up- and Down-stream NOT same bandwidth)
+					\item \textbf{CATV} $\vert$ via cable TV, shared
+					\item \textbf{Cellular} $\vert$ Smart phones 
+					\item \textbf{Satellite} $\vert$ remote areas
+					\item \textbf{FTTH} $\vert$ fiber to the home
+					\item \textbf{Fibers} $\vert$ Internet backbone 
+					\item \textbf{Infiniband} $\vert$ High performance computing 
+				\end{itemize}
+			\subsection{How is it shared?}
+				So far we discussed the "last mile" of the Internet.\\
+				3 must-have \textbf{requirements} of a good network topology: 
+				\begin{itemize}
+					\item \textbf{Tolerate failure} $\vert$ several path between src and dst.
+					\item \textbf{Sharing to be feasible (praktikabel) \& cost effective } $\vert$ not too much links 
+					\item \textbf{Adequate per-node capacity} $\vert$ not to few links 
+				\end{itemize}
+				The Design of the Internet is a mix of full-mesh, chain and bus which is an optimization of the above requirements. This topology is called a \textbf{switched network}.
+				\vspace{-0.5cm}
+				%\vspace{-\topsep}
+				\begin{itemize}[noitemsep,topsep=0pt]
+					\item \textcolor{ForestGreen}{Advantages:}
+					\begin{itemize}
+						\item \textcolor{ForestGreen}{Sharing and per-node capacity can be adapted to fit the network needs.}
+					\end{itemize} 
+					\item \textcolor{Red}{Disadvantages:}
+					\begin{itemize}
+						\item \textcolor{Red}{Require smart devices to perform; forwarding, routing, resource allocation (Zuweisung) }
+					\end{itemize} 
+				\end{itemize} 
+				In a switched network links and switches are shared between flows.
+				\includegraphics[width= \columnwidth]{images/Overview/link_switch_sharing.png}
+				\columnbreak
+				
+				There exist two approaches of sharing, both are examples of statistical multiplexing: 
+				\begin{itemize}
+					\item \textcolor{red}{\textbf{Reservation}}\\
+						  principle: reserve needed bandwidth in advance\\
+						  multiplexing: at the flow-level\\
+						  implementation.: circuit-switching  
+					\item \textcolor{red}{\textbf{On-demand}}\\
+						  principle: send data when you need\\
+						  multiplexing: at the packet-level\\
+						  implementation.: packet-switching
+				\end{itemize}
+				\textbf{Circuit-Switching:}
+				\vspace{-0.5cm}
+				\begin{itemize}[noitemsep]
+					\item Relies on the Resource Reservation Protocol.
+					\item The efficiency depends on how utilized the circuit is once established. The circuit can be mostly idle or just be used for a small amount of time (bad).
+					\item It doesn't route around trouble 
+				\end{itemize}
+				\includegraphics[width=\columnwidth]{images/Overview/circuit_switching.png}
+				\includegraphics[width=\columnwidth]{images/Overview/circuit_switching_transfer.png}
+				\begin{itemize}[noitemsep]
+					\item \textcolor{ForestGreen}{Advantages:}
+					\begin{itemize}
+						\item \textcolor{ForestGreen}{Predictable performance} 
+						\item \textcolor{ForestGreen}{Simple \& fast switching (once circuit established)}
+					\end{itemize}
+					\item \textcolor{red}{Disadvantages:}
+					\begin{itemize}
+						\item \textcolor{red}{Inefficient if traffic is bursty or short}
+						\item \textcolor{red}{Complex circuit setup/teardown (adds delay to transfer)}
+						\item \textcolor{red}{Requires new circuit upon failure}
+					\end{itemize} 
+				\end{itemize}
+				\columnbreak
+				
+				\textbf{Packet-Switching:}
+				\vspace{-0.2cm}
+				\begin{itemize}[noitemsep]
+					\item Data transfer is done using independent packets 
+					\item Since packets are not coordinated, they can clash with each other \
+					\item To absorb transient overload, packet switching relies on buffers 
+					\item It routes around trouble on the fly
+				\end{itemize}
+				\includegraphics[width=\columnwidth]{images/Overview/packet_switching_buffer.png}
+				\begin{itemize}[noitemsep]
+					\item \textcolor{ForestGreen}{Advantages:}
+					\begin{itemize}
+						\item \textcolor{ForestGreen}{Efficient use of resources} 
+						\item \textcolor{ForestGreen}{Simpler to implement}
+						\item \textcolor{ForestGreen}{Route around trouble}
+					\end{itemize}
+					\item \textcolor{red}{Disadvantages:}
+					\begin{itemize}
+						\item \textcolor{red}{unpredictable performance}
+						\item \textcolor{red}{Requires buffer management and congestion (Stau) Control}
+					\end{itemize} 
+				\end{itemize}
+				Packet-switching beats circuit-switching with respect to \textbf{resiliency} (robustness) and \textbf{efficiency}. 
+				\includegraphics[width=\columnwidth]{images/Overview/internet_loves_packets.png}
+			\newpage
+			
+			\subsection{How is it organized?}
+				The Internet has a hierarchical structure and consists of about 60'000 networks: 
+				\begin{itemize}[noitemsep]
+					\item \textbf{Tier-1} (international)
+					\begin{itemize}
+						\item have no provider 
+						\item $\approx$12 networks
+					\end{itemize}
+					\item \textbf{Tier-2} (national)
+					\begin{itemize}
+						\item provide transit to Tier-3s
+						\item have at least 1 provider 
+						\item $\approx$1'000s networks 	
+					\end{itemize}
+					\item \textbf{Tier-3} (local)
+					\begin{itemize}
+						\item do not provide any transit
+						\item have at least one provider
+						\item 85-90\% 
+					\end{itemize}
+				\end{itemize}
+				\includegraphics[width=\columnwidth]{images/Overview/hirarchy.png}
+				Some networks have an incentive (Anreiz) to connect directly, to reduce their bill with their own provider (direct traffic flow between them). This is known as \textcolor{Blue}{\textbf{peering}}
+	\end{multicols*}
+	\setcounter{secnumdepth}{2}
+\end{document}
+

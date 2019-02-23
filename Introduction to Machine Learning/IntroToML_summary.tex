@@ -1,0 +1,177 @@
+%
+% Zusammenfassung Communication Networks D-ITET
+% ===========================================================================
+% Author:			Marco Dober
+% Version:			0.1
+% Last changed: 	19.02.2019	
+% ---------------------------------------------------------------------------
+
+\documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
+\usepackage{lastpage}
+\usepackage{hyperref}
+\usepackage{graphicx} %somehow input from general doesnt seem to work?
+\usepackage{enumitem}
+% Include general settings and customized commands
+\input{settings/general}
+\input{settings/commands}
+%change page style for header
+\pagestyle{fancy}
+\footskip 20pt
+\rhead{Marco Dober}
+\lhead{Introduction to Machine Learning}
+\chead{\thepage}
+\cfoot{}
+\headheight 17pt \headsep 10pt
+\title{Introduction to Machine Learning}
+\author{Marco Dober}
+\date{\today}
+
+
+\begin{document}
+	\setcounter{secnumdepth}{3} %no enumeration of sections
+	\begin{multicols*}{4}
+		%
+%		\section*{Disclaimer}
+%			This should be a summary of the Communication Networks course. The goal is to update it weekly with the currently taught material.  	
+%			\pagebreak
+
+		\maketitle 
+		\thispagestyle{fancy}
+		
+		\section{Introduction}
+		There exists two basic forms of learning:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Supervised learning}\\
+			You have data with x- and y-labels $\rightarrow$ try to fit model $\rightarrow$ predict with found model new cases. Examples of supervised learning:
+			\begin{itemize}
+				\item Classification
+				\item Regression
+				\item Structured prediction, ...
+			\end{itemize}
+			Model selection is very important and a trade off between complexity vs. goodness of fit. Ideal models are statistically and computationally efficient. 
+			\includegraphics[width=\columnwidth]{images/Introduction/model_selection.png}
+			\item \textbf{Unsupervised learning}\\
+			"Learning without labels" (no y-label on data). Examples:
+			\begin{itemize}[noitemsep]
+				\item Clustering (e.g., unsupervised classification)
+				\item Dimension reduction (e.g., unsupervised regression)
+				\item Generative modeling
+			\end{itemize}
+			Common goals: 
+			\begin{itemize}
+				\item Compact representation / compression of data sets
+				\item Identification of latent variables
+			\end{itemize}
+		\end{itemize}
+		Example of unsupervised learning, Clustering: Input data with no labels and assign data to clusters
+		\includegraphics[width=0.85\columnwidth]{images/Introduction/clustering.png}\\
+		Other models of learning: semi-supervised, transfer, active, online, reinforcement, ... .\\
+		The key challenge in ML is: \\
+		$\bullet$ Trading goodness of fit and model complexity\\
+		$\bullet$ Also the \textbf{representation of data} is of key importance. 
+		
+		\section{Regression}
+		Is an instance of supervised learning.\\
+		\textbf{Goal:} Predict real valued labels.\\
+		Important choices in regression:
+		\vspace{-0.1cm}
+		\begin{itemize}[noitemsep,nolistsep]
+			\item What \textbf{types of functions} should we consider?
+			\item How should we measure \textbf{goodness of fit}?
+		\end{itemize}
+	
+		\subsection{Linear Regression}
+		$y\approx f(x)$, $f$ is linear (affine) in $x$
+		\includegraphics[width=\columnwidth]{images/Regression/linear_regression.png}
+		\begin{itemize}[noitemsep]
+			\item 1-d: $f(x)=ax+b$, (line)
+			\item 2-d: $f(x)=ax_1+bx_2+c$, (area)
+			\item d-d: $f(x)=w_1x_1+\dots+w_dx_d+w_0=\\\sum_{i=1}^{d}w_ix_i+w_0=w^Tx+w_0$\\
+			$w=[w_1,\dots,w_d]^T$, $x=[x_1,\dots,x_d]^T$
+		\end{itemize}
+		Homogeneous representation (no offset):\\
+		$w^Tx+w_0=\tilde{w}^T\tilde{x}$\\
+		$\tilde{w}=[w_1,\dots,w_d,w_0]^T$, $\tilde{x}=[x_1,\dots,x_d,1]^T$\\
+		
+		\subsubsection{Quantifying goodness of fit}
+		Calculate \textbf{residuals}, difference from fitet-point and data-point. Different ways to compute loss function (abs-value, square, ...), see below. Most famous is the \textbf{least-square optimization}: \\
+		$r_i=y_i-f(x_i)=y_i-w^Tx_i$\\
+		Cost $\hat{R}(w)=\sum_{i=1}^{n}r_i^2=\sum_{i=1}^{n}(y_i-w^Tx_i)^2$\\
+		How do we find the optimal weight vector $w^*$?
+		\begin{equation*}
+			w^*=\arg\min\limits_w\sum_{i=1}^{n}(y_i-w^Tx_i)^2 
+		\end{equation*}
+		\columnbreak
+		
+		$\bullet$ \textbf{Closed form}\\
+		The problem from above can be solved in closed form!
+		\begin{equation*}
+			w^*=(X^TX)^{-1}X^Ty
+		\end{equation*}
+		$X=\begin{pmatrix} x_{1,1} & \dots & x_1,d \\ \dots & \dots & \dots \\ x_{n,1} & \dots & x_{n,d} \end{pmatrix}$, $y=\begin{pmatrix} y_1 \\ \dots \\ y_n \end{pmatrix}$\\
+		\vspace{0.1cm}
+		
+		$\bullet$ \textbf{Optimization}\\
+		The objective function is \textbf{convex}. In convex functions local minimum = global minimum!
+		\vspace{0.1cm}
+		
+		\textbf{Gradient descent}:\\
+		- Start at arbitrary $w_0 \in \R^d$\\
+		- For $t=1,2,...$ do
+		\begin{equation*}
+			w_{t+1}=w_t-\eta_t\nabla\hat{R}(w_t)
+		\end{equation*}
+		If I descend along the gradient I will for sure find a minimum (step size / learning rate $\eta_t$ sufficiently small). For convex objectives it finds an optimum. For the squared loss, \textbf{constant step size 0.5 converges linearly}!\\
+		$\nabla\hat{R}(w)=\dots=-2\sum_{i}^{n}r_ix_i^T$, (in all dimensions)
+		\vspace{0.1cm}
+		
+		\textbf{Adaptive step size}\\
+		- step size too big: oscillation, divergence\\
+		- step size too small: long computation\\
+		Different ways to update step size adaptively: 
+		\begin{enumerate}[noitemsep]
+			\item Line search (optimizing step size every step)\\
+			$g_t=\nabla\hat{R}(w_t)$\\
+			$\eta_t = \arg \min\limits_{\eta\in(0,\inf)}\hat{R}(w_t-\eta g_t)$
+			\item Bold driver heuristic
+			\begin{itemize}
+				\item If function decreases, increase step size:\\
+				$\hat{R}(w_t-\eta_t g_t)<\hat{R}(w_t)\Rightarrow \eta_{t+1}=\eta_t\cdot c_{acc.}$ 
+				\item If function increases, decrease step size:\\
+				$\hat{R}(w_t-\eta_t g_t)>\hat{R}(w_t)\Rightarrow \eta_{t+1}=\eta_t\cdot c_{dec.}$\\
+				$c_{acc.}>1$ \& $c_{dec.}<1$
+			\end{itemize}
+		\end{enumerate}
+		\textbf{Gradient descent vs. closed form} (many times gradient descent (optimization) is better than closed form):
+		\vspace{-0.2cm} 
+		\begin{itemize}[noitemsep]
+			\item computational complexity:\\
+			 closed form can get very ugly (shit-ton of calculations)
+			\item May not need an optimal solution:\\
+			Uncertainty in data, so it makes no sense to find the optimal solution, I can stop earlier with optimization.
+			\item Many problems don't admit closed form solution
+		\end{itemize}
+		\columnbreak
+		
+		\includegraphics[width=\columnwidth]{images/Regression/convex_nonconvex.png}
+		\includegraphics[width=\columnwidth]{images/Regression/gradient_descent.png}
+		\subsubsection{Other loss functions}
+		so far we used squared error to measure goodness of fit, but there are many other possibilities. 
+		\includegraphics[width=\columnwidth]{images/Regression/loss_functions.png}
+	 	$l_p(r)=\abs{r}^p=\abs{y_i-w^Tx_i}^p$, with the parameter $p$ you can vary your optimization. 
+	 	\begin{itemize}[noitemsep]
+	 		\item $p=1$: weight all $r$ the same, less sensible to outliers 
+	 		\item $p=2$: closed form sol., most common
+	 		\item $p>>1$: make tolerance band of allowed errors
+	 		\item $p<<1$: almost no weight to outliers
+	 	\end{itemize}
+		$\hat{R}(w)=\sum_{i=1}^{n}l_p(y_i-w^Tx_i)$
+		\newpage 
+		
+		\subsection{Fitting nonlinear functions}
+		We can fit nonlinear functions via linear regression using nonlinear features of our data (basis functions). With a nonlinear transformation we transform data to be able to fit linearly.\\
+		.... 
+	\end{multicols*}
+	\setcounter{secnumdepth}{3}
+\end{document}
+
