@@ -11,5 +11,6 @@
 | ------------- |---------------|
 | Semiconductor Devices | [link](https://github.com/noah95/formulasheets/raw/build/Semiconductor%20Devices/semiconductordevices.pdf) |
 | Communication Networks | [link](https://github.com/noah95/formulasheets/raw/build/Communication%20Networks/ComNet_summary.pdf) |
+| Electrodynamics | [link](https://github.com/noah95/formulasheets/raw/build/Electrodynamics/electrodynamics.pdf) |
 
 
