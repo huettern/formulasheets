@@ -8,6 +8,7 @@ all: revision */*.tex
 	cd Semiconductor\ Devices && make && cd ..
 	cd Communication\ Networks && make && cd ..
 	cd Electrodynamics && make && cd ..
+	cd Introduction\ to\ Machine\ Learning && make && cd ..
 
 
 docker:
@@ -29,3 +30,4 @@ clean:
 	cd Semiconductor\ Devices && make clean && cd ..
 	cd Communication\ Networks && make clean && cd ..
 	cd Electrodynamics && make clean && cd ..
+	cd Introduction\ to\ Machine\ Learning && make clean && cd ..
