@@ -138,6 +138,9 @@
     \newcommand{\attention}{\raisebox{-1pt}{{\makebox[1.6em][c]{\makebox[0pt][c]{\raisebox{.13em}{\small!}}\makebox[0pt][c]{\color{red}\Large$\bigtriangleup$}}}}}
     \DeclareMathOperator{\meq}{\stackrel{!}{=}}
     
+%..GRAPHICS
+	\newcommand{\cgraphic}[2]{\begin{center}\includegraphics[width=#1\columnwidth,keepaspectratio]{#2}\end{center}}
+	\newcommand{\mgraphic}[2]{\begin{wrapfigure}{l}{#1\linewidth}\includegraphics[width=\linewidth]{#2}\end{wrapfigure}}
     
 % section color box
 \setkomafont{section}{\mysection}

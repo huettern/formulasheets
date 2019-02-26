@@ -11,6 +11,7 @@
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
 \usepackage{lastpage}
 \usepackage{hyperref}
+\usepackage{wrapfig}
 % Include general settings and customized commands
 \input{settings/general}
 \input{settings/commands}
@@ -46,6 +47,19 @@
   \maketitle 
   \thispagestyle{fancy}
 
+  % ---------------------------------------------------------------------------
+  \section{Conventions}
+  % ---------------------------------------------------------------------------
+  \begin{tabular}[h]{l l}
+    $V$ & Volume \\
+    $dV$ & infinitesimal volume elements \\
+    $A$ & surface \\
+    $da$ & infinitesimal surface elements \\
+    $ds$ & infinitesimal line element \\
+    $\partial V$ & closed surface of the volume $V$ \\
+    $\partial A$ & circumference of area $A$ \\
+    $\mathbf{n}$ & unit vector normal to suface / circumference
+  \end{tabular}
   % ---------------------------------------------------------------------------
   \section{Mathematics}
   % ---------------------------------------------------------------------------
@@ -92,8 +106,27 @@
     Sum of flux across surface $\partial A$ in normal direction $\vec{n}$ is the same as the sum of divergence inside the region $V$.
 
   % ---------------------------------------------------------------------------
-  \section{Electrostatics}
+  \section{Pre-Maxwellian Electrodynamics}
   % ---------------------------------------------------------------------------
+  \subsubsection{Gauss' Law}
+  The net flux through a surface is equal to $1/\epsilon_0$ times the net electric charge within that surface.
+  \cgraphic{0.5}{img/gausslaw.png}
+  \[\int_{\partial V}E(r,t)\cdot \mathbf{n} \mathrm{d}a = \frac{1}{\epsilon_0}\int_V\rho(r,t)\mathrm{d}V \]
+
+  \subsubsection{Faraday's Law}
+  The electromotive force around a path is equal to the negative change in time of the magnetic flux enclosed by the path.
+  \cgraphic{0.5}{img/faradaylaw.png}
+  \[\int_{\partial A}E(r,t)\cdot \mathrm{d}s = -\frac{\partial}{\partial t}\int_A B(r,t)\cdot \mathbf{n} \mathrm{d}a \]
+
+  \subsubsection{Ampere's Law}
+  The magnetic field created by an electric current is proportional to the size of that electric current.
+  \cgraphic{0.5}{img/amperelaw.png}
+  \[\int_{\partial A}B(r,t)\cdot \mathrm{d}s = \mu_0 \int_A j(r,t)\cdot \mathbf{n} \mathrm{d}a \]
+
+  \subsubsection{Non-existence of magnetic charges}
+
+  \cgraphic{0.5}{img/magchargnonexistence.png}
+  \[\int_{\partial V}B(r,t)\cdot \mathbf{n} \mathrm{d}a = 0 \]
   
 
 \end{multicols*}
