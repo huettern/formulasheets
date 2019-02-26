@@ -58,7 +58,14 @@
     $ds$ & infinitesimal line element \\
     $\partial V$ & closed surface of the volume $V$ \\
     $\partial A$ & circumference of area $A$ \\
-    $\mathbf{n}$ & unit vector normal to suface / circumference
+    $\mbf{n}$ & unit vector normal to suface / circumference \\
+    $\rho$ & Charge density \\
+    $\mbf{j}$ & Current density \\
+    $\mbf{E}$ & Electric field \\
+    $\mbf{H}$ & Magnetic field \\
+    $\mbf{D}$ & Displacement \\
+    $\mbf{M}$ & Magnetization \\
+    $\phi$ & Electric potential
   \end{tabular}
   % ---------------------------------------------------------------------------
   \section{Mathematics}
@@ -87,14 +94,14 @@
       \item Parametrize curve with $t$. Split integral if necessary for differenc parametrizations
        \begin{align*} x&:f(t) & y&:f(t) & z&:f(t)\end{align*}
       \item Calcualate derivative of normal vector along curve
-      \begin{align*}\Abl{\vec{s}}{t} &= x'(t)\vEx+y'(t)\vEy+z'(t)\vEz \\ \mathrm{d}\vec{s} &= \MATR{x'(t)\\y'(t)\\z'(t)}\mathrm{d}t\end{align*}
+      \begin{align*}\Abl{\vec{s}}{t} &= x'(t)\vEx+y'(t)\vEy+z'(t)\vEz \\ \Dx \vec{s} &= \MATR{x'(t)\\y'(t)\\z'(t)}\Dx t\end{align*}
       \item Solve integral
-      \[ \int_{\partial A} F(\vec{r}) \mathrm{d}\vec{s} = \intab F(x(t),y(t),z(t)) \cdot \MATR{x'(t)\\y'(t)\\z'(t)}\mathrm{d}t \]
+      \[ \int_{\partial A} F(\vec{r}) \Dx \vec{s} = \intab F(x(t),y(t),z(t)) \cdot \MATR{x'(t)\\y'(t)\\z'(t)}\Dx t \]
     \end{enumerate}
 
     \subsection{Stokes' Therorem}
     \begin{center}\includegraphics[width=0.5\columnwidth,keepaspectratio]{img/stokes.png}\end{center}
-    \[\int_{\partial A}F(\vec{r})\mathrm{d}\vec{s} = \int_A[\nabla\times F(\vec{r})]\cdot\vec{n}\mathrm{d}a\]
+    \[\int_{\partial A}F(\vec{r})\Dx \vec{s} = \int_A[\nabla\times F(\vec{r})]\cdot\vec{n}\Dx a\]
     The sum of flux along the contour $\partial A$ in contour direction is the same as the sum of curl $\nabla\times \vec{F}$ in normal direction $\vec{n}$ on the area $A$.
 
     
@@ -102,7 +109,7 @@
     \subsection{Gauss Therorem}
     Also known as divergence theorem.
     \begin{center}\includegraphics[width=0.5\columnwidth,keepaspectratio]{img/gaussthm.png}\end{center}
-    \[ \int_{\partial V} \vec{F}(\vec{r})\cdot\vec{n}\mathrm{d}a = \int_V \nabla\vec{F}(\vec{r})\mathrm{d}V \]
+    \[ \int_{\partial V} \vec{F}(\vec{r})\cdot\vec{n}\Dx a = \int_V \nabla\vec{F}(\vec{r})\Dx V \]
     Sum of flux across surface $\partial A$ in normal direction $\vec{n}$ is the same as the sum of divergence inside the region $V$.
 
   % ---------------------------------------------------------------------------
@@ -111,23 +118,93 @@
   \subsubsection{Gauss' Law}
   The net flux through a surface is equal to $1/\epsilon_0$ times the net electric charge within that surface.
   \cgraphic{0.5}{img/gausslaw.png}
-  \[\int_{\partial V}E(r,t)\cdot \mathbf{n} \mathrm{d}a = \frac{1}{\epsilon_0}\int_V\rho(r,t)\mathrm{d}V \]
+  \[\int_{\partial V}\mbf{E}(\mbf{r},t)\cdot \mbf{n} \Dx a = \frac{1}{\epsilon_0}\int_V\rho(\mbf{r},t)\Dx V \]
 
   \subsubsection{Faraday's Law}
   The electromotive force around a path is equal to the negative change in time of the magnetic flux enclosed by the path.
   \cgraphic{0.5}{img/faradaylaw.png}
-  \[\int_{\partial A}E(r,t)\cdot \mathrm{d}s = -\frac{\partial}{\partial t}\int_A B(r,t)\cdot \mathbf{n} \mathrm{d}a \]
+  \[\int_{\partial A}\mbf{E}(\mbf{r},t)\cdot \Dx s = -\frac{\partial}{\partial t}\int_A \mbf{B}(\mbf{r},t)\cdot \mbf{n} \Dx a \]
 
   \subsubsection{Ampere's Law}
   The magnetic field created by an electric current is proportional to the size of that electric current.
   \cgraphic{0.5}{img/amperelaw.png}
-  \[\int_{\partial A}B(r,t)\cdot \mathrm{d}s = \mu_0 \int_A j(r,t)\cdot \mathbf{n} \mathrm{d}a \]
+  \[\int_{\partial A}\mbf{B}(\mbf{r},t)\cdot \Dx s = \mu_0 \int_A \mbf{j}(\mbf{r},t)\cdot \mbf{n} \Dx a \]
 
   \subsubsection{Non-existence of magnetic charges}
 
   \cgraphic{0.5}{img/magchargnonexistence.png}
-  \[\int_{\partial V}B(r,t)\cdot \mathbf{n} \mathrm{d}a = 0 \]
+  \[\int_{\partial V}\mbf{B}(\mbf{r},t)\cdot \mbf{n} \Dx a = 0 \]
   
+  \subsubsection{Kirchhoff}
+  Reducing Apere's law to any closed surfece states that the flux of current through any closed surface is zero: What flows in has to flow out.
+  \[ \int_{\partial V} \mbf{j}(\mbf{r},t) \cdot \mbf{n}\Dx a = 0 \]
+
+  From Faraday's law if no time-varying magnetic fields are present follows the second Kirchhoff law (Knotenregel):
+  \[ \int_{\partial A} \mbf{E}(\mbf{r},t)\cdot \Dx s = 0 \]
+
+  The two Kirchhoff laws form the basis for circuit theory and electronic design.
+
+  % ---------------------------------------------------------------------------
+  \section{Maxwell's Equations}
+  % ---------------------------------------------------------------------------
+  The pre-Maxwellian equations summarize the electromagnetism before Maxwell. In 1873 however, Maxwell introduced a critical modification.
+
+  \subsection{Displacement Current}
+  The law that the net flux through a closed surface is zero is flawed. For example: Identical charges released will speed out because of Coulomb repulsion and there will be a net outward current. Kirchhoffs first law has to be corrected as follows:
+  \[\int_{\partial V} \mbf{j}(\mbf{r},t) \cdot \mbf{n} \Dx a\]
+
+  \texttt{continuity equation}: The outward current is balanced by the decrease of charge inside the surface.
+
+  \subsection{Maxwell's Equations in Integral Form}
+  \begin{align*}
+    \int_{\partial V} \mbf{D}(\mbf{r},t) \cdot\mbf{n}\Dx a &= \int_V \rho(\mbf{r},t) \Dx V \\
+    \int_{\partial A} \mbf{E}(\mbf{r},t) \cdot \Dx s &= -\frac{\partial}{\partial t}\int_A \mbf{B}(\mbf{r},t) \cdot \mbf{n} \Dx a \\
+    \int_{\partial A} \mbf{H}(\mbf{r},t) \cdot \Dx s &= \int_A \left[\mbf{j}(\mbf{r},t) + \frac{\partial}{\partial t}\mbf{D}(\mbf{r},t)\right] \cdot \mbf{n} \Dx a \\
+    \int_{\partial V} \mbf{B}(\mbf{r},t) \cdot \mbf{n} \Dx a &= 0
+  \end{align*}
+
+  The displacement $D$ and the magnetic field $H$ account for secondary sources through
+  \[\mbf{D}(\mbf{r},t) = \epsilon_0 \mbf{E}(\mbf{r},t)+\mbf{P}(\mbf{r},t)\]
+  \[ \mbf{B}(\mbf{r},t) = \mu_0 [\mbf{H}(\mbf{r},t) + \mbf{M}(\mbf{r},t)]\]
+
+  \subsection{Maxwell's Equations in Differential Form}
+  \begin{align*}
+    \nabla \cdot \mbf{D}(\mbf{r},t) &= \rho(\mbf{r},t) \\
+    \nabla\times \mbf{E}(\mbf{r},t) &= -\pabl{t}\mbf{B}(\mbf{r},t) \\
+    \nabla\times \mbf{H}(\mbf{r},t) &= \pabl{t}\mbf{D}(\mbf{r},t) + \mbf{j}(\mbf{r},t)\\
+    \nabla \cdot \mbf{B}(\mbf{r},t) &= 0
+  \end{align*}
+
+  % ---------------------------------------------------------------------------
+  \section{Electrostatics}
+  % ---------------------------------------------------------------------------
+  We modify Faraday's law by setting the change of magnetic flux to zero. 
+  \[\int_{\partial A}\mbf{E}(\mbf{r},t)\cdot \Dx s = 0 \]
+
+  By applying the theorems of Gauss and Stokes we get the following identities:
+  \begin{align*}
+    &\nabla \cdot \mbf{E}(\vec{r}) = \frac{1}{\epsilon_0\rho(\vec{r})} & &\nabla\times\mbf{E}(\vec{r}) = 0 \\
+    &\mbf{E} = -\nabla\phi & &\nabla^2\phi(\vec{r}) = -\frac{1}{\epsilon_0}\rho(\vec{r})
+  \end{align*}
+
+  Combining them we can write the poisson equation:
+  \begin{align*}
+    \nabla^2\Phi(\vec{r}) &= -\frac{1}{\epsilon_0}\rho(\vec{r}) &
+    \phi(\vec{r}) &= \frac{1}{4\pi\epsilon_0}\int\frac{\rho(\vec{r})}{|\vec{r}-\vec{r}'|}\Dx V'
+  \end{align*}
+
+  Where $\phi(\vec{r})$ is the electric potential at point $\vec{r}$.
+  \cgraphic{0.5}{img/epot.png}
+
+  \subsection{Point Charge}
+  E-field of a point charge:
+  \cgraphic{0.5}{img/ptcharge.png}
+    \[\int_{\partial A} \vec{E}\vec{n} \Dx a = E\cdot4\pi r^2 = \frac{q}{\epsilon_0} \]
+  \begin{align*}
+    \vec{E} &= \frac{1}{4\pi\epsilon_0}\frac{q}{r^2}\vec{n}_r & \vec{E}&=-\nabla\phi & \phi&=\frac{1}{4\pi\epsilon_0}\frac{q}{r}
+  \end{align*}
+
+
 
 \end{multicols*}
 
