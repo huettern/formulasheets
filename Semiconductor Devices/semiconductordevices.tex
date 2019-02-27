@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-02-20 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-02-20 17:45:14
+% @Last Modified time: 2019-02-24 17:35:56
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -18,7 +18,13 @@
 \pagestyle{fancy}
 \footskip 20pt
 
-\rhead{Noah Huetter}
+
+% -----------------------------------------------------------------------
+\IfFileExists{../build/revision.tex}{
+  \input{../build/revision.tex}
+  \rhead{Compiled: \compiledate \hspace{1em} Commit: \revision \hspace{1em} Noah Huetter}
+}{\rhead{Noah Huetter}}
+
 \lhead{ETH Semiconductor Devices}
 \chead{\thepage}
 \cfoot{}
@@ -33,7 +39,8 @@
 \begin{multicols*}{4}
 	\section*{Disclaimer}
 	This summary is part of the lecture ``ETH Semiconductor Devices'' by Prof. Dr. Colombo Bolognesi (FS19). It is based on the lecture. \\[6pt]
-	Please report errors to \href{mailto:huettern@student.ethz.ch}{huettern@student.ethz.ch} such that others can benefit as well.\\			
+	Please report errors to \href{mailto:huettern@student.ethz.ch}{huettern@student.ethz.ch} such that others can benefit as well.\\[6pt]	
+  The upstream repository can be found at \href{https://github.com/noah95/formulasheets}{https://github.com/noah95/formulasheets}
 	\vfill\null
 	\pagebreak
   \maketitle 
@@ -48,6 +55,24 @@
       \item 
     \end{itemize}
 
+    \subsection{Electric resistivity/conductivity}
+    Conductivity $\sigma$ is a material property describing how easily certain material can conduct electrical current. Resistivity $\rho = 1/\sigma$ describes how much a material opposes the current flow. The resistance of a square/round piece of metal is:
+    \[R=\rho\frac{l}{A}=\rho\frac{l}{r^2\pi}\]
+
+
+    \subsection{Current flow}
+    
+    
+    \subsection{Moore's Law}
+    Gordon Moore predicted that the number of transistors on an integrated circuit doubles about every two years. This is described using exponential growth:
+    \[p(t) = p_0 \cdot b^{t/\tau}\]
+    Where
+    \begin{align*}
+      p(t) &= \text{population at given time} \\
+      p_0 &= \text{initial population} \\
+      b &= \text{growth rate per time constant} \\
+      \tau &= \text{time constant}
+    \end{align*}
 \end{multicols*}
 
 \setcounter{secnumdepth}{2}

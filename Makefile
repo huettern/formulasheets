@@ -6,6 +6,10 @@ all: revision */*.tex
 	cd Leistungselektronik && make && cd ..
 	cd Analysis\ III\ \-\ PDE && make && cd ..
 	cd Semiconductor\ Devices && make && cd ..
+	cd Communication\ Networks && make && cd ..
+	cd Electrodynamics && make && cd ..
+	cd Introduction\ to\ Machine\ Learning && make && cd ..
+
 
 docker:
 	docker run -v `pwd`:/source noah95/latex /usr/bin/make
@@ -23,3 +27,7 @@ clean:
 	cd template && make clean && cd ..
 	cd Leistungselektronik && make clean && cd ..
 	cd Analysis\ III\ \-\ PDE && make clean && cd ..
+	cd Semiconductor\ Devices && make clean && cd ..
+	cd Communication\ Networks && make clean && cd ..
+	cd Electrodynamics && make clean && cd ..
+	cd Introduction\ to\ Machine\ Learning && make clean && cd ..
