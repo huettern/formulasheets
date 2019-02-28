@@ -9,7 +9,7 @@
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
 \usepackage{lastpage}
 \usepackage{hyperref}
-\usepackage{graphicx}
+\usepackage[graphicx]{realboxes}
 % Include general settings and customized commands
 \input{settings/general}
 \input{settings/commands}
@@ -32,7 +32,7 @@
 		%
 		\section*{Disclaimer}
 			This should be a summary of the Communication Networks course. The goal is to update it weekly with the currently taught material.  	
-			\pagebreak
+			\newpage
 
 		\maketitle 
 		\thispagestyle{fancy}
@@ -91,11 +91,11 @@
 					\item \textcolor{red}{\textbf{Reservation}}\\
 						  principle: reserve needed bandwidth in advance\\
 						  multiplexing: at the flow-level\\
-						  implementation.: circuit-switching  
+						  implementation: \textbf{circuit-switching}  
 					\item \textcolor{red}{\textbf{On-demand}}\\
 						  principle: send data when you need\\
 						  multiplexing: at the packet-level\\
-						  implementation.: packet-switching
+						  implementation: \textbf{packet-switching}
 				\end{itemize}
 				\textbf{Circuit-Switching:}
 				\vspace{-0.5cm}
@@ -158,7 +158,7 @@
 					\item \textbf{Tier-2} (national)
 					\begin{itemize}
 						\item provide transit to Tier-3s
-						\item have at least 1 provider 
+						\item have at least one provider 
 						\item $\approx$1'000s networks 	
 					\end{itemize}
 					\item \textbf{Tier-3} (local)
@@ -169,7 +169,103 @@
 					\end{itemize}
 				\end{itemize}
 				\includegraphics[width=\columnwidth]{images/Overview/hirarchy.png}
-				Some networks have an incentive (Anreiz) to connect directly, to reduce their bill with their own provider (direct traffic flow between them). This is known as \textcolor{Blue}{\textbf{peering}}
+				Some networks have an incentive (Anreiz) to connect directly, to reduce their bill with their own provider (direct traffic flow between them). This is known as \textcolor{Blue}{\textbf{peering}}\par
+				
+				\textbf{IXPs} (Internet Exchange Points): provide Internet connection for Tier2 and other providers. Only have \textcolor{Blue}{\textbf{peering-connections}} . 
+				\includegraphics[width=\columnwidth]{images/Overview/IXPs.png}
+				\subsection{How does communication happen?}
+				Use \textbf{protocols} to enable communication between processes in different networks. Protocols are like a conversation convention. There are thousands of different protocols. Subdivide in different \textbf{layers} to keep stuff simple (Modularity).
+				\begin{center}
+					\textbf{5 Layer Model}\\
+					\Rotatebox{270}{
+						\begin{tabular}{l l l l l}
+							  & Layer & service provided & role & protocol \\
+							\hline						
+							L5& Application  & network access & exchanges \textbf{messages} btw. proc. & HTTP, SMTP, FTP, SIP, ...  \\ 
+							\hline 
+							L4& Transport & end-to-end delivery & transport \textbf{segments} btw. end-sys.&TCP, UDP, SCTP \\ 
+							\hline 
+							L3& Network  & global best-effort delivery& move \textbf{packets} around the network&IP \\ 
+							\hline 
+							L2& Link & local best effort delivery& move \textbf{frames} across a link& Ethernet, Wifi, DSL, LTE,... \\ 
+							\hline 
+							L1& Physical & physical transfer bits & move \textbf{bits} across medium & copper, fiber, coax, ...\\ 
+						\end{tabular}
+					}
+				\end{center}
+				\par 
+				Each layer provides a service to the layer above by using the layer below. Physical is foundation and everything is then built on top. 
+				%\includegraphics[width=\columnwidth]{images/Overview/clock.png}
+				Each layer has a \textbf{unit of data} and is implemented with different protocols and technologies (HW/SW). We can see shift to more HW because of speed. 
+				\includegraphics[width=\columnwidth]{images/Overview/hw_sw.png}
+				Each layer takes message from above and encapsulates with its own \textbf{header} and/or \textbf{trailer}. 
+				\includegraphics[width=\columnwidth]{images/Overview/header_adding.png}
+				\begin{itemize}[noitemsep]
+					\item \textbf{Switches} act as a \textbf{L2 gateway}
+					\item \textbf{Routers} act as a \textbf{L3 gateway}
+				\end{itemize}
+			
+				\subsection{How do we characterize the network?}
+				We characterize the network with:
+				\begin{itemize}[noitemsep]
+					\item \textbf{Delay}	
+					\item \textbf{Loss}
+					\item \textbf{Throughput} 
+				\end{itemize}
+				\textbf{Delay}
+				\vspace{-0.2cm}
+				\begin{itemize}[noitemsep]
+					\item[$\rightarrow$] transmission $\vert$ link property
+					\item[$\rightarrow$] propagation $\vert$ link property
+					\item[$\rightarrow$] processing $\vert$ traffic $\vert$ mostly tiny
+					\item[$\rightarrow$] queuing $\vert$ traffic $\vert$ hardest to evaluate
+					\begin{itemize}
+						\item[$-$] arrival rate at the queue
+						\item[$-$] transmission rate of outgoing link
+						\item[$-$] traffic burstiness 
+					\end{itemize}
+					$\text{traffic intensity} = \dfrac{L\cdot a}{R}$\\
+					$a = \text{average packet arrival rate [packet/sec]} $\\
+					$R = \text{transmission rate of outgoing link [bit/sec]} $\\
+					$L = \text{fixed packet length [bit]} $	
+				\end{itemize}
+			\textbf{Loss}\\
+			If the buffer of a queue is full, it drops packets and hence the packets are lost.\par
+			\textbf{Throughput}\\
+			To compute throughput one has to consider the bottleneck link
+			\includegraphics[width=\columnwidth]{images/Overview/traffic_intensity.png}
+			As technology improves , throughput increases \& delays are getting lower, except for propagation $\rightarrow$ content delivery networks move content closer to you (e.g. akamai).
+			\includegraphics[width=\columnwidth]{images/Overview/akamai.png}
+			\newpage 
+			
+			\section{Concepts}
+			\subsection{Routing}
+			How do you guide \textbf{IP packet}s from a source to a destination? \\
+			Like an envelope, packets have a \textcolor{LimeGreen}{\textbf{header}} and a \textcolor{Orange}{\textbf{payload}}.\\ 
+			\begin{center}
+				\includegraphics[height=0.4\columnwidth]{images/Concepts/IP_packet.png}
+			\end{center}
+			Routers forward IP packets \textbf{hop-by-hop}. Routing is mostly not symmetrical (to/back not the same). Routers locally look up their \textbf{forwarding table} to know where to send the packet. Forwarding decisions necessarily depend on the \textbf{destination}, but also can depend on others (source, input port).\\
+			In addition to data-plane routers also have a control plane consisting of:
+			\vspace{-0.2cm}
+			\begin{itemize}[noitemsep]
+				\item Routing
+				\item Configuration
+				\item Statistics
+				\item ... 
+			\end{itemize}  
+			\textbf{Routing} is the control-plane process that \textbf{computes} and \textbf{populates} the forwarding tables.
+			\begin{center}
+				\includegraphics[height=0.4\columnwidth]{images/Concepts/control_data_plane.png}
+			\end{center}
+			\textbf{Forwarding vs. Routing}
+			\vspace{0.1cm}	
+			\includegraphics[width=\columnwidth]{images/Concepts/forwarding_vs_routing.png}
+			A global forwarding state is valid if and only if:
+			\begin{itemize}[noitemsep]
+				\item No dead ends
+				\item No loops
+			\end{itemize} 
 	\end{multicols*}
 	\setcounter{secnumdepth}{2}
 \end{document}
