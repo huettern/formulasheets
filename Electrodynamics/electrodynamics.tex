@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-02-20 17:26:28
 % @Last Modified by:   Noah Huetter
-% @Last Modified time: 2019-02-24 17:29:55
+% @Last Modified time: 2019-02-28 17:15:00
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -151,15 +151,15 @@
 
   \subsection{Displacement Current}
   The law that the net flux through a closed surface is zero is flawed. For example: Identical charges released will speed out because of Coulomb repulsion and there will be a net outward current. Kirchhoffs first law has to be corrected as follows:
-  \[\int_{\partial V} \mbf{j}(\mbf{r},t) \cdot \mbf{n} \Dx a\]
+  \[\int_{\partial V} \mbf{j}(\mbf{r},t) \cdot \mbf{n} \Dx a = -\pabl{t} \int_V  \rho(\mbf{r},t) \Dx V\]
 
   \texttt{continuity equation}: The outward current is balanced by the decrease of charge inside the surface.
 
   \subsection{Maxwell's Equations in Integral Form}
   \begin{align*}
-    \int_{\partial V} \mbf{D}(\mbf{r},t) \cdot\mbf{n}\Dx a &= \int_V \rho(\mbf{r},t) \Dx V \\
+    \int_{\partial V} \mbf{D}(\mbf{r},t) \cdot\mbf{n}\Dx a &= \int_V \rho_0(\mbf{r},t) \Dx V \\
     \int_{\partial A} \mbf{E}(\mbf{r},t) \cdot \Dx s &= -\frac{\partial}{\partial t}\int_A \mbf{B}(\mbf{r},t) \cdot \mbf{n} \Dx a \\
-    \int_{\partial A} \mbf{H}(\mbf{r},t) \cdot \Dx s &= \int_A \left[\mbf{j}(\mbf{r},t) + \frac{\partial}{\partial t}\mbf{D}(\mbf{r},t)\right] \cdot \mbf{n} \Dx a \\
+    \int_{\partial A} \mbf{H}(\mbf{r},t) \cdot \Dx s &= \int_A \left[\mbf{j}_0(\mbf{r},t) + \frac{\partial}{\partial t}\mbf{D}(\mbf{r},t)\right] \cdot \mbf{n} \Dx a \\
     \int_{\partial V} \mbf{B}(\mbf{r},t) \cdot \mbf{n} \Dx a &= 0
   \end{align*}
 
@@ -169,9 +169,9 @@
 
   \subsection{Maxwell's Equations in Differential Form}
   \begin{align*}
-    \nabla \cdot \mbf{D}(\mbf{r},t) &= \rho(\mbf{r},t) \\
+    \nabla \cdot \mbf{D}(\mbf{r},t) &= \rho_0(\mbf{r},t) \\
     \nabla\times \mbf{E}(\mbf{r},t) &= -\pabl{t}\mbf{B}(\mbf{r},t) \\
-    \nabla\times \mbf{H}(\mbf{r},t) &= \pabl{t}\mbf{D}(\mbf{r},t) + \mbf{j}(\mbf{r},t)\\
+    \nabla\times \mbf{H}(\mbf{r},t) &= \pabl{t}\mbf{D}(\mbf{r},t) + \mbf{j}_0(\mbf{r},t)\\
     \nabla \cdot \mbf{B}(\mbf{r},t) &= 0
   \end{align*}
 
@@ -204,6 +204,106 @@
     \vec{E} &= \frac{1}{4\pi\epsilon_0}\frac{q}{r^2}\vec{n}_r & \vec{E}&=-\nabla\phi & \phi&=\frac{1}{4\pi\epsilon_0}\frac{q}{r}
   \end{align*}
 
+
+  % ---------------------------------------------------------------------------
+  \vfill\null
+  \pagebreak
+  \section{Mathematic Appendix}
+  % ---------------------------------------------------------------------------
+  \subsection{Trigonometry}
+  \begin{itemize}
+    \item Trigonometric Powers
+    {\small\begin{align*}
+      & \sin^2(x) = \frac{1}{2}[1-\cos(x)] \\
+      & \cos^2(x) = \frac{1}{2}[1+\cos(2x)] \\
+      & \sin^3(x) = \frac{1}{4}[3\sin(x)-\sin(3x)] \\
+      & \cos^3(x) = \frac{1}{4}[3\cos(x) + \cos(3x)]
+    \end{align*}}%
+
+    \item Trigonometric Products
+    {\small\begin{align*}
+      & \sin(x)\sin(y) = \frac{1}{2}[\cos(x-y) - \cos(x+y)] \\
+      &\cos(x)\cos(y) = \frac{1}{2}[\cos(x-y)] + \cos(x+y)] \\
+      & \sin(x)\cos(y) = \frac{1}{2}[\sin(x-y) + \sin(x+y)] \\
+      &\sin(x)\cos(y) = \frac{1}{2}\sin(2x)
+    \end{align*}}%
+
+    \item Trigonometric Sumstest
+    {\small\begin{align*}
+      & \sin(x) + \sin(y) = 2\sin\left(\frac{x+y}{2}\cos(\frac{x-y}{2})\right)\\
+      & \sin(x)-\sin(y) = 2\cos\left(\frac{x+y}{2})\sin(\frac{x-y}{2}\right) \\
+      & \cos(x) + \cos(y) = 2\cos\left(\frac{x+y}{2}\cos(\frac{x-y}{2})\right)\\
+      & \cos(x)-\cos(y) = 2\sin\left(\frac{x+y}{2})\sin(\frac{x-y}{2}\right)
+    \end{align*}}%
+
+    \item Double angle
+    {\small\begin{align*}
+      & \sin(2x) = 2\sin(x)\cos(x) \\
+      & \cos(2x) = \cos^2(x)-\sin^2(x) = 1-2\sin^2(x) = 2\cos^2(x) - 1
+    \end{align*}}%
+
+    \item Addition theorems
+    {\small\begin{align*}
+      & \sin(x\pm y) = \sin(x)\cos(y) \pm \cos(x)\sin(y) \\
+      & \cos(x\pm y) = \cos(x)\cos(y) \mp \sin(x)\sin(y) \\
+      & \sin(x+y)\sin(x-y) = \cos^2(y)-\cos^2(x) = \sin^2(x) - \sin^2(y)\\
+      & \cos(x+y)\cos(x-y) = \cos^2(y)-\sin^2(x) = \cos^2(x) - \sin^2(y)
+    \end{align*}}%
+  \end{itemize}
+
+  \subsection{Poisson Equation}
+    \[\nabla^2f(\vec{r}) = -g(\vec{r})\]
+    Solution:
+    \[f(\vec{r}) = \int_V \frac{g(\vec{r})}{4\pi|\vec{r}-\vec{r}'|} \Dx V'\]
+
+  
+  % ---------------------------------------------------------------------------
+  \vfill\null
+  \columnbreak
+  \end{multicols*}
+  \subsection{Vector operations}
+  \begin{multicols*}{2}
+    \setlength\tabcolsep{6pt} 
+    \renewcommand{\arraystretch}{2}
+    \begin{tabular}[h]{l c | p{6cm} | p{6cm} | p{6cm} |}
+    Operation & & Cartesian Coordinates $(x,y,z)$ & Cylindrical Coordinates $(r,\phi,z)$ & Spherical Coordinates $(r,\theta,\phi)$ \\
+
+    \hline
+    \textbf{Vector field} & $A$ &
+    $A_x \vec{n}_x + A_y \vec{n}_y + A_y \vec{n}_y$ &
+    $A_r \vec{n}_r + A_\phi \vec{n}_\phi + A_z \vec{n}_z$ & 
+    $A_r \vec{n}_r + A_\theta \vec{n}_\theta + A_\phi{z} \vec{n}_\phi{z}$ \\
+
+    \hline
+    \textbf{Gradient} & $\nabla f$ &
+    $\Pabl{f}{x} \vec{n}_x + \Pabl{f}{y} \vec{n}_y + \Pabl{f}{z} \vec{n}_z$ &
+    $\Pabl{f}{r} \vec{n}_r + \frac{1}{r}\Pabl{f}{\phi}\vec{n}_\phi + \Pabl{f}{z}\vec{n}_z$ &
+    $\Pabl{f}{r} \vec{n}_r + \frac{1}{r}\Pabl{f}{\theta}\vec{n}_\theta + \frac{1}{r\sin\theta\Pabl{f}{\phi}\vec{n}_\phi}$ \\
+
+    \hline
+    \textbf{Divergence} & $\nabla \cdot A$ &
+    $\Pabl{A_x}{x} + \Pabl{A_y}{y} + \Pabl{A_z}{z} $ &
+    $\frac{1}{r} \pabl{r}(r A_r) + \frac{1}{r} \pabl{\phi}A_\phi + \pabl{z}A_z$ &
+    $\frac{1}{r^2}\pabl{r}(r^2 A_r) + \frac{1}{\sin\theta}\pabl{\theta}(A_\theta\sin\theta) + \frac{1}{r\sin\theta}\pabl{\phi}A_\phi$ \\
+    
+    \hline
+    \textbf{Curl} & $\nabla \times A$ &
+    $\left( \Pabl{A_z}{y}-\Pabl{A_y}{z} \right) \vec{n}_x
+     + \left( \Pabl{A_x}{z}-\Pabl{A_z}{x} \right)\vec{n}_y
+     + \left( \Pabl{A_y}{x}-\Pabl{A_x}{z} \right)\vec{n}_z$ &
+    $\left( \frac{1}{r}\Pabl{A_z}{\phi} - \Pabl{A_\phi}{z} \right) \vec{n}_r
+     + \left( \Pabl{A_r}{z} - \Pabl{A_z}{r} \right) \vec{n}_\phi
+     + \frac{1}{r}\left( \Pabl{rA_\phi}{r} - \Pabl{A_r}{\phi} \right) \vec{n}_z $ &
+    $ \frac{1}{r\sin\theta} \left( \pabl{\theta}(A_\phi\sin\theta) - \Pabl{A_\theta}{\phi} \right) \vec{n}_r
+     + \frac{1}{r} \left( \frac{1}{\sin\theta}\Pabl{A_r}{\phi} - \pabl{r}(rA_\phi) \right) \vec{n}_\theta
+     + \frac{1}{r} \left( \pabl{r}(rA_\theta) - \Pabl{A_r}{\theta} \right) \vec{n}_\phi$ \\
+
+    % \vec{n}_
+    \hline
+    \end{tabular}
+  \end{multicols*}
+  \begin{multicols*}{4}
+  % ---------------------------------------------------------------------------
 
 
 \end{multicols*}
