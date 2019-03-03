@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-02-20 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-03-03 12:37:06
+% @Last Modified time: 2019-03-03 14:25:39
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -87,6 +87,102 @@
       b &= \text{growth rate per time constant} \\
       \tau &= \text{time constant}
     \end{align*}
+
+  % ---------------------------------------------------------------------------
+  \section{Solid state physics}
+  % ---------------------------------------------------------------------------
+  \subsection{Crystal structures}
+  \cgraphic{0.5}{img/wholecrystal.png}
+  \textbf{Def (Coordination Number)}: Is the number of nearest neighbours any atom has in a given crystal lattice. By definition, a crystal lattice is periodic in 3D. $a$ is the lattice constant.
+
+  \cgraphic{1}{img/crystalstructures.png}
+  \begin{tabular}[h]{l l p{1.5cm}}
+    (a) & SC: Simple cubic & Po \\
+    (b) & BCC: Body-centered cubic & Li, Na, K, Cr, Fe, NB \\
+    (c) & FCC: Facae-centered cubic & Al, Ar, Ni, Cu, Kr, Pd \\
+  \end{tabular}
+
+  \subsection{Silicon}
+  \cgraphic{1}{img/siliconstructure.png}
+  \textbf{Diamond unit cell}: (a) the cubic unit cell, and (b) the inherent tetrahedral structure. The diamon crystal structure is epecially important in semiconductors. For Silicon, the nuclear diameter is $7.2\text{fm} = 2.7\cdot 10^{-6}\text{nm}$: Matter is impressively ``empty''.
+
+  \cgraphic{0.3}{img/tetrahedral.png}
+  \textbf{Tetrahedral}:
+
+  \subsection{Crystal Planes and Directions}
+  \cgraphic{0.8}{img/planes.png}
+  Things don't look the same in all directions. The crystal has different periodicities in different directions, \textit{i.e.} \textbf{it does not look the same in all directions}. Different crystal planes and directions generally have different properties.
+  
+  \subsubsection{Miller indices}
+  \[[abc] = \left[\frac{1}{p},\frac{1}{q},\frac{1}{r}\right]\]
+  Where $p,q,r$ are the intersections with the $x,y,z$ axis. Miller indices describe the crystal plane.
+
+  \subsection{Elements}
+  \cgraphic{1}{img/elements.png}
+  \textbf{Electronegativity}: Tendency to attract electrons. Increases from Bottom to Top / Left to Right.
+
+  \subsubsection{Simple Metals}
+  (\textit{e.g.} Alkali Metals, like Na) Collective interaction of mobile electron fluid with positive metal ions. \textbf{Occurs when teh coordination number is greater than the nu,ber of valenve electrons}. Close packed structures. The material is mechanically soft. 
+  \subsubsection{Transition Metals}
+  (\textit{e.g.} Mo, W) Bon is covalent-like. Transision metals are much harder than simple metals and located in the center of the transition metals row.
+  \subsubsection{Transition Metals}
+  (Column \rom{4}, \rom{3}-\rom{5}, \rom{2}-\rom{6}) Based on hybridization of ``s'' and ``p'' orbitals. \textbf{Bonds are very directional}, material is mechanically stiff (brittle). Generally habe a diamond-like crystal structure.
+
+  \subsection{Band Gap}
+  \cgraphic{1}{img/bandgap.png}
+  In solids, we are concerned about the atoms' outermost (\textit{i.e.} valence) electrons because they determine the bonding and the electronic properties.
+
+  On the far right in the figure, atoms are well seperated and non-interacting. Their energy states are sharp (atomic-like). As they get closer, the outermost (valence) electrons begin to interact and their energy levels start to shift with respect to the isolated value. \textbf{The number of states is conserved}. This is a consequence of the \textbf{Pauli Exclusion Principle}. Bands can be seperated by \textbf{energy gaps} where no electron is permitted to exist.
+
+  \subsubsection{Partially Filled / Empty Band}
+  Are associated with electrical \textbf{conduction}. As atoms approach each other to form solid, valence electron distributions overlap. Equilibrium distance ~ maximum density of electrons for isolated atoms.  Lowering of potential barriers between atoms allows electrons to move freely.
+
+  \subsubsection{Full Band}
+  \textbf{Isolation}, electrons are there but no net current. At equilibrium atomic separation, bands are seperated by a forbidden energy gap. At low T, valence band full, conduction band empty: \textit{i.e.} no current.
+
+  \subsection{Population of Electron States}
+  Need to know the probability of finding electrons at a given energy to understand how they are distributed aming the various states (\textit{i.e.} conduction and valence band). This is done by the \textbf{Fermi Dirac Statistics (FD)}. FD statistics enforce the Pauli Exclusion Principle and the monimaztion of energy.
+
+  \begin{itemize}
+    \item Probability of finding $e^-$ at energy $E$ is $F(E)$
+    \item Probability of finding a hole at energy $E$ is $1-F(E)$
+  \end{itemize}
+
+  \cgraphic{1}{img/fermidirac.png}
+  \[F(E) = \frac{1}{1+\exp\left(\frac{E-E_F}{kT}\right)}\]
+  \textbf{Fermi Level $E_F$}: Energy at which the prob. of finding an $e^-$/hole is 50\%
+
+  \subsubsection{Density of states}
+  \cgraphic{1}{img/densityostates.png}
+  \textbf{Density of States} $g(E)$: How many available states per volume at energy $E$.
+  
+  \subsection{Intrinsic carriers}
+  \cgraphic{1}{img/intrinsiccarriers}
+  Two types of carriers: electrons and holes.
+  \begin{itemize}
+    \item Each Si atom is surrounded by 8 $e^-$ at 0K, 4 come from the atom itself, 1 from each of its 4 nearest neighbours.
+    \item As $T$ increases, thermal energy eventually excites some $e^-$ out of their bond. Equivalently, the FD distribution broadens around $E_F$, increasing the prob. that conduction band states become occupied.
+    \item A empty state (a ``hole'') is left in the bonding (valence band) state. The valence band is then not full anymore, and it therefore becomes conductive too.
+    \item \textbf{Consequence}: We now have two partially filled bands. Both the conduction and valence bands can now carry current because neither is completely full, not empty.
+  \end{itemize}
+
+  \subsubsection{Detailed balance}
+  In equilibrium, $n_0$ and $p_0$ are constant but the reaction still operates in both directions. This is called ``detailed balance''.
+  \ceqbox{n_0 \cdot p_0 = K = K_0 \exp\left(\frac{-E_a}{kT}\right)= n_i^2}
+  Free electron $n_0$ and hole $p_0$ density and activation energy $E_a$ for bond breaking.
+
+  \subsubsection{Intrinsic carrier density}
+  \cgraphic{0.5}{img/intrinsiccarrierdensity}
+  \begin{itemize}
+    \item The intrinsic carrier concentration depends exponentially on temperature $T$
+    \item And on the energy gap of the material (Si: 1.12 eV, GaAs: 1.42 eV, @ 300K)
+    \item Different energy gaps thus have a huge impact on $n_i$
+    \item $n_i$ becomes large at high $T$ (limits high-$T$ operation of devices)
+  \end{itemize}
+
+  \subsubsection{Electric field}
+  Electrons move opposite to electric field, holes move parallel to E-field.
+
 \end{multicols*}
 
 \setcounter{secnumdepth}{2}
