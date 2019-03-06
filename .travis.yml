@@ -1,32 +1,32 @@
 language: latex
-
 branches:
   except:
   - build
-
 services:
-  - docker
-
+- docker
 before_install:
-  - docker pull noah95/latex
-  - openssl aes-256-cbc -K $encrypted_4cf96262ec67_key -iv $encrypted_4cf96262ec67_iv -in deploy_rsa.enc -out /tmp/deploy_rsa -d
-
-
+- docker pull noah95/latex
+- openssl aes-256-cbc -K $encrypted_4cf96262ec67_key -iv $encrypted_4cf96262ec67_iv
+  -in deploy_rsa.enc -out /tmp/deploy_rsa -d
 script:
-  - make revision
-  - make docker
-
+- make revision
+- make docker
 addons:
   ssh_known_hosts: github.com
-
 after_success:
-  - eval "$(ssh-agent -s)"
-  - chmod 600 /tmp/deploy_rsa
-  - ssh-add /tmp/deploy_rsa
-  - git remote add target git@github.com:noah95/formulasheets.git
-  - git checkout -b build
-  - git add -f */*.pdf
-  - git status
-  - git commit -am "Build"
-  - git push target build --force
-
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/deploy_rsa
+- ssh-add /tmp/deploy_rsa
+- git remote add target git@github.com:noah95/formulasheets.git
+- git checkout -b build
+- git add -f */*.pdf
+- git status
+- git commit -am "Build"
+- git push target build --force
+deploy:
+  provider: releases
+  api_key:
+    secure: R/os6XS9Dog4BF2MHzDOFuagIXKS64YNKXrzp/D2FfbnLVyLT0E91aCdOm6ivJxEDzB4tQwkT5kNNJBFdZePKk+IAlMrpz1ZVZsB15l4IA2uxTwRUkM3g6URdMhOL9jNK+miv1oFZUmX5ToOf+VJ9/J2nGNiSc3kIoGpPYnbQUMc//tq8nyvCDW5llUv9P3FWgt63qJ0QayRDcTOWtlfqq+gsIyvmS5kBVNWUeEbc/9A4ITYGLgL7t5wjGfpNCr+SRFuYB8LaXuaImGW0foDmhi+/YSqnwbu4Q9MFMiN+CAUc1kXIxiPxAy7xyd2I0zniXQntBPfVFwQqnxw3g+DhKeh9qx+TsuEHh8aS0B1KXHWajbmEn1ivi2ACoRidTXdKR2KBOFnOqQt07r4K38F6IvQB1paLaVRQF1zYn8xFOOzxhUpOfIv2S5PSfunUFfHki0ai4TxV+7j0IywVdY7G+dcAG8UTbbsQck5x/soO3/HYa2Kb7klgZHWKQh8vylYHNguoYTSaeN0KzMnEjeRq2zm7dF/e+5WxVwEmC4/U40a3/F4jnI1GpzZxPJmswPyCE0R5TnKqcQd2yiawXvzdTXU328gwzxc7I/4LuY7ub9rrKMTMLT4R8+iTIX6apl7Am6P6MT8leaOZvXDg70HDx2lRo7CXRAq1gdcaBV4Z+k=
+  file: "*/*.pdf"
+  on:
+    repo: noah95/formulasheets
