@@ -47,6 +47,7 @@
   
 %..FONTS AND LETTERS
   \newcommand*{\rom}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+  \newcommand{\ts}{\textsuperscript}
 
 %..KOMPLEXE ZAHLEN
 	\renewcommand{\Re}{\text{Re}\,}
@@ -186,3 +187,6 @@
 
 %center equationbox
 \newcommand{\ceqbox}[1]{\vspace*{4pt} \begin{center}\eqbox{#1}\end{center}\vspace*{4pt}}
+
+% Tabular
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}

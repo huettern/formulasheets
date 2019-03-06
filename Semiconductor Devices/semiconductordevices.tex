@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-02-20 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-03-03 14:25:39
+% @Last Modified time: 2019-03-06 21:28:42
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -183,6 +183,116 @@
   \subsubsection{Electric field}
   Electrons move opposite to electric field, holes move parallel to E-field.
 
+  % ---------------------------------------------------------------------------
+  \section{Doping}
+  % ---------------------------------------------------------------------------
+  Doping is the introduction of impurities with different atomic valence in the pure crystal. These impurities are called \textit{Extrinsic Carriers}.
+
+
+  \begin{tabular}[h]{l l}
+    $E_D$   & Donor energy state \\
+    $E_C$   & Conduction band edge\\
+    $m^*$   & Effective mass of (electron) in \textit{e.g.} Silicon \\
+    $\epsilon_0$ & Vacuum permittivity $8.854\cdot 10^{-12}$F/m\\
+    $n_i$   & Intrinsic electron concentration \\
+    $p_i$   & Intrinsic hole concentration\\
+    {}      & $n_i=p_i$\\
+    $n_0$   & Thermal-equilibrium $e^-$ concentration\\
+    $p_0$   & Thermal-equilibrium hole concentration\\
+    $n_d$   & Concenctraiton of $e^-$ in donor state \\
+    $p_a$   & Concenctraiton of holes in acceptor state \\
+    $N_d$   & Concentration of donor atoms\\
+    $N_d$   & Concentration of acceptor atoms\\
+    $N_d^+$   & Conc. of pos. charged (ionized) donors \\
+    $N_a^-$   & Conc. of neg. charged (ionized) acceptors \\
+    $E_F$   & Fermi Energy \\
+    $$   &  \\
+    % $$   &  \\
+  \end{tabular}
+
+  \subsection{Impurity doping}
+  It is distinguished between negative and positive doping.
+  
+  \subsubsection{N-Doping}
+  \cgraphic{0.7}{img/ndope}
+  Taking donors from PT col \rom{5} (P, As, Sb) that have 5 valence electrons. 4 make covalent bond, 5\ts{th} is ``not needed'' and looks like a hydrogen atom. It is easily inozed/excited to conduction band. Its energy state is close to CB ($E_C$).
+  \attention{Overall, the solid is still charge neutral but with impurities}\attention
+  
+  Donors introduce an energy state $E_D$ near the conduction band edge $E_C$. $e_-$ easily promoted to conduction band because $E_C$, $E_D$ are close compared to $E_C$, $E_V$ ($E_G$). Only $E_C-E_D$ is needed to free the electron. \textbf{Extra electrons are added without adding holes.}
+
+  \subsubsection{P-Doping}
+  \cgraphic{0.7}{img/pdope}
+  Same as n-doping but by adding extra holes. Acceptors from PT col \rom{3} (B, Al, Ga, In)
+
+  \subsubsection{Energy Band}
+  \cgraphic{1}{img/dopeband}
+    \begin{tabular}[h]{p{0.45\linewidth} | p{0.45\linewidth}}
+    \textbf{n-type doping} & \textbf{p-type doping} \\
+    donor & acceptor \\
+    State $E_D$ below conduction band & State $E_A$ above valence band \\
+
+  \end{tabular}
+
+  \cgraphic{1}{img/bandenergies}
+  Image shows impurity levels in Silicon in eV. This amount of energy is required to move impurity to conductance/valence band.
+
+  Donors: treat as ``Hydrogen-Like'' atom inside solid. Its ionization energy $E_D$ is modified by the dielectric constant and effective mass $m^*$.
+  \[E_d\approx \frac{1}{\epsilon_r^2}\frac{m^*}{m_0}E_H\]
+  $E_{D,\text{Bohr}} = 27\text{meV}$ a very good approximation.
+
+  \subsubsection{Bohr radius}
+  The most probable distance between nucleus and electron in a Hydrogen atom in ground state. For semiconductor we need to modify this value for $\epsilon_0$ and $m^*$.
+  \[r'_{\text{Bohr}}=\frac{4\pi\epsilon_r\epsilon_0\hbar^2}{m^*m_0q^2} = \frac{\epsilon_r}{m^*}5.3\cdot10^{-9}=31\angstrom\]
+
+  This sphere corresponds to about 6735  Si atoms or 841 unit cells. Is thus very loosely bound to its ``parent'' impurity atom.
+
+  \subsection{Electro neutrality}
+  Sum of atoms making up the semiconductor are elctrically neutral: The semiconductor thus has zero net charge.
+  In general, both donor and acceptor impurities may be present.
+
+  \ceqbox{n_0 + N_a^- = p_0 + N_d^+}
+
+  \subsection{Density of States (DOS)}
+  \cgraphic{1}{img/dos}
+  Density of available quantum states times Fermi-Dirac distribution equals the density of electrons. $D(E_\text{kin})$ is the number of electronic states at energy $E_\text{kin}$ in a range $\delta e_\text{kin}$ per $cm^3$.
+  \[D(E_\text{kin}) = \frac{8}{h^3}\sqrt{2}\pi(m^*)^{2/3}(E_\text{kin})^{1/2}\]
+
+  \subsection{Population of Electron States}
+  Concentration of electrons and holes ($g(E)$ int Neamen p. 109) is sum of all density of states times Fermi-Dirac probability:
+  \[\int_{E=0}^\infty f(E) \cdot D(E_\text{kin})\Dx E_\text{kin}\]
+
+  \textbf{Learn by hard:}
+  \[f(E) = \frac{1}{1+\exp\left(\frac{E-E_F}{kT}\right)} \approx e^{\frac{E-E_F}{kT}} \quad\text{if} \quad E \gg E_F\]
+  \begin{align*}
+    n_0 &= \frac{4\sqrt{2}(\pi m^* kT)^{2/3}}{h^3}e^{-(E_C-E_F)/(kT)} \\
+        &= N_C \cdot e^{-(E_C-E_F)/(kT)}
+  \end{align*}
+
+  For $E \gg E_F$ the Maxwell-Boltzmann approximation holds.
+
+  \subsubsection{General case}
+  \cgraphic{1}{img/dosgeneralcase}
+  When the Fermi level $E_F$ is more than $3kT$ below $E_C$ (or above $E_V$), the full Fermi-Dirac (FD) integral $F_{1/2}(\eta)$ is well approximated by the Maxwell-Boltzmann (MB) approximation $e^\eta$.
+  When $E_F$ is colser or even above $E_C$ (below $E_V$), the material is said to be ``degenerate''.
+
+  \subsubsection{Concentration of electrons and holes}
+  Back to (MB).
+  \begin{align*}
+    n_0 &= N_C \cdot e^{-\frac{E_C-E_F}{kT}} & N_C &= \frac{4\sqrt{2}(\pi m^*_n kT)^{3/2}}{h^3} \\
+    p_0 &= N_V \cdot e^{-\frac{E_F-E_V}{kT}} & N_V &= \frac{4\sqrt{2}(\pi m^*_p kT)^{3/2}}{h^3} 
+  \end{align*}
+
+  We see that the intrinsic carrier concentration depends on the temperature and the energy gap of the semiconductor:
+  \[n_0 p_0 = N_V N_C \cdot e^{-\frac{E_C-E_V}{kT}} = n_i^2 = N_VN_C\cdot e^{-\frac{E_G}{kT}}\]
+
+  Remember:
+  \ceqbox{n_0p_0 = n_i^2}
+
+  \textbf{Continue on slide 22, week 3}
+
+  \subsection{Fermi Level \& Doping}
+  \subsection{}
+  \subsection{}
 \end{multicols*}
 
 \setcounter{secnumdepth}{2}
