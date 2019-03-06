@@ -9,7 +9,7 @@
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
 \usepackage{lastpage}
 \usepackage{hyperref}
-\usepackage{graphicx}
+\usepackage[graphicx]{realboxes}
 % Include general settings and customized commands
 \input{settings/general}
 \input{settings/commands}
@@ -27,12 +27,12 @@
 
 
 \begin{document}
-	\setcounter{secnumdepth}{2} %no enumeration of sections
+	\setcounter{secnumdepth}{3} %no enumeration of sections
 	\begin{multicols*}{4}
 		%
 		\section*{Disclaimer}
 			This should be a summary of the Communication Networks course. The goal is to update it weekly with the currently taught material.  	
-			\pagebreak
+			\newpage
 
 		\maketitle 
 		\thispagestyle{fancy}
@@ -91,11 +91,11 @@
 					\item \textcolor{red}{\textbf{Reservation}}\\
 						  principle: reserve needed bandwidth in advance\\
 						  multiplexing: at the flow-level\\
-						  implementation.: circuit-switching  
+						  implementation: \textbf{circuit-switching}  
 					\item \textcolor{red}{\textbf{On-demand}}\\
 						  principle: send data when you need\\
 						  multiplexing: at the packet-level\\
-						  implementation.: packet-switching
+						  implementation: \textbf{packet-switching}
 				\end{itemize}
 				\textbf{Circuit-Switching:}
 				\vspace{-0.5cm}
@@ -158,7 +158,7 @@
 					\item \textbf{Tier-2} (national)
 					\begin{itemize}
 						\item provide transit to Tier-3s
-						\item have at least 1 provider 
+						\item have at least one provider 
 						\item $\approx$1'000s networks 	
 					\end{itemize}
 					\item \textbf{Tier-3} (local)
@@ -169,8 +169,262 @@
 					\end{itemize}
 				\end{itemize}
 				\includegraphics[width=\columnwidth]{images/Overview/hirarchy.png}
-				Some networks have an incentive (Anreiz) to connect directly, to reduce their bill with their own provider (direct traffic flow between them). This is known as \textcolor{Blue}{\textbf{peering}}
-	\end{multicols*}
-	\setcounter{secnumdepth}{2}
+				Some networks have an incentive (Anreiz) to connect directly, to reduce their bill with their own provider (direct traffic flow between them). This is known as \textcolor{Blue}{\textbf{peering}}\par
+				
+				\textbf{IXPs} (Internet Exchange Points): provide Internet connection for Tier2 and other providers. Only have \textcolor{Blue}{\textbf{peering-connections}} . 
+				\includegraphics[width=\columnwidth]{images/Overview/IXPs.png}
+				\subsection{How does communication happen?}
+				Use \textbf{protocols} to enable communication between processes in different networks. Protocols are like a conversation convention. There are thousands of different protocols. Subdivide in different \textbf{layers} to keep stuff simple (Modularity).
+				\begin{center}
+					\textbf{5 Layer Model}\\
+					\Rotatebox{270}{
+						\begin{tabular}{l l l l l}
+							  & Layer & service provided & role & protocol \\
+							\hline						
+							L5& Application  & network access & exchanges \textbf{messages} btw. proc. & HTTP, SMTP, FTP, SIP, ...  \\ 
+							\hline 
+							L4& Transport & end-to-end delivery & transport \textbf{segments} btw. end-sys.&TCP, UDP, SCTP \\ 
+							\hline 
+							L3& Network  & global best-effort delivery& move \textbf{packets} around the network&IP \\ 
+							\hline 
+							L2& Link & local best effort delivery& move \textbf{frames} across a link& Ethernet, Wifi, DSL, LTE,... \\ 
+							\hline 
+							L1& Physical & physical transfer bits & move \textbf{bits} across medium & copper, fiber, coax, ...\\ 
+						\end{tabular}
+					}
+				\end{center}
+				\par 
+				Each layer provides a service to the layer above by using the layer below. Physical is foundation and everything is then built on top. 
+				%\includegraphics[width=\columnwidth]{images/Overview/clock.png}
+				Each layer has a \textbf{unit of data} and is implemented with different protocols and technologies (HW/SW). We can see shift to more HW because of speed. 
+				\includegraphics[width=\columnwidth]{images/Overview/hw_sw.png}
+				Each layer takes message from above and encapsulates with its own \textbf{header} and/or \textbf{trailer}. 
+				\includegraphics[width=\columnwidth]{images/Overview/header_adding.png}
+				\begin{itemize}[noitemsep]
+					\item \textbf{Switches} act as a \textbf{L2 gateway}
+					\item \textbf{Routers} act as a \textbf{L3 gateway}
+				\end{itemize}
+			
+				\subsection{How do we characterize the network?}
+				We characterize the network with:
+				\begin{itemize}[noitemsep]
+					\item \textbf{Delay}	
+					\item \textbf{Loss}
+					\item \textbf{Throughput} 
+				\end{itemize}
+				\textbf{Delay}
+				\vspace{-0.2cm}
+				\begin{itemize}[noitemsep]
+					\item[$\rightarrow$] transmission $\vert$ link property
+					\item[$\rightarrow$] propagation $\vert$ link property
+					\item[$\rightarrow$] processing $\vert$ traffic $\vert$ mostly tiny
+					\item[$\rightarrow$] queuing $\vert$ traffic $\vert$ hardest to evaluate
+					\begin{itemize}
+						\item[$-$] arrival rate at the queue
+						\item[$-$] transmission rate of outgoing link
+						\item[$-$] traffic burstiness 
+					\end{itemize}
+					$\text{traffic intensity} = \dfrac{L\cdot a}{R}$\\
+					$a = \text{average packet arrival rate [packet/sec]} $\\
+					$R = \text{transmission rate of outgoing link [bit/sec]} $\\
+					$L = \text{fixed packet length [bit]} $	
+				\end{itemize}
+			\textbf{Loss}\\
+			If the buffer of a queue is full, it drops packets and hence the packets are lost.\par
+			\textbf{Throughput}\\
+			To compute throughput one has to consider the bottleneck link
+			\includegraphics[width=\columnwidth]{images/Overview/traffic_intensity.png}
+			As technology improves , throughput increases \& delays are getting lower, except for propagation $\rightarrow$ content delivery networks move content closer to you (e.g. akamai).
+			\includegraphics[width=\columnwidth]{images/Overview/akamai.png}
+			\newpage 
+			
+			\section{Concepts}
+			\subsection{Routing}
+			How do you guide \textbf{IP packet}s from a source to a destination? \\
+			Like an envelope, packets have a \textcolor{LimeGreen}{\textbf{header}} and a \textcolor{Orange}{\textbf{payload}}.\\ 
+			\begin{center}
+			\includegraphics[height=0.4\columnwidth]{images/Concepts/IP_packet.png}
+			\end{center}
+			Routers forward IP packets \textbf{hop-by-hop}. Routing is mostly not symmetrical (to/back not the same). Routers locally look up their \textbf{forwarding table} to know where to send the packet. Forwarding decisions necessarily depend on the \textbf{destination}, but also can depend on others (source, input port).\\
+			In addition to data-plane routers also have a control plane consisting of:
+			\vspace{-0.2cm}
+			\begin{itemize}[noitemsep]
+				\item Routing
+				\item Configuration
+				\item Statistics
+				\item ... 
+			\end{itemize}  
+			\textbf{Routing} is the control-plane process that \textbf{computes} and \textbf{populates} the forwarding tables.
+			\begin{center}
+				\includegraphics[height=0.4\columnwidth]{images/Concepts/control_data_plane.png}
+			\end{center}
+			\textbf{Forwarding vs. Routing}\\
+			\vspace{0.1cm}	
+			\includegraphics[width=\columnwidth]{images/Concepts/forwarding_vs_routing.png}
+			A global forwarding state is valid if and only if:
+			\begin{itemize}[noitemsep]
+				\item No dead ends
+				\item No loops
+			\end{itemize} 
+		
+			\subsubsection{Verifying that a forwarding state is valid}
+			It's easy to verify that a routing state is valid. \\
+			Simple algorithm: 
+			\vspace{-0.1cm}
+			\begin{enumerate}[noitemsep]
+				\item Mark all outgoing ports with an arrow
+				\item Eliminate all link with no arrow 
+				\item Sate is valid iff the remaining graph is a \textbf{spanning-tree}
+			\end{enumerate} 
+			See the following pictures for an example with a resulting spanning tree and one with no spanning tree, hence no valid forwarding state.
+			\includegraphics[width=\columnwidth]{images/Concepts/check_s_t.png}
+			 
+			\subsubsection{How to compute forwarding states}
+			Producing valid routing state is harder $\rightarrow$ prevent dead ends (easy) \& loops (hard). Prevent loops is the hard part, this is where routing protocols differ. There are three ways to compute valid routing state: 
+			\begin{enumerate}[noitemsep]
+				\item Use tree-like topologies $\vert$ Spanning-tree
+			 	\item Rely on a global network view $\vert$ Link-state
+			 	\item Rely on distributed computation $\vert$ Distance vector 
+		 	\end{enumerate}
+			In the Internet we use 3., because it is not possible to make precise map of whole Internet.\\
+			In Networks we use 2.\\
+			Inside (part of) Networks we use 1. \par
+			
+			\textbf{1. Tree-like topologies}\\
+			The easiest way to avoid loops is to route traffic in a loop free topology (Sherlock). Simple algorithm: 
+			%\vspace{-0.2cm}
+			\begin{enumerate}[noitemsep]
+				\item Take an arbitrary topology
+				\item Build a spanning tree and ignore all other links
+				\item Done!
+			\end{enumerate}
+			It works, because spanning trees only have one path between any two nodes. There are numerous tress for a topology and they vary in efficiency. \\
+			Once we have an spanning tree, forwarding is easy $\rightarrow$ just \textbf{flood} the packets everywhere (see picture below). This is very \textbf{inefficient}. 
+			\includegraphics[width=\columnwidth]{images/Concepts/flooding_1.png}
+			Solution: Nodes can \textbf{learn} how to reach nodes by remembering where packets came from. Ethernet works just like that. Learning is \textbf{topology-dependent!}\\
+			Routing by flooding on a spanning tree (in a nutshell):
+			\begin{itemize}[noitemsep]
+				\item Flood first packet to node you're trying to reach\\ $\rightarrow$ all switches learn where you are
+				\item When destination answers, some switches learn where it is\\
+				$\rightarrow$ some because packet to you is not flooded anymore
+				\item The decision to flood or not is done on each switch\\ $\rightarrow$ depending on who has communicated before 
+			\end{itemize}
+			\begin{itemize}[noitemsep]
+				\item \textcolor{ForestGreen}{Advantages:}
+				\begin{itemize}
+					\item \textcolor{ForestGreen}{Plug-and-Play (no config. needed)} 
+					\item \textcolor{ForestGreen}{Automatically adapts to moving host}
+				\end{itemize}
+				\item \textcolor{red}{Disadvantages:}
+				\begin{itemize}
+					\item \textcolor{red}{Mandate a spanning tree (eliminate many links form the topology)}
+					\item \textcolor{red}{Slow to react to failures / host movements}
+				\end{itemize} 
+			\end{itemize}
+			
+			\textbf{2. Rely on a global network view}\\
+			If \textbf{each routers} knows the entire graph, it can \textbf{locally} compute paths to all other nodes. Once a node \textit{u} knows the entire topology, it can compute shortest paths using \textbf{Dijkstra's algorithm}:
+			\includegraphics[width=\columnwidth]{images/Concepts/Dijkstra.png}
+			$u$ is the node running the algorithm\\
+			$c(u,v)$ is the weight of the link connecting $u$ and $v$. \\
+			$D(v)$ is the smallest distance currently known by $u$ to reach $v$.\\
+			\includegraphics[width=\columnwidth]{images/Concepts/Dijkstra_example.png} 
+			Normally the algorithm has $\mathcal{O}(n^2)$ complexity ($n$ being the number of nodes), but with the help of a heap (data-structure...) the complexity can be brought down to $\mathcal{O}(n\log n)$, which is really \textbf{efficient}.\\
+			From the shortest paths, $u$ can directly compute its forwarding table! 
+		    \includegraphics[width=\columnwidth]{images/Concepts/forwarding_table.png} 	 
+		    \textbf{How do we know cost?}\\
+		   	Initally, routers only knwo their ID and their neighbors and the cost to reach them. They then build message known as Link-state (with neighbors and their cost/weight) and flood it in the network\\
+		    $\rightarrow$ At the end of the flooding process everyone should have the exact same view of the network. \\
+		    I can configure wight of links \textbf{static} by hand (Dijkstra will converge), or \textbf{dynamic} (may be problematic).\par 
+		    
+		    \textbf{3. Rely on distributed computation}\\
+		    Paths can be computed in distributed computation.\\
+		    Let $d_x(y)$ be the cost of the least-cost path known by $x$ to reach $y$. \\
+		    Each node bundles these distances into one message (vector) that it \textbf{repeatedly} sends to all its neighbors. \\
+		    Each node updates its distances based on neighbors vectors:\\
+		    $d_x(y)=\min\{c(x,v)+d_v(y)\}$, overall neighbors $v$.\\
+		    This leads to a recursive computation of the shortest path, the result must be the same as Dijkstra algorithm! 
+		    Example: Compute shortest path from $u$ to D:\\
+		    $d_u(D)=\min\{c(u,A)+d_A(D), c(u,E)+d_E(D)\}$\\
+		    $\downarrow$\\
+		    $d_A(D)=\min\{c(A,B)+d_B(D), c(A,C)+d_C(D)\}=\min\{2+1,1+4\}=3$\\
+		    $\downarrow$\\
+		    $d_E(D)=\min\{c(E,C)+d_C(D), c(E,G)+d_G(D),c(E,u)+d_u(D)\}=5$\\
+		    $\downarrow$\\
+		    $d_u(D)=\min\{3+d_A(D), 2+d_E(D)\}=6$\\
+		    As before $u$ can directyl infer its forwarding table, by directing the traffic to its best neighbor (the one which advertises the smallest cost). Evaluating the complexity of DV is harder. 
+		    
+		    \subsection{Reliable delivery}
+		    How do you ensure reliable transport on top of best-effort delivery?\\
+		    \textbf{Goals:}
+		    \begin{itemize}[noitemsep]
+		    	\item Keep the network simple,dumb\\
+		    	$\rightarrow$ make it easy to build/operate network
+		    	\item Keep application as network unaware as possible\\
+		    	$\rightarrow$ Developer should focus on app, not network 
+		    \end{itemize}
+	    	\textbf{Design:}
+	    	\begin{itemize}
+	    		\item Implement reliability in-between, in the networking stack\\
+	    		$\rightarrow$ relive the burden from both the app and network
+	    	\end{itemize}
+    		The Internet puts \textbf{reliability in L4}, just above the network layer.\\
+    		What can the mean Internet do to our IP-packets:
+    		\begin{itemize}[noitemsep]
+    			\item Lost or delayed
+    			\item Corruption
+    			\item Reordering
+    			\item Duplication 
+    		\end{itemize}
+    		We have four goals of reliable transfer:
+    		\begin{itemize}[noitemsep]
+    			\item \textbf{Correctness:} ensure data is delivered, in order, and untouched
+    			\item \textbf{Timeliness:} minimize time until data is transferred 
+    			\item \textbf{Efficiency:} optimal use of bandwidth
+    			\item \textbf{Fairness:} play well with concurrent communications  
+    		\end{itemize}
+    		\textbf{Correctness:}\\
+    		A reliable transport design is correct iff:\\
+    		A packet is \textcolor{Red}{always resent} if the previous packet was lost or corrupted. A packet may be resent at other times.\\
+    		Note: It is \textcolor{Red}{ok to give} up after a while, but it must be announced to the application.\par
+    		
+    		Designing a \textcolor{Red}{correct}, \textcolor{Red}{timely}, \textcolor{Red}{efficient} transport mechanism knowing that packets can get \textcolor{Red}{lost} (focus on mentioned aspects):
+    		\includegraphics[width=\columnwidth]{images/Concepts/send_packet.png} 	 
+    		There is a clear tradeoff between timeliness and efficiency in the selection of the timeout value. Big challenge to choose optimal value.\\
+    		Small timers: Risk of \textbf{unnecessary retransmissions}\\
+    		Large timers: Risk of \textbf{slow transmission} \par
+    		
+    		To improve timeliness just send multiple packets at the same time and not wait to ACK every packet. \\
+    		Approach: 
+    		\begin{itemize}[noitemsep]
+    			\item Add sequence number to every packet
+    			\item Add buffers to sender and receiver: 
+    			\begin{itemize}
+    				\item[$-$] Sender: store packets sent \& not acknowledged
+    				\item[$-$] Receiver: store out-of-order packets received
+    			\end{itemize}
+    		\end{itemize} 
+    		\includegraphics[width=\columnwidth]{images/Concepts/packets_wo_ack.png} 	 
+    		One problem that can occur is: 
+    		\includegraphics[width=\columnwidth]{images/Concepts/packets_wo_ack_problem.png} 
+    		To solve this issue  we need a mechanism for \textcolor{Red}{\textbf{flow control}}.
+    		Using a \textbf{sliding window} is one way to do that:
+    		\begin{itemize}
+    			\item[$-$] Sender keeps a list of the sequence \# it can send.\\
+	   			$\rightarrow$ known as the \textit{sending window}
+	   			\columnbreak
+	   			\item[$-$] Receiver keeps a list of the acceptable sequence \#\\
+	   			$\rightarrow$ known as the \textit{receiving window }
+	   			\item[$-$] Sender and receiver negotiate the window size\\
+	   			$\rightarrow$ sending window $\le$ receiving window
+    		\end{itemize} 
+    		Example with a window-size of 4 packets:
+    		\includegraphics[width=\columnwidth]{images/Concepts/windowsize4_1.png} 
+    		\vspace{0.3cm}
+    		Window after sender receives \textcolor{Red}{ACK 4 }
+    		\vspace{0.3cm}
+    		\includegraphics[width=\columnwidth]{images/Concepts/windowsize4_2.png} 
+    		Timeliness of the window protocol depends on the size of the sending window. 
+		\end{multicols*}
+	\setcounter{secnumdepth}{3}
 \end{document}
-
