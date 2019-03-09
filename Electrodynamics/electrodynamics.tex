@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-02-20 17:26:28
 % @Last Modified by:   Noah Huetter
-% @Last Modified time: 2019-03-09 17:23:36
+% @Last Modified time: 2019-03-09 17:54:04
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -279,6 +279,26 @@
 
   \cgraphic{0.8}{img/emwave}
 
+  \subsubsection{Superposition of two waves}
+  Superposition of two plane waves of the form:
+  \[\vec{E}(\vec{r},t) = \Re\left\{(\vec{E}_1+\vec{E}_2) e^{i(k_z-\omega t)}\right\}\]
+  \begin{enumerate}
+    \item Linear polarized
+      \[\vec{E}_1, \vec{E}_2 \in \mathrm{R}\]
+    \item Circular polarized
+      \[\vec{E}_2 = i\vec{E}_1\]
+    \item Elliptic polarized
+      \[\vec{E}_1, \vec{E}_2 \in \mathrm{C}\]
+  \end{enumerate}
+
+  \subsection{Evanescent Waves}
+  \cgraphic{0.8}{img/evanescent}
+  Exponentially decaying wave. Rewriting dispersion relation:
+  \[k_z \sqrt{(\omega^2/c^2)-(k_x^2+k_y^2)}\]
+  If $(k_x^2+k_y^2)$ becomes larger than $k^2=\omega^2/c^2$ then $k_z$ becomes imaginary. The solution then turns into
+  \[\vec{E}(\vec{r},t) = \Re\left\{ \vec{E}_0 e ^{\pm i(k_xx + k_yy)-i\omega t} \right\} e^{\mp|k_z|z}\]
+
+  This wave exponentially decays in the direction of $z$.
 
   % ---------------------------------------------------------------------------
   \vfill\null
