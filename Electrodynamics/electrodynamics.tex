@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-02-20 17:26:28
 % @Last Modified by:   Noah Huetter
-% @Last Modified time: 2019-03-09 15:20:51
+% @Last Modified time: 2019-03-09 17:23:36
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -223,7 +223,7 @@
   \[\mbf{j}_\text{} = \mbf{j}_\text{0} + \mbf{j}_\text{pol} + \mbf{j}_\text{mag}\]
 
   To relate the induced magnetization current to the $\mbf{B}$-field we define an analogy:
-  \[\int_{\partialA}\mbf{M}\cdot\Dx s= \int_A \mbf{j}_\text{mag}\cdot \mbf{n} \Dx a\]
+  \[\int_{\partial A}\mbf{M}\cdot\Dx s= \int_A \mbf{j}_\text{mag}\cdot \mbf{n} \Dx a\]
 
   We can write the magnetic field $\mbf{H}$:
   \[\mbf{H}=\frac{1}{\mu_0}\mbf{B}-\mbf{M}\]
@@ -250,6 +250,34 @@
 
   \subsubsection{Continuity equation}
   \[\nabla\cdot\mbf{j}_0(\mbf{r},t) + \pabl{t}\rho_0(\mbf{r},t) = 0\]
+
+  % ---------------------------------------------------------------------------
+  \section{Wave Equation}
+  % ---------------------------------------------------------------------------
+  Arranging the first and second Maxwell equation yields the electro magnetic wave equation:
+  \cgraphic{1}{img/eqwave}
+
+  \subsection{Homogeneous Solution in Free Space}
+  In absence of matter and sources. In free space $\nabla\cdot\mbf{E}=0$ the equation becomes:
+  \[\nabla^2\mbf{E} - \frac{1}{c^2}\frac{\partial^2}{\partial t^2}\mbf{E} = 0\]
+
+  For $\mbf{H}$-field it is equivalent. The 1D solution is solved by d'Alembert $E(x,t)=E(x-ct)$, which shows that the field propagates through space at constant velocity $c$.
+
+  For the general solution using separation of variables, the ansatz becomes:
+  \[\mbf{E}(\mbf{r},t) = \Re\{\mbf{E}(\mbf{r}) e^{-i\omega t}\}\]
+  Where $\mbf{E}(\mbf{r})$ is complex. Inserting into the wave equation result in the Helmholtz equation ($\omega\in\mathbb{C}$):
+  \[\left[\nabla^2 + \frac{\omega^2}{c^2}\right]\mbf{E}(\mbf{r}) = 0\]
+
+  \subsubsection{Plane waves}
+  The solution is:
+  \[\vec{E}_0 e^{\pm i\vec{k}\vec{r}} \quad \vec{k}\bot\vec{E}_0\]
+  With the dispersion relation:
+  \[k = k_x^2+k_y^2+k_z^2 = \frac{\omega^2}{c^2}\]
+
+  Solutions with the $+$ sign are outgoing waves propagating in direction of $\vec{k}$.
+  The corresponding magnetic field is found by using Maxwell's equation $\nabla\times\vec{E} = i\omega\mu_0\vec{H}$ we find $\vec{H}_0=(\omega\mu_0)^{-1}(\vec{k}\times\vec{E}_0)$, that is, the magnetic field vector is perpendicular to the electric field vector and the wavevector.
+
+  \cgraphic{0.8}{img/emwave}
 
 
   % ---------------------------------------------------------------------------
