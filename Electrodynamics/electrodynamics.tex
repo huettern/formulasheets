@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-02-20 17:26:28
 % @Last Modified by:   Noah Huetter
-% @Last Modified time: 2019-02-28 17:15:00
+% @Last Modified time: 2019-03-09 15:20:51
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -63,9 +63,10 @@
     $\mbf{j}$ & Current density \\
     $\mbf{E}$ & Electric field \\
     $\mbf{H}$ & Magnetic field \\
+    $\mbf{B}$ & Magnetic flux density \\
     $\mbf{D}$ & Displacement \\
     $\mbf{M}$ & Magnetization \\
-    $\phi$ & Electric potential
+    $\phi(r)$ & Electrostatic potential at point $r$
   \end{tabular}
   % ---------------------------------------------------------------------------
   \section{Mathematics}
@@ -145,37 +146,6 @@
   The two Kirchhoff laws form the basis for circuit theory and electronic design.
 
   % ---------------------------------------------------------------------------
-  \section{Maxwell's Equations}
-  % ---------------------------------------------------------------------------
-  The pre-Maxwellian equations summarize the electromagnetism before Maxwell. In 1873 however, Maxwell introduced a critical modification.
-
-  \subsection{Displacement Current}
-  The law that the net flux through a closed surface is zero is flawed. For example: Identical charges released will speed out because of Coulomb repulsion and there will be a net outward current. Kirchhoffs first law has to be corrected as follows:
-  \[\int_{\partial V} \mbf{j}(\mbf{r},t) \cdot \mbf{n} \Dx a = -\pabl{t} \int_V  \rho(\mbf{r},t) \Dx V\]
-
-  \texttt{continuity equation}: The outward current is balanced by the decrease of charge inside the surface.
-
-  \subsection{Maxwell's Equations in Integral Form}
-  \begin{align*}
-    \int_{\partial V} \mbf{D}(\mbf{r},t) \cdot\mbf{n}\Dx a &= \int_V \rho_0(\mbf{r},t) \Dx V \\
-    \int_{\partial A} \mbf{E}(\mbf{r},t) \cdot \Dx s &= -\frac{\partial}{\partial t}\int_A \mbf{B}(\mbf{r},t) \cdot \mbf{n} \Dx a \\
-    \int_{\partial A} \mbf{H}(\mbf{r},t) \cdot \Dx s &= \int_A \left[\mbf{j}_0(\mbf{r},t) + \frac{\partial}{\partial t}\mbf{D}(\mbf{r},t)\right] \cdot \mbf{n} \Dx a \\
-    \int_{\partial V} \mbf{B}(\mbf{r},t) \cdot \mbf{n} \Dx a &= 0
-  \end{align*}
-
-  The displacement $D$ and the magnetic field $H$ account for secondary sources through
-  \[\mbf{D}(\mbf{r},t) = \epsilon_0 \mbf{E}(\mbf{r},t)+\mbf{P}(\mbf{r},t)\]
-  \[ \mbf{B}(\mbf{r},t) = \mu_0 [\mbf{H}(\mbf{r},t) + \mbf{M}(\mbf{r},t)]\]
-
-  \subsection{Maxwell's Equations in Differential Form}
-  \begin{align*}
-    \nabla \cdot \mbf{D}(\mbf{r},t) &= \rho_0(\mbf{r},t) \\
-    \nabla\times \mbf{E}(\mbf{r},t) &= -\pabl{t}\mbf{B}(\mbf{r},t) \\
-    \nabla\times \mbf{H}(\mbf{r},t) &= \pabl{t}\mbf{D}(\mbf{r},t) + \mbf{j}_0(\mbf{r},t)\\
-    \nabla \cdot \mbf{B}(\mbf{r},t) &= 0
-  \end{align*}
-
-  % ---------------------------------------------------------------------------
   \section{Electrostatics}
   % ---------------------------------------------------------------------------
   We modify Faraday's law by setting the change of magnetic flux to zero. 
@@ -203,6 +173,83 @@
   \begin{align*}
     \vec{E} &= \frac{1}{4\pi\epsilon_0}\frac{q}{r^2}\vec{n}_r & \vec{E}&=-\nabla\phi & \phi&=\frac{1}{4\pi\epsilon_0}\frac{q}{r}
   \end{align*}
+
+  \subsection{Dipole: 2-Point Charge}
+  \cgraphic{0.8}{img/dipole2}
+  The electrostatic potential at a given point $\vec{r}$ for the two point charges is:
+  \[\phi(\vec{r}) = \frac{q}{4\pi\epsilon_0}\left(\frac{1}{r_+}-\frac{1}{r_-}\right) =\frac{q}{4\pi\epsilon_0}\frac{s}{r^2}\cos\theta \]
+  \[\varphi(\vec{r}) = \frac{q}{4\pi\epsilon_0}\frac{\vec{s}\cdot\vec{r}}{r^3} \]
+
+  Where $r = |\vec{r}|$.
+
+  \subsubsection{Definition: Dipole}
+  \[\vec{p}=\lim_{\substack{\vec{s}\to 0 \\ \vec{q}\to \infty}}(q\vec{s}) \leadsto \phi(\vec{r})=\frac{1}{4\pi\epsilon_0}\frac{\vec{p}\cdot\vec{r}}{r^3}\]
+
+
+  % ---------------------------------------------------------------------------
+  \section{Maxwell's Equations}
+  % ---------------------------------------------------------------------------
+  The pre-Maxwellian equations summarize the electromagnetism before Maxwell. In 1873 however, Maxwell introduced a critical modification.
+
+  \subsection{Displacement Current}
+  The law that the net flux through a closed surface is zero is flawed. For example: Identical charges released will speed out because of Coulomb repulsion and there will be a net outward current. Kirchhoffs first law has to be corrected as follows:
+  \[\int_{\partial V} \mbf{j}(\mbf{r},t) \cdot \mbf{n} \Dx a = -\pabl{t} \int_V  \rho(\mbf{r},t) \Dx V\]
+
+  \texttt{continuity equation}: The outward current is balanced by the decrease of charge inside the surface.
+
+  \subsubsection{Modify Ampere's law}
+  To end up with the correct conservation law:
+  \[\Int_{\partial A}\mbf{B}(\mbf{r},t)\Dx s = \mu_0\Int_A\mbf{j}(\mbf{r},t)\cdot \mbf{n} \Dx a + \frac{1}{c^2}\pabl{t}\Int_A \mbf{E}(\mbf{r},t)\cdot \mbf{n}\Dx a\]
+
+  \subsection{Interaction of Fields with Matter}
+  $\mbf{E}$ and $\mbf{B}$ can interact with materials and generate induced charges and currents. These are then called secondary sources.
+
+  \subsubsection{Induced by electrical field $\mbf{E}$}
+  $\rho_{\text{pol}}$ is the charge density induced in matter through the interaction with the electric field. $\rho_{\text{pol}}$ is the polarization charge density. The net charge density inside the material remains zero.
+
+  \[\rho = \rho_0 + \rho_{\text{pol}}\]
+
+  To account for polarization charges we introduce the polarization $\mbf{P}$:
+  \[\Int_{\partial V}\mbf{P}(\mbf{r},t)\cdot\mbf{n}\Dx a = \int_V \rho_{\text{pol}}(\mbf{r},t)\Dx V\]
+
+  After inserting this into Gauss' law, we define the \textit{electric displacement} $\mbf{D}$ as:
+  \[\mbf{D} = \epsilon_0\mbf{E}+\mbf{P}\]
+
+  Further we denote the change in polarization as the polarization current density:
+  \[\mbf{j}_\text{pol} = \pabl{t}\mbf{P}(\mbf{r},t)\]
+  
+  \subsubsection{Induced by magnetic field}
+  According to Ampere's law, the interaction of matter with magnetic fields can induce magnetization currents. The magnetization current density is called $\mbf{j}_\text{mag}$. The total current density can be written as
+  \[\mbf{j}_\text{} = \mbf{j}_\text{0} + \mbf{j}_\text{pol} + \mbf{j}_\text{mag}\]
+
+  To relate the induced magnetization current to the $\mbf{B}$-field we define an analogy:
+  \[\int_{\partialA}\mbf{M}\cdot\Dx s= \int_A \mbf{j}_\text{mag}\cdot \mbf{n} \Dx a\]
+
+  We can write the magnetic field $\mbf{H}$:
+  \[\mbf{H}=\frac{1}{\mu_0}\mbf{B}-\mbf{M}\]
+
+  \subsection{Maxwell's Equations in Integral Form}
+  \begin{align*}
+    \int_{\partial V} \mbf{D}(\mbf{r},t) \cdot\mbf{n}\Dx a &= \int_V \rho_0(\mbf{r},t) \Dx V \\
+    \int_{\partial A} \mbf{E}(\mbf{r},t) \cdot \Dx s &= -\frac{\partial}{\partial t}\int_A \mbf{B}(\mbf{r},t) \cdot \mbf{n} \Dx a \\
+    \int_{\partial A} \mbf{H}(\mbf{r},t) \cdot \Dx s &= \int_A \left[\mbf{j}_0(\mbf{r},t) + \frac{\partial}{\partial t}\mbf{D}(\mbf{r},t)\right] \cdot \mbf{n} \Dx a \\
+    \int_{\partial V} \mbf{B}(\mbf{r},t) \cdot \mbf{n} \Dx a &= 0
+  \end{align*}
+
+  The displacement $D$ and the magnetic field $H$ account for secondary sources through
+  \[\mbf{D}(\mbf{r},t) = \epsilon_0 \mbf{E}(\mbf{r},t)+\mbf{P}(\mbf{r},t)\]
+  \[ \mbf{B}(\mbf{r},t) = \mu_0 [\mbf{H}(\mbf{r},t) + \mbf{M}(\mbf{r},t)]\]
+
+  \subsection{Maxwell's Equations in Differential Form}
+  \begin{align*}
+    \nabla \cdot \mbf{D}(\mbf{r},t) &= \rho_0(\mbf{r},t) \\
+    \nabla\times \mbf{E}(\mbf{r},t) &= -\pabl{t}\mbf{B}(\mbf{r},t) \\
+    \nabla\times \mbf{H}(\mbf{r},t) &= \pabl{t}\mbf{D}(\mbf{r},t) + \mbf{j}_0(\mbf{r},t)\\
+    \nabla \cdot \mbf{B}(\mbf{r},t) &= 0
+  \end{align*}
+
+  \subsubsection{Continuity equation}
+  \[\nabla\cdot\mbf{j}_0(\mbf{r},t) + \pabl{t}\rho_0(\mbf{r},t) = 0\]
 
 
   % ---------------------------------------------------------------------------
@@ -278,7 +325,7 @@
     \textbf{Gradient} & $\nabla f$ &
     $\Pabl{f}{x} \vec{n}_x + \Pabl{f}{y} \vec{n}_y + \Pabl{f}{z} \vec{n}_z$ &
     $\Pabl{f}{r} \vec{n}_r + \frac{1}{r}\Pabl{f}{\phi}\vec{n}_\phi + \Pabl{f}{z}\vec{n}_z$ &
-    $\Pabl{f}{r} \vec{n}_r + \frac{1}{r}\Pabl{f}{\theta}\vec{n}_\theta + \frac{1}{r\sin\theta\Pabl{f}{\phi}\vec{n}_\phi}$ \\
+    $\Pabl{f}{r} \vec{n}_r + \frac{1}{r}\Pabl{f}{\theta}\vec{n}_\theta + \frac{1}{r\sin\theta}\Pabl{f}{\phi}\vec{n}_\phi$ \\
 
     \hline
     \textbf{Divergence} & $\nabla \cdot A$ &
