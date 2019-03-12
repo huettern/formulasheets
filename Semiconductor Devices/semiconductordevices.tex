@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-02-20 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-03-06 21:54:08
+% @Last Modified time: 2019-03-12 18:17:36
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -190,9 +190,13 @@
 
 
   \begin{tabular}[h]{l l}
-    $E_D$   & Donor energy state \\
-    $E_C$   & Conduction band edge\\
-    $m^*$   & Effective mass of (electron) in \textit{e.g.} Silicon \\
+    $E_D$   & Donor energy level/state \\
+    $E_c$   & Conduction band edge\\
+    $E_v$   & Valence band edge\\
+    $E_F$   & Fermi energy\\
+    $E_{Fi}$   & Intrinsic Fermi energy\\
+    $E_g$   & Band gap width/energy\\
+    $m^*$   & Effective mass of electron(n)/hole(p) \\
     $\epsilon_0$ & Vacuum permittivity $8.854\cdot 10^{-12}$F/m\\
     $n_i$   & Intrinsic electron concentration \\
     $p_i$   & Intrinsic hole concentration\\
@@ -202,11 +206,11 @@
     $n_d$   & Concenctraiton of $e^-$ in donor state \\
     $p_a$   & Concenctraiton of holes in acceptor state \\
     $N_d$   & Concentration of donor atoms\\
-    $N_d$   & Concentration of acceptor atoms\\
+    $N_a$   & Concentration of acceptor atoms\\
+    $N_c$   & Effective density of states\\
+    $N_v$   & Effective density of states\\
     $N_d^+$   & Conc. of pos. charged (ionized) donors \\
     $N_a^-$   & Conc. of neg. charged (ionized) acceptors \\
-    $E_F$   & Fermi Energy \\
-    $$   &  \\
     % $$   &  \\
   \end{tabular}
 
@@ -215,10 +219,10 @@
   
   \subsubsection{N-Doping}
   \cgraphic{0.7}{img/ndope}
-  Taking donors from PT col \rom{5} (P, As, Sb) that have 5 valence electrons. 4 make covalent bond, 5\ts{th} is ``not needed'' and looks like a hydrogen atom. It is easily inozed/excited to conduction band. Its energy state is close to CB ($E_C$).
+  Taking donors from PT col \rom{5} (P, As, Sb) that have 5 valence electrons. 4 make covalent bond, 5\ts{th} is ``not needed'' and looks like a hydrogen atom. It is easily inozed/excited to conduction band. Its energy state is close to CB ($E_c$).
   \attention{Overall, the solid is still charge neutral but with impurities}\attention
   
-  Donors introduce an energy state $E_D$ near the conduction band edge $E_C$. $e_-$ easily promoted to conduction band because $E_C$, $E_D$ are close compared to $E_C$, $E_V$ ($E_G$). Only $E_C-E_D$ is needed to free the electron. \textbf{Extra electrons are added without adding holes.}
+  Donors introduce an energy state $E_D$ near the conduction band edge $E_c$. $e_-$ easily promoted to conduction band because $E_c$, $E_D$ are close compared to $E_c$, $E_v$ ($E_g$). Only $E_c-E_D$ is needed to free the electron. \textbf{Extra electrons are added without adding holes.}
 
   \subsubsection{P-Doping}
   \cgraphic{0.7}{img/pdope}
@@ -264,26 +268,26 @@
   \textbf{Learn by hard:}
   \[f(E) = \frac{1}{1+\exp\left(\frac{E-E_F}{kT}\right)} \approx e^{\frac{E-E_F}{kT}} \quad\text{if} \quad E \gg E_F\]
   \begin{align*}
-    n_0 &= \frac{4\sqrt{2}(\pi m^* kT)^{2/3}}{h^3}e^{-(E_C-E_F)/(kT)} \\
-        &= N_C \cdot e^{-(E_C-E_F)/(kT)}
+    n_0 &= \frac{4\sqrt{2}(\pi m^* kT)^{2/3}}{h^3}e^{-(E_c-E_F)/(kT)} \\
+        &= N_c \cdot e^{-(E_c-E_F)/(kT)}
   \end{align*}
 
   For $E \gg E_F$ the Maxwell-Boltzmann approximation holds.
 
   \subsubsection{General case}
   \cgraphic{1}{img/dosgeneralcase}
-  When the Fermi level $E_F$ is more than $3kT$ below $E_C$ (or above $E_V$), the full Fermi-Dirac (FD) integral $F_{1/2}(\eta)$ is well approximated by the Maxwell-Boltzmann (MB) approximation $e^\eta$.
-  When $E_F$ is colser or even above $E_C$ (below $E_V$), the material is said to be ``degenerate''.
+  When the Fermi level $E_F$ is more than $3kT$ below $E_c$ (or above $E_v$), the full Fermi-Dirac (FD) integral $F_{1/2}(\eta)$ is well approximated by the Maxwell-Boltzmann (MB) approximation $e^\eta$.
+  When $E_F$ is colser or even above $E_c$ (below $E_v$), the material is said to be ``degenerate''.
 
   \subsubsection{Concentration of electrons and holes}
   Back to (MB).
   \begin{align*}
-    n_0 &= N_C \cdot e^{-\frac{E_C-E_F}{kT}} & N_C &= \frac{4\sqrt{2}(\pi m^*_n kT)^{3/2}}{h^3} \\
-    p_0 &= N_V \cdot e^{-\frac{E_F-E_V}{kT}} & N_V &= \frac{4\sqrt{2}(\pi m^*_p kT)^{3/2}}{h^3} 
+    n_0 &= N_c \cdot e^{-\frac{E_c-E_F}{kT}} & N_c &= \frac{4\sqrt{2}(\pi m^*_n kT)^{3/2}}{h^3} \\
+    p_0 &= N_v \cdot e^{-\frac{E_F-E_v}{kT}} & N_v &= \frac{4\sqrt{2}(\pi m^*_p kT)^{3/2}}{h^3} 
   \end{align*}
 
   We see that the intrinsic carrier concentration depends on the temperature and the energy gap of the semiconductor:
-  \[n_0 p_0 = N_V N_C \cdot e^{-\frac{E_C-E_V}{kT}} = n_i^2 = N_VN_C\cdot e^{-\frac{E_G}{kT}}\]
+  \[n_0 p_0 = N_v N_c \cdot e^{-\frac{E_c-E_v}{kT}} = n_i^2 = N_vN_c\cdot e^{-\frac{E_g}{kT}}\]
 
   Remember:
   \ceqbox{n_0p_0 = n_i^2}
@@ -291,7 +295,61 @@
   \textbf{Continue on slide 22, week 3}
 
   \subsection{Fermi Level \& Doping}
-  \subsection{}
+  
+  \subsection{Summary}
+
+    \textbf{Materials at 300K} \\
+      \begin{tabular}[h]{l c c c}
+        Material & Si & Ge & GaAs \\
+        $n_i^2(cm^{-6})$  & $9.3\cdot 10^{19}$  & $5.76\cdot 10^{26}$ & $3.24\cdot 10^{12}$ \\
+        $N_c(cm^{-3})$    & $2.86\cdot 10^{19}$ & $1.04\cdot 10^{19}$ & $4.7\cdot 10^{17}$ \\
+
+        $N_v(cm^{-3})$    & $1.04\cdot 10^{19}$ & $6.0\cdot 10^{18}$  & $7.0\cdot 10^{18}$ \\
+        $E_g (eV)$        & $1.12$ & $0.66$ & $1.42$ \\
+        $m_n^*/m_0$       & $1.08$ & $0.067$ & $0.55$\\
+        $m_p^*/m_0$       & $0.56$ & $0.48$ & $0.37$\\
+      \end{tabular}
+
+    \textbf{Intrinsic Band Gap} \\
+      \begin{align*}
+        E_g &= -kT\ln\frac{n_i^2}{N_c N_v} &
+        n_i^2 &= N_v N_v e^{-\frac{E_g}{kT}} \\
+        n_0 &= N_ce^{\frac{-(E_c-E_F)}{kT}} &
+        p_0 &= N_ve^{\frac{-(E_F-E_v)}{kT}}
+      \end{align*}
+
+    \textbf{Effective Mass} \\
+      \begin{align*}
+        N_c &= 2\left(\frac{2\pi m_n^*kT}{h^2}\right)^{3/2} &
+        N_v &= 2\left(\frac{2\pi m_p^*kT}{h^2}\right)^{3/2} &
+      \end{align*}
+
+    \textbf{Intrinsic Carrier Concentration} \\
+      \begin{align*}
+        n_i^2 &= N_cN_ve^{\frac{-(E_c-E_v)}{kT}} = N_cN_ve^{\frac{-E_g}{kT}}
+      \end{align*}
+
+    \textbf{Intrinsic Fermi Level} \\
+      \begin{align*}
+        E_{Fi} - E_{\text{midgap}} &= \frac{3}{4}kT\ln\left(\frac{m_p^*}{m_n^*}\right) \\
+        E_{Fi} &= \frac{E_v+E_c}{2} + \frac{kT}{2}\ln\left(\frac{N_v}{N_c}\right)
+      \end{align*}
+
+    \textbf{Equilibrium distribution of el/holes} \\
+      \begin{align*}
+        n_0 &= n_i e^{\frac{E_F-E_{Fi}}{kT}} &
+        p_0 &= n_i e^{\frac{-(E_F-E_{Fi})}{kT}} &
+      \end{align*}
+
+    \textbf{The $n_0p_0$ product} \\
+      \ceqbox{n_0p_0 = n_i^2}
+
+    \textbf{Statistics of Donors and Acceptors} \\
+      \begin{align*}
+        n_d &= \frac{N_d}{1+\frac{1}{2}e^{\frac{E_d-E_F}{kT}}} \\
+        p_d &= \frac{N_a}{1+\frac{1}{2}e^{\frac{E_F-E_a}{kT}}} \\
+      \end{align*}
+
   \subsection{}
 \end{multicols*}
 
