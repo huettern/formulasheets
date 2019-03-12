@@ -413,18 +413,180 @@
     			\item[$-$] Sender keeps a list of the sequence \# it can send.\\
 	   			$\rightarrow$ known as the \textit{sending window}
 	   			\columnbreak
-	   			\item[$-$] Receiver keeps a list of the acceptable sequence \#\\
+	   			\item[$-$] Receiver keeps a list of acceptable sequence \#\\
 	   			$\rightarrow$ known as the \textit{receiving window }
 	   			\item[$-$] Sender and receiver negotiate the window size\\
 	   			$\rightarrow$ sending window $\le$ receiving window
     		\end{itemize} 
     		Example with a window-size of 4 packets:
     		\includegraphics[width=\columnwidth]{images/Concepts/windowsize4_1.png} 
-    		\vspace{0.3cm}
+    		%\vspace{0.2cm}
     		Window after sender receives \textcolor{Red}{ACK 4 }
-    		\vspace{0.3cm}
+    		%\vspace{0.1cm}
     		\includegraphics[width=\columnwidth]{images/Concepts/windowsize4_2.png} 
-    		Timeliness of the window protocol depends on the size of the sending window. 
+    		Timeliness of the window protocol depends on the size of the sending window.\par
+    		
+    		\textbf{ACKing individual packets}
+    		\vspace{-0.2cm}
+    		\begin{itemize}[noitemsep]
+    			\item \textcolor{ForestGreen}{Advantages:}
+    			\begin{itemize}
+    				\item \textcolor{ForestGreen}{Know fate of each packet} 
+    				\item \textcolor{ForestGreen}{Simple window algorithm}
+    				\item \textcolor{ForestGreen}{Not sensitive to reordering}
+    			\end{itemize}
+    			\item \textcolor{red}{Disadvantages:}
+    			\begin{itemize}
+    				\item \textcolor{red}{Unnecessary retransmission upon losses}
+    			\end{itemize} 
+			\end{itemize}
+		
+    		\textbf{Cumulative ACKs}\\
+   			ACK the highest sequence number for which all the previous packets have been received.
+   			\vspace{-0.2cm}
+   			\begin{itemize}[noitemsep]
+   				\item \textcolor{ForestGreen}{Advantages:}
+   				\begin{itemize}
+   					\item \textcolor{ForestGreen}{Recover from lost ACKs}
+   				\end{itemize}
+   				\item \textcolor{red}{Disadvantages:}
+   				\begin{itemize}
+   					\item \textcolor{red}{Causes unnecessary retransmissions}
+   					\item \textcolor{red}{Confused by reordering}
+   					\item \textcolor{red}{Incomplete information about which packets have arrived}
+   				\end{itemize} 
+   			\end{itemize}
+   		
+   			\textbf{Full information feedback}\\
+   			List all packets that have been received highest cumulative ACK, plus any additional packets
+   			\vspace{-0.2cm}
+   			\begin{itemize}[noitemsep]
+   				\item \textcolor{ForestGreen}{Advantages:}
+   				\begin{itemize}
+   					\item \textcolor{ForestGreen}{Complete information}
+   					\item \textcolor{ForestGreen}{Resilient (belastbar) form of individual ACKs}
+   				\end{itemize}
+   				\item \textcolor{red}{Disadvantages:}
+   				\begin{itemize}
+   					\item \textcolor{red}{Overhead}
+   				\end{itemize} 
+   			\end{itemize}
+   			
+   			With individual ACKs and full information detection of a missing packet is easy (implicit/explicit). \\
+   			With cumulative ACKs missing packets are harder to know. \par
+   			
+   			\textbf{Fairness:}\\
+   			Fair is mostly not efficient. Defining what fair is, is not easy. What matters is to \textbf{avoid starvation}. Equal-per-flow is good enough for this. Simply dividing available bandwidth doesn't work.\\
+   			We want to give users with small demands what they want and evenly distribute the rest. \textbf{max-min fair allocation} is such that: the lowest demand is maximized $\rightarrow$ the second lowest is maximized $\rightarrow$ the third lowest is maximized and so on...\\
+   			\textbf{max-min fair allocation:}
+   			\begin{enumerate}[noitemsep]
+   				\item Start with all flows at rate 0
+   				\item Increase the flows until there is a new bottleneck in the network
+   				\item Hold the fixed rate of the flows that are bottlenecked
+   				\item Got to step 2 for the remaining flows. 	 
+   			\end{enumerate}  
+   			Max-min fair allocation can be approximated by increasing window until a loss is detected. \par
+   			
+   			\textbf{Corruption:}\\
+   			Dealing with corruption is easy: Rely on a checksum and treat corrupted packets as lost ones. \par 
+   			
+   			\textbf{Reordering:}\\
+   			Effect depends on ACKing mechanism which is used:\\
+   			$\bullet$ Individal ACK: \textcolor{ForestGreen}{no problem}\\
+   			$\bullet$ Full feedback: \textcolor{ForestGreen}{no problem}\\
+   			$\bullet$ Cumm. ACKs: \textcolor{Red}{Create duplicate ACKs}.\par
+   			
+   			\textbf{Duplicates:}\\
+   			Can lead to duplicated ACKs whose effect depends on the ACKing mechanism: \\
+   			$\bullet$ Individual ACK: \textcolor{ForestGreen}{no problem}\\
+   			$\bullet$ Full feedback: \textcolor{ForestGreen}{no problem}\\
+   			$\bullet$ Cumm. ACKs: \textcolor{Red}{problematic}\par
+   			
+   			\textbf{Delay:}\\
+   			Can create useless timeouts for all designs. It is hard to deal with the different delays which occur over the whole network. How do I set the right amount of timeout?\\
+   			\newpage
+   			
+   			\section{The Link Layer}
+   			\subsection{What is a link?}
+   			\textbf{Link =  Medium + Adapter}\\
+   			Network adapters communicate together through the medium.\\
+   			In the link layer we talk about \textbf{Frames} which are sent form one adapter to the other.\\
+   			\includegraphics[width=\columnwidth]{images/Link_Layer/link.png} 
+   			\textbf{Sender}
+   			\vspace{-0.3cm}
+   			\begin{itemize}[noitemsep]
+   				\item Encapsulate packets in a frame
+   				\item add error checking bits, flow control,...
+   			\end{itemize}
+   			\textbf{Receiver:}
+   			\vspace{-0.3cm}
+   			\begin{itemize}[noitemsep]
+   				\item Look for errors, flow control,...
+   				\item Extract packet and passes it to network layer 
+   			\end{itemize}
+   			Link-Layer provides a best effort delivery service to the network layer, composed od \textbf{5} sub services.
+   			\begin{itemize}[noitemsep]
+   				\item \textbf{Encoding} $\vert$ represents the 0's and 1's
+   				\item \textbf{Framing} $\vert$ encapsulates packet into a frame (header/trailer)
+   				\item \textbf{Error detection} $\vert$ detects errors with checksum
+   				\item \textbf{error correction} $\vert$ optionally correct errors
+   				\item \textbf{Flow Control} $\vert$ pace sending and receiving node 
+   			\end{itemize} 
+   			
+   			\subsection{How do we identify link adapters?}
+   			\textbf{M}edium \textbf{A}ccess \textbf{C}ontrol address:
+   			\vspace{-0.2cm}
+   			\begin{itemize}[noitemsep]
+   				\item \textbf{Identify the sender \& receiver adapters} $\vert$ used within a link
+   				\item \textbf{Are uniquely assigned} $\vert$ hard coded into adapter
+   				\item \textbf{Use a flat space of 48 bits} $\vert$ allocated hierarchically 
+   			\end{itemize}
+   			The \textcolor{Green}{first} 24 bits blocks are assigned to network adapter vendor by IEEE. (1 Vendor may have more than 1 block.)
+   			\includegraphics[width=\columnwidth]{images/Link_Layer/first_mac_block.png}
+   			The \textcolor{Orange}{second} 24 bits block is assigned by the vendor to each network adapter.(My use the same in geographically different locations!)
+   			\includegraphics[width=\columnwidth]{images/Link_Layer/second_mac_block.png}
+   			broadcast address has set all bits to 1: ff:ff:ff:ff:ff:ff, enables to send a frame to all adapters on the link.\\
+   			By default, adapters only decapsulate frames addressed to the local MAC or broadcast address. The promiscuous mode enables to decapsulate everything.\\
+   			Why don't we simply use IP-addresses?
+   			\begin{enumerate}[noitemsep]
+   				\item Links can support any protocol (not just IP) $\vert$ different addresses on different kind of links
+   				\item Adapters may move to different locations $\vert$ cannot assign static IP address, it has to change
+   				\item \textbf{Adapters must be identified during bootstrap} $\vert$ need to talk to an adapter to give it an IP address 
+   			\end{enumerate} 
+   			You need to solve two problems when bootstrapping an adapter:
+   			\begin{itemize}[noitemsep]
+   				\item Who am I? (How do I acquire an IP address $\vert$ MAC-to-IP binding) $\vert$ \textcolor{Red}{Dynamic Host Configuration Protocol DHCP}
+   				\item Who are you? (Given an reachable IP-address on a link, how do I find out what MAC to use) $\vert$ IP-to-MAC binding $\vert$ \textcolor{Red}{Address Resolution Protocol ARP}
+   			\end{itemize}
+   			Network adapters traditionally acquire an IP address using \textbf{DHC}:
+   			\begin{enumerate}[noitemsep]
+   				\item Host sends an IP-Request to everyone one the link using broadcast address.
+   				\item DHCP-server (if any) answers with an IP address. 
+   			\end{enumerate}
+   			\includegraphics[width=\columnwidth]{images/Link_Layer/DHCP.png}
+   			\par 
+   			
+   			The ARP enables to discover the MAC associated to an IP: 
+   			\begin{enumerate}[noitemsep]
+   				\item ARP Request: Who has $<$some Ip$>$ tell $<$my IP$>$ to broadcast MAC
+   				\item ARP reply: $<$some IP$>$ is at $<$this MAC$>$
+   				\item Requester puts entry in his ARP-table
+   			\end{enumerate}
+   			\includegraphics[width=\columnwidth]{images/Link_Layer/ARP.png}
+   			
+   			\subsection{How do we share a network medium?}
+   			Some medium are \textbf{multi-access}: $>1$ host can communicate at same time.\\
+   			\textcolor{Red}{Problem: Collision lead to garbled (verstümmelt) data.}\\
+   			\textcolor{ForestGreen}{Solution: Distributed algorithm for sharing the channel.}\\
+   			Essentially there are three techniques to deal with Multi Access Control (MAC):
+   			\begin{itemize}[noitemsep]
+   				\item \textbf{Divide the channel into pieces} $\vert$ either in time or frequency
+   				\item \textbf{Take turns} $\vert$ pass a token for the right to transmit
+   				\item \textbf{Random access} $\vert$ allow collisions, detect them and then recover
+   			\end{itemize} 
+   			
+   			\subsection{What is Ethernet?}
+   			
 		\end{multicols*}
 	\setcounter{secnumdepth}{3}
 \end{document}
