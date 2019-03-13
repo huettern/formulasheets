@@ -6,8 +6,8 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 ### Formulasheets
 | Name          | Download      | Statistics |
 | ------------- |---------------|------------|
-| Leistungselektronik | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/leistungselektronik.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/leistungselektronik.pdf.svg) |
-| Analysis III - PDE | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/analysis3pde.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/analysis3pde.pdf.svg) |
+| Leistungselektronik | [link](https://github.com/noah95/formulasheets/releases/download/v1.0/leistungselektronik.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/leistungselektronik.pdf.svg) |
+| Analysis III - PDE | [link](https://github.com/noah95/formulasheets/releases/download/v1.0/analysis3pde.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/analysis3pde.pdf.svg) |
 
 ### Summaries
 | Name          | Download      | Statistics |
