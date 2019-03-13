@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-02-20 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-03-12 18:17:36
+% @Last Modified time: 2019-03-13 15:26:54
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -292,11 +292,9 @@
   Remember:
   \ceqbox{n_0p_0 = n_i^2}
 
-  \textbf{Continue on slide 22, week 3}
-
   \subsection{Fermi Level \& Doping}
   
-  \subsection{Summary}
+  \subsection{Book Chapter 4 Summary}
 
     \textbf{Materials at 300K} \\
       \begin{tabular}[h]{l c c c}
@@ -346,11 +344,24 @@
 
     \textbf{Statistics of Donors and Acceptors} \\
       \begin{align*}
-        n_d &= \frac{N_d}{1+\frac{1}{2}e^{\frac{E_d-E_F}{kT}}} \\
+        n_d &= \frac{N_d}{1+\frac{1}{2}e^{\frac{E_d-E_F}{kT}}} &
         p_d &= \frac{N_a}{1+\frac{1}{2}e^{\frac{E_F-E_a}{kT}}} \\
       \end{align*}
 
-  \subsection{}
+    \textbf{Thermal-Equilibrium El. Concentration} \\
+    $n_0$ for $N_d>N_a$ (n-type), $p_0$ for $N_a>N_d$ (p-type).
+      \begin{align*}
+        n_0 & = \frac{N_d-N_a}{2}+\sqrt{\left(\frac{N_d-N_a}{2}\right)^2+n_i^2} \\
+        p_0 & = \frac{N_a-N_d}{2}+\sqrt{\left(\frac{N_a-N_d}{2}\right)^2+n_i^2} &
+      \end{align*}
+ 
+    \textbf{Position of Fermi Energy Level} \\
+    Use the $n_0$ formula for n-type, the $p_0$ formula for p-type.
+      \begin{align*}
+        E_F-E_{Fi} &= kT\ln\left(\frac{n_0}{n_i}\right) &
+        E_{Fi}-E_{F} &= kT\ln\left(\frac{p_0}{n_i}\right) &
+      \end{align*}
+
 \end{multicols*}
 
 \setcounter{secnumdepth}{2}
