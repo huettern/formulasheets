@@ -560,17 +560,19 @@
    			\end{itemize}
    			Network adapters traditionally acquire an IP address using \textbf{DHC}:
    			\begin{enumerate}[noitemsep]
-   				\item Host sends an IP-Request to everyone one the link using broadcast address.
-   				\item DHCP-server (if any) answers with an IP address. 
+   				\item \textbf{Discovery} $\vert$ Client searching DHCP Server (via broadcast)
+   				\item \textbf{Offer} $\vert$ DHCP server sending offer to client
+   				\item \textbf{Request} $\vert$ Client request IP from DHCP server
+   				\item \textbf{ACK} $\vert$ DHCP server assigns IP and sends ACK 
    			\end{enumerate}
    			\includegraphics[width=\columnwidth]{images/Link_Layer/DHCP.png}
    			\par 
    			
-   			The ARP enables to discover the MAC associated to an IP: 
+   			The \textbf{ARP} enables to discover the MAC associated to an IP: 
    			\begin{enumerate}[noitemsep]
-   				\item ARP Request: Who has $<$some Ip$>$ tell $<$my IP$>$ to broadcast MAC
-   				\item ARP reply: $<$some IP$>$ is at $<$this MAC$>$
-   				\item Requester puts entry in his ARP-table
+   				\item ARP \textbf{Request}: Who has $<$some Ip$>$ tell $<$my IP$>$ to broadcast MAC
+   				\item ARP \textbf{Reply}: $<$some IP$>$ is at $<$this MAC$>$
+   				\item Requester puts entry in his \textbf{ARP-table}
    			\end{enumerate}
    			\includegraphics[width=\columnwidth]{images/Link_Layer/ARP.png}
    			
@@ -586,7 +588,196 @@
    			\end{itemize} 
    			
    			\subsection{What is Ethernet?}
+   			\begin{itemize}[noitemsep]
+   				\item Was invented as a broadcast technology
+   				\item Is the dominant wired LAN technology 
+   				\item Has managed to keep up with the speed race
+   			\end{itemize}
+   			Ethernet offers an \textbf{unreliable} and \textbf{connectionless} service.\\
+   			Unreliable:
+   			\begin{itemize}[noitemsep]
+   				\item[$-$] Receiving adapter does not acknowledge anything
+   				\item[$-$] Packets passed to the networks layer can have gaps
+   			\end{itemize}
+   			Connectionless: 
+   			\begin{itemize}[noitemsep]
+   				\item[$-$] No handshake between sender and receiver
+   			\end{itemize}
+   			Traditional Ethernet relies on CSMA/CD (carries-sense multiple access with collision detection). All hosts were on a big bus-cable connected. You needed to sense the cable in order to know if someone is speaking. multiple hosts had access to the medium, while you were speaking you still were listening to detect collisions. CSMA/CD imposes \textbf{limits} to the network length.\\
+   			$\mathrm{Network\ length}=\frac{min\ frame\ size\ \cdot\ speed\ of\ light}{2\cdot bandwidth}$\\
+   			For this reason Ethernet imposes a minimum packet size of 512 bits.\\
+   			Modern Ethernet links interconnect exactly two hosts, in full duplex, rendering collisions impossible. 
+   			\begin{itemize}[noitemsep]
+   				\item CSMA/CD is only needed for half-duplex communication
+   				\item This means the 64 Byte restriction is not strictly needed (but still kept)
+   				\item Multiple Access Protocols are still important for wireless communication
+   			\end{itemize}
+   			The Ethernet header is simple, composed of 6 fields: 
+   			\includegraphics[width=\columnwidth]{images/Link_Layer/eth_header.png}
+			Ethernet efficiency is $\approx97.5\%$ (paylod/framesize). 
+			
+			\subsection{How do we interconnect segments at the link layer?}
+			Historically, people connected Ethernet segments together at the physical level with ethernet \textbf{hubs}. Hubs work by repeating bits from one port to all the others (flooding everything). 
+			\includegraphics[width=\columnwidth]{images/Link_Layer/hub.png}
+			\begin{itemize}[noitemsep]
+				\item \textcolor{ForestGreen}{Advantages:}
+				\begin{itemize}
+					\item \textcolor{ForestGreen}{Cheap, simple}
+				\end{itemize}
+				\item \textcolor{red}{Disadvantages:}
+				\begin{itemize}
+					\item \textcolor{red}{Inefficient}
+					\item \textcolor{red}{Limited ot one LAN technology}
+					\item \textcolor{red}{Limited number of nodes/distances} 
+				\end{itemize} 
+			\end{itemize}
+   			LANs are now almost exclusively composed of Ethernet \textbf{switches}. Switches connect two or more LANs together on the Link layer, actings as L2 gateways. Switches are \textbf{store and forward} devices, they: 
+   			\begin{itemize}[noitemsep]
+   				\item Extract the DST MAC $\vert$ from the frame
+   				\item Look up the MAC in a table $\vert$ using exact match
+   				\item Forward the frame $\vert$ on the appropriate port
+   			\end{itemize}
+   			Similiar to IP routers, except they are one layer below. Switch enables each LAN segment to carry its own traffic (no flooding of network). 
+   			\includegraphics[width=\columnwidth]{images/Link_Layer/switch_network.png}
+   			Switches are Plug-and-Play they build their forwarding table on their own.\\
+   			The advantages of switches are numerous: 
+   			\begin{itemize}[noitemsep]
+   				\item \textcolor{ForestGreen}{Advantages:}
+   				\begin{itemize}
+   					\item \textcolor{ForestGreen}{Only forward frames where needed} $\vert$ avoids unnecessary load on segments
+   					\item \textcolor{ForestGreen}{Join segments using different technologies}
+   					\item \textcolor{ForestGreen}{Improved privacy} $\vert$ hosts can only snoop traffic traversing their segment
+   					\item \textcolor{ForestGreen}{Wider geographic span} $\vert$ separates segments allow longer distance
+   				\end{itemize} 
+   			\end{itemize}
+   			\newpage
    			
+   			When Frames arrive:
+   			\vspace{-0.2cm} 
+   			\begin{itemize}[noitemsep]
+   				\item [$-$] Inspect the SRC MAC address
+   				\item [$-$] associate the address with the port
+   				\item [$-$] Store the mapping in the switch table
+   				\item [$-$] Launch a timer to eventually forget the mapping
+   			\end{itemize}
+   		In case of misses, switches simply flood the network (when in doubt, shout).\\
+   		When a frame arrives with an unknown DST $\rightarrow$ forward the frame out all ports, except where the frame arrived from.\\ 
+   		Flooding enables \textbf{automatic discovery} of hosts, but with loops the load increases exponentially! Solution: Reduce the network to one logical \textbf{spanning tree}.\\
+   		In practice, switches run distributed Spanning-Tree-Protocol (\textbf{STP}). \\
+   		Construction of a spanning tree in a nutshell: Switches...
+   		\begin{itemize}[noitemsep]
+   			\item Elect a root $\vert$ the one with the smallest identifier
+   			\item determine if each interface is on the shortest path from the root $\vert$ if not $\rightarrow$ disable it.
+   		\end{itemize}
+   		For this switches exchange Bridge Protocol Data Unit (BPDU) messages\\
+   		Each Switch X iteratively sends: 
+   		\includegraphics[width=\columnwidth]{images/Link_Layer/BPDU.png}
+   		Initially: 
+   		\vspace{-0.2cm}
+   		\begin{itemize}[noitemsep]
+   			\item Each switch proposes itself as root $\vert$ sends (X,0,X) on all its interfaces
+   			\item Upon receiving (Y,d,X), checks if Y is a better root $\vert$ if so, consider Y as new root, flood updated message 
+   			\item Switch compute their distance to the root, for each port $\vert$ simply add 1 to the distance received, if shorter, flood
+   			\item Switches disable interfaces not on shortest-path
+   		\end{itemize}
+   		tie-breaking: 
+   		\vspace{-0.2cm}
+   		\begin{itemize}[noitemsep]
+   			\item Upon receiving $\ne$ BPDUs from $\ne$ switches with $=$ cost $\rightarrow$ pick the BPDU with the lower siwtch sender ID
+   			\item Upon receiving $\ne$ BPDUs from a neighboring switch $\rightarrow$ Pick the BPDU with the lowest port ID. 
+   		\end{itemize}
+   		To be robust, STP must react to failures: 
+   		\vspace{-0.2cm}
+   		\begin{itemize}[noitemsep]
+   			\item Any switch, link or port can fail $\vert$ including the root switch
+   			\item Root switch continuously send messages $\vert$ announcing itself as the root (1,0,1), others forward it
+   			\item Failures are detected through timeout (soft state) $\vert$ if no word from root in X, times out and claims to be root 
+   		\end{itemize}
+   		\subsection{Virtual Local Aerea Networks VLANs}
+   		The Local Area Networks we have considered so far define single broadcast domains (if one broadcasts, everyone receives it).\\
+   		As the networks scales, operators like to \textbf{segment} thir LANs.\\
+   		Why?
+   		\begin{itemize}[noitemsep]
+   			\item Improves \textbf{security} $\vert$ smaller attack surface (visibility \& injection)
+   			\item Improves \textbf{performance} $\vert$ limits the overhead fo broadcast traffic 
+   			\item Improves \textbf{logistics} $\vert$ separate traffic by role (staff, student,...)
+   		\end{itemize} 
+   		You do not want to separate your LAN physically (huge pain), but reader do it in software $\rightarrow$ \textbf{Virtual} Networks.\\
+   		Definition:\\
+   		A VLAN identifies a set of ports attached to one or more Ethernet Switches, forming one broadcast domain. 
+   		\includegraphics[width=\columnwidth]{images/Link_Layer/VLAN.png}
+   		Switches need \textbf{configuration} tables telling them which VLANs are accessible via which interface.\\
+   		To identify VLAN, switches add \textbf{new header} when forwarding traffic to another switch.  
+   		\includegraphics[width=\columnwidth]{images/Link_Layer/VLAN_header.png}
+   		With VLANs, Ethernet links are divided in two sets: \textcolor{Blue}{\textbf{access}} and \textcolor{Red}{\textbf{trunks}} (inter switch) links.\\
+   		Trunks carry traffic for more than one VLAN (access not), there the new header is needed! On the access links not! Communication between VLANs goes over a router!
+   		Each switch runs one MAC learning algorithm for each VLAN.
+   		\begin{itemize}[noitemsep]
+   			\item When a switch receives a frame wit an unknown or broadcast DST.
+   			\begin{itemize}
+   				\item [$\rightarrow$]	it forwards it on all the ports that belong to the same VLAN
+   			\end{itemize}
+   		\columnbreak
+   			\item  When a switch learns a SRC address on a port
+   			\begin{itemize}
+   				\item [$\rightarrow$] it associates it to the VLAN of this port and only uses it when forwarding frames to this VLAN	
+   			\end{itemize}
+   		\end{itemize}
+  		\includegraphics[width=\columnwidth]{images/Link_Layer/trunks_access.png}
+   		Switches can also compute per VLAN spanning trees $\rightarrow$ distinct SPT for each VLAN! This enables better use of the network. 
+   		
+   		\section{The Network Layer}
+   		\subsection{IP addresses}
+   		IPv4 addresses are unique 32-bits number associated to a network interface (on a host, router). IP addresses are usually written using dotted-quad notation. 
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/IP_address.png}
+   		Routers forward packets based on their DST IP address. If IP addresses were assigned arbitrarily routers would require forwarding table entries for all of them!\\
+   		IP addresses are hierarchical, composed of a\textcolor{Red}{ prefix (network address)} and a \textcolor{ForestGreen}{suffix (host address)}. 
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/prefix_suffix.png}
+   		Each prefix has a given length, usually written using the slash notation:\\
+   		IP prefix: 82.130.102.0/\textcolor{Red}{24}$\rightarrow$ prefix length in bit\\
+   		The suffix part can then be used to address the hosts of the network.\\
+   		$\bullet$The \textbf{first address} of the suffix (all zeros) is used to identify the \textbf{network itself}.\\
+   		$\bullet$ The \textbf{last address} of the suffix (all ones) is used ot determine the \textbf{broadcast} address.\\
+   		\# of hosts $= 2^{32-\#\mathrm{\textcolor{Red}{suffix}}}-2$\\
+   		Prefixes are also sometimes specified using an address and a \textbf{mask}. ANDing the address and the mask gives you the prefix. \\
+   		Mask: set the number of suffix bits to one, the rest zeros (from left to right).\\
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/mask.png}
+   		Routers forward IP packets based on the network part, not the host part. This enables a scaling of the forwarding table. \\
+   		Originally there were only 5 fixed allocation sizes (classes) - known as classful networking. This is wasteful and leaded to IP address exhaustion.\\
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/classes.png}
+   		Problem: Class C was too small, so everybody requested B\\
+   		Solution: Classless Inter-Domain Routing (CIDR) (1993)\\
+   		CIDR enables flexible division between network and host addresses. 
+   		\begin{itemize}[noitemsep]
+   			\item CIDR must specify both, the address and the mask $\vert$ classful was communicating this in the first address bits
+   			\item Masks are carried by the routing algorithms $\vert$ it is not implicitly carried in the address.  
+   		\end{itemize}
+   		With CIDR the maximal waste is bounded to 50\%.\\
+   		Today, addresses are allocated in contiguous chunks:\\ 
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/IP_chunk.png}
+   		\pagebreak
+   		
+   		The allocation process of prefixes is also hierarchical:\\
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/prefix_allocation.png}
+   		
+   		\subsection{IP forwarding}
+   		Whats inside an IP router?:\\
+   		$\bullet$ Data Plane:\\
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/data_plane.png}
+   		$\bullet$ Control Plane:\\
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/control_plane.png}
+   		Routers maintain \textbf{forwarding entries} for each Internet prefix.\\
+   		When a router receives an IP packet, it performs an IP \textbf{look up} to find the matching prefix.\\
+   		CIDR makes forwarding harder, as one packet can match many IP prefixes.\\
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/two_matches.png}
+   		To resolve ambiguity, forwarding is done along the \textbf{most specific} prefix (IF\#3)\\
+   		A child prefix can be \textbf{filtered} from the table whenever it shares the same output interface as its parent:
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/filtering1.png}
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/filtering2.png}
+   		\textcolor{Red}{Exactly the same forwarding!}
+   		
+   		\subsection{IP header}
+   	
 		\end{multicols*}
 	\setcounter{secnumdepth}{3}
 \end{document}
