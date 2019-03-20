@@ -362,6 +362,136 @@
         E_{Fi}-E_{F} &= kT\ln\left(\frac{p_0}{n_i}\right) &
       \end{align*}
 
+  % ---------------------------------------------------------------------------
+  \section{Excess Carriers}
+  % ---------------------------------------------------------------------------
+  \subsection{Variables}
+  \cgraphic{0.9}{img/dopingvars.png}
+
+    \begin{tabular}[h]{l l}
+      $G_{th}$   & Thermal generation rate \\
+      $R_{th}$   & Thermal recombination rate \\
+      $G_{L}$    & Photonic generation rate \\
+      $\tau_p, \tau_n$   & Minority carrier lifetime \\
+      $\Delta_p, \Delta_n$   & Excess carrier concentration to equi. \\
+      $N_t$    & Density of recombination centers \\
+      $\sigma$    & Recomb. center cross section \\
+      {}    & \textbf{or} conductivity \\
+      $v_{th}$    & Carrier mobility in thermal equilibrium \\
+      $R_a,R_b$    & El. indirect capture and emission rate \\
+      $R_c,R_d$    & Hole indirect capture and emission rate \\
+      $e_n,e_p$    & El./Hole indirect emission probability \\
+      $U$    & Net recombination rate \\
+      $J_{\text{diff}}$ & Diffusion current dens. \\
+      $D$ & Diffusion constant \\
+      $q$ & electron charge \\
+      $J_n$ & Electron diffusion current dens.\\
+      $v_{dr,n/p}$ & Electron/hole drift velocity \\
+      $J_{dr,n/p}$ & Electron/hole drift current dens.\\
+      $\mu_{n/p}$ & Electron/hole mobility \\
+      $J_{n/p}$ & Electron/hole total current dens. \\
+    \end{tabular}
+
+  \subsection{Direct Generation/Recombination}
+    \cgraphic{0.8}{img/genrecomb.png}
+    Thermal (spontaneous) and external generation (e.g. light) accross the energy gap.
+
+    In steady state, at a given T: Electrons are continually generated due to thermal energy.
+    Some electrons recombine with holes, so that on average $n_0$ and $p_0$ are constant. 
+    Rate is proportional to $n_0 \cdot p_0$. 
+    \[G_{th} = R_{th} = \beta(n_0 \cdot p_0) = \beta n_i^2\]
+
+    This is because we always need 1 electron and 1 hole to "meet" for each recombination event.
+    \begin{align*}
+      R &= \beta n p \quad G = G_L + G_{th} \quad \Delta n = \Delta p\\
+      R &= \beta\cdot n_n p_n = \beta(n_{n0}+\Delta n)(p_{n0} + \Delta p)  \\
+      \abl{t}p_n &= G-R
+    \end{align*}
+
+    Mass action law ($n_0p_0=n_i^2$) states for n-type doping that:
+    \[p_{n0} \ll n_{n0}\]
+
+    Low level injection is when
+    \[\Delta p \ll n_{n0}\]
+
+    Then the net recombination rate can be written as:
+    \[U = \beta(n_{n0}+p_{n0}+\Delta p)\Delta p \approx \beta n_{n0}\Delta p = \frac{\Delta p}{\tau_p}\]
+
+    The minority carrier lifetime describes how fast the excess carrier concentration decays towards equil. when excitation ends. 
+    Determined by majority carrier concentration.
+    \ceqbox{\tau_p = \frac{1}{\beta n_{n0}}}
+
+    \cgraphic{0.7}{img/lightonoff.png}
+    Light on:
+    \begin{align*}
+      G_L &= U = \frac{p_n-p_{n0}}{\tau_p} & p_n(t \leq 0) &= p_{n0} + \tau_pG_L
+    \end{align*}
+
+    Light off:
+    \begin{align*}
+      \Abl{p_n}{t} &= G_{th} - R = -U = -\frac{p_n-p_{n0}}{\tau_p} \\
+      p_n(t) &= p_{n0} + \tau_p G_L \exp\left(-\frac{t}{\tau_p}\right)
+    \end{align*}
+
+    Generally:
+    \todo[inline]{Check these}
+    \eqbox{\Delta n = \tau_{n_0}R_n}
+
+  \subsection{Indirect Generation/Recombination}
+    \cgraphic{0.7}{img/trap.png}
+    Energy trap near midgap.
+    \[ U \approx  \frac{v_{th}\sigma_0N_t\cdot\Delta p}{1 + \frac{2n_i}{n_{n0}}\cosh\frac{E_t - E_i}{kT}} \approx \frac{\Delta p}{\tau_p} \approx \frac{p_n - p_{n0}}{\tau_p}\]
+    Where $N_tv_{th}\sigma$ are the recombination events taking place per unit time, $v_{th}\sigma$ a cylindrical colume in material per unit time.
+    \[\frac{1}{2}m_nv_{th}^2=\frac{3}{2}kT \quad v_{th}\approx 10^7 cm\cdot s^{-1}\]
+    Electron capture ($R_a$) and emission ($R_b$) rate must be equal in therm. equi.
+    \[R_a = nN_t(1-f)\cdot v_{th}\sigma_n \quad R_b = e_nN_tf\]
+    The emission probability increases exponentially as $E_t$ gets closer to conduction band edge:
+    \[e_n = \frac{v_{th}\sigma_nn(1-f)}{f}=v_{th}\sigma_nn_ie^{(E_t-E_i)/kT}\]
+    For holes:
+    \[R_c = pN_tf\cdot v_{th}\sigma_p \quad R_d = e_pN_t(1-f)\]
+    \[e_p = v_{th}\sigma_p n_i e^{(E_i-E_t)/kT}\]
+    These lead to the equation for $U=\dots$.
+
+  \subsection{Diffusion}
+    Result of concentration gradients.
+    Equal probability of moving in any direction.
+    Fick's first law of diffusion:
+    \[J_{\text{diff}} = -D\Delta N = -D \left( \Pabl{N}{x}\vec{x_u} + \Pabl{N}{y}\vec{y_u} \dots \right)\]
+
+    \begin{itemize}
+      \item In thermal equi. and uniform distribution, free charge carriers are in constant motion. 
+      Net current is thus zero.
+      \item Statistical mechanics show that particles at temp. $T$ have avg. thermal energy of $3kT/2$
+      \item For a particle of mass $m$ this corresponds to an avg. thermal velocity
+      \[\frac{1}{2}mv_{th}^2=\frac{3}{2}kT\]
+      \item In a crystal we must use the \textbf{effective mass}
+    \end{itemize}
+
+    The electron diffusion current:
+    \[ J_{\text{diff},n} = -qF = qD_n\Abl{n}{x}\]
+
+  \subsection{Drift}
+    Result of an electric field as driving force.
+    \begin{itemize}
+      \item Zero field: Electrons move thermally (randomly) in all directions (no net flow)
+      \item Non-zero field: There is a net drift of electrons, opposite to the E-field
+      \item We can then define a drift velocity of electrons $v_{dr,n}$
+      \item Electrons do not accelerate indefinitely due to collisions
+    \end{itemize}
+    \begin{align*}
+      J_{dr,n} &= -qnv_{dr,n} & v_{dr,n} &= -\mu_nE \\
+      J_{dr,p} &= qpv_{dr,h} & v_{dr,h} &= \mu_pE \\
+      J_{dr,tot} &= \sigma E & \sigma &= q(n\mu_n + p\mu_p)
+    \end{align*}
+  
+  \subsection{Total current}
+    Total current = drift + diffusion current = electron + hole current.
+    \begin{align*}
+      &\text{Electrons:} & J_n &= nq\mu\vec{E}+qD_n\Abl{n}{x} \\
+      &\text{Holes:} & J_p &= pq\mu\vec{E}-qD_p\Abl{p}{x} \\
+    \end{align*}
+
+
 \end{multicols*}
 
 \setcounter{secnumdepth}{2}
