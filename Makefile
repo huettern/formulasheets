@@ -9,6 +9,7 @@ all: revision */*.tex
 	cd Communication\ Networks && make && cd ..
 	cd Electrodynamics && make && cd ..
 	cd Introduction\ to\ Machine\ Learning && make && cd ..
+	cd Numerische\ Methoden && make && cd ..
 
 
 docker:
@@ -31,3 +32,4 @@ clean:
 	cd Communication\ Networks && make clean && cd ..
 	cd Electrodynamics && make clean && cd ..
 	cd Introduction\ to\ Machine\ Learning && make clean && cd ..
+	cd Numerische\ Methoden && make clean && cd ..
