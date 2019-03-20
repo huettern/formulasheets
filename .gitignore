@@ -30,6 +30,7 @@
 # Sublime Text Project Files (usually contain absolute paths)
 *.sublime-project
 *.sublime-workspace
+*.fls
 
 *.pdf 
 build
