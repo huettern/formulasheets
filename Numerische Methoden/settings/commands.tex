@@ -1,0 +1,196 @@
+%
+% General commands
+% ===========================================================================
+% Author:			Silvano Cortesi (cortesis@student.ethz.ch)
+% Version:			1.2
+% Last changed:		03.01.2018
+%
+% ---------------------------------------------------------------------------
+
+%..ROEMISCHE_ZAHLEN
+	\newcommand{\Roe}[1]{\uppercase\expandafter{\romannumeral #1 }}
+
+%..ZAHLENMENGEN
+	\newcommand{\N}{\mathbb{N}}
+	\newcommand{\Z}{\mathbb{Z}}
+	\newcommand{\Q}{\mathbb{Q}}
+	\newcommand{\R}{\mathbb{R}}
+	\newcommand{\real}{\R}
+	\newcommand{\C}{\mathbb{C}}
+	\newcommand{\complex}{\C}
+	\newcommand{\0}{\mathbb{O}}
+	\newcommand{\F}{\mathbb{F}}
+	\newcommand{\K}{\mathbb{K}}
+    \newcommand{\angstrom}{\textup{\AA}}
+    
+%..PFEILE
+	\renewcommand{\leadsto}{\Longrightarrow}
+	\newcommand{\leftrightleadsto}{\Longleftrightarrow}
+
+%..VEKTOREN
+	\newcommand{\Ul} {\underline}
+	\newcommand{\vEx} {\vec{e}_x}
+	\newcommand{\vEy} {\vec{e}_y}
+	\newcommand{\vEz} {\vec{e}_z}
+	\newcommand{\vEq} {\vec{e_1}}
+	\newcommand{\vEw} {\vec{e_2}}
+	\newcommand{\vEe} {\vec{e_3}}
+	\newcommand{\transpose} {^{\text{T}}}
+	\newcommand{\vect}[1]{\boldsymbol{#1}}
+	
+%..MATRIX
+    \newcommand{\MATR}[1]{ \displaystyle \left( \begin{matrix} #1 \end{matrix} \right)}
+    \newcommand{\MATRABS}[1]{ \displaystyle \left| \begin{matrix} #1 \end{matrix} \right|}
+
+
+%..KOMPLEXE ZAHLEN
+	\renewcommand{\Re}{\text{Re}\,}
+	\renewcommand{\Im}{\text{Im}\,}
+
+%..OPERATOREN
+	\DeclareMathOperator{\grad}{grad}
+	\renewcommand{\div}{\text{div}\,}
+    	\DeclareMathOperator{\rot}{rot}
+    	\DeclareMathOperator{\divg}{div}
+    	\DeclareMathOperator{\Tr}{Tr}
+    	\DeclareMathOperator{\const}{const}
+	\DeclareMathOperator{\imag}{i}
+	\newcommand{\Lapl}{\hbox{\footnotesize{$\Delta$}}}
+
+%..DIFFERENTIALRECHNUNG
+	\newcommand{\Dx} {\,\mathrm{d}}
+	\newcommand{\abl}[1] {\frac{\mathrm{d}}{\mathrm{d}#1}}
+	\newcommand{\Abl}[2] {\frac{\mathrm{d}#1}{\mathrm{d}#2}}
+	\newcommand{\ablq}[1] {\frac{\mathrm{d^2}}{\mathrm{d}#1^2}}
+	\newcommand{\Ablq}[2] {\frac{\mathrm{d^2}#1}{\mathrm{d}#2^2}}
+	\newcommand{\pabl}[1] {\frac{\partial}{\partial#1}}
+	\newcommand{\pablq}[1] {\frac{\partial^2}{\partial#1^2}}
+	\newcommand{\Pabl}[2] {\frac{\partial#1}{\partial#2}}
+	\newcommand{\Pablq}[2] {\frac{\partial^2#1}{\partial#2^2}}
+
+%..INTEGRALRECHNUNG
+	\newcommand{\dint}{\displaystyle{\int}}
+	\newcommand{\intab}{\int^b_a}
+	\newcommand{\intinf}{\int_{-\infty}^\infty}
+	\newcommand{\dintab}{\displaystyle{\int^b_a}}
+	\newcommand{\dintpi}{\displaystyle{\int^{\pi}_{-\pi}}}
+	\newcommand{\dintzpi}{\displaystyle{\int^{2\pi}_{\mbox{-}2\pi}}}
+	\newcommand{\dA}{\hspace{4pt}\mathrm{d}A}
+	\newcommand{\dx}{\hspace{4pt}\mathrm{d}x}
+	\newcommand{\dy}{\hspace{4pt}\mathrm{d}y}
+	\newcommand{\dz}{\hspace{4pt}\mathrm{d}z}
+	\newcommand{\dr}{\hspace{4pt}\mathrm{d}r}
+	\newcommand{\ds}{\hspace{4pt}\mathrm{d}s}
+	\newcommand{\dS}{\hspace{4pt}\mathrm{d}S}
+	\newcommand{\dt}{\hspace{4pt}\mathrm{d}t}
+	\newcommand{\dm}{\hspace{4pt}\mathrm{d}m}
+	\newcommand{\dk}{\hspace{4pt}\mathrm{d}k}
+	\newcommand{\dl}{\hspace{4pt}\mathrm{d}l}
+	\newcommand{\du}{\hspace{4pt}\mathrm{d}u}
+	\newcommand{\dv}{\hspace{4pt}\mathrm{d}v}
+	\newcommand{\dV}{\hspace{4pt}\mathrm{d}V}
+	\newcommand{\dphi}{\hspace{4pt}\mathrm{d}\varphi}
+	\newcommand{\domega}{\hspace{4pt}\mathrm{d}\omega}
+	\newcommand{\dvarsigma}{\hspace{4pt}\mathrm{d}\varsigma}
+	\newcommand{\dtau}{\hspace{4pt}\mathrm{d}\tau}
+	\newcommand{\dtheta}{\hspace{4pt}\mathrm{d}\vartheta}
+	\newcommand{\dmu}{\hspace{4pt}\mathrm{d}\mu}
+	\newcommand{\dxi}{\hspace{4pt}\mathrm{d}\xi}
+	\newcommand{\deta}{\hspace{4pt}\mathrm{d}\eta}
+	\newcommand{\dvecl}{\hspace{4pt}\mathrm{d}\vec{l}}
+	\newcommand{\dvecS}{\hspace{4pt}\mathrm{d}\vec{S}}
+
+%..LIMES
+    \DeclareMathOperator{\limni}{\lim\limits_{n\to\infty}}
+    \DeclareMathOperator{\limxi}{\lim\limits_{x\to\infty}}
+    \DeclareMathOperator{\limho}{\lim\limits_{h\to0}}
+    \newcommand{\limxai}[1]{\ensuremath{\lim\limits_{x\to #1}}}
+
+%..SUMMEN
+    \DeclareMathOperator{\sumni}{\sum_{n=0}^{\infty}}
+    \newcommand{\sumnia}[1]{\ensuremath{\sum_{n=#1}^{\infty}}}
+
+
+%..PARTIELLE ABLEITUNG
+    \DeclareMathOperator{\partf}{\dfrac{\partial f}{\partial x}}
+    \newcommand{\partfo}[1]{\ensuremath{\dfrac{\partial f}{\partial #1}}}
+    \newcommand{\parto}[1]{\ensuremath{\dfrac{\partial }{\partial #1}}}
+    \newcommand{\partt}[2]{\ensuremath{\dfrac{\partial^2 }{\partial #1\partial #2}}}
+    \newcommand{\partq}[1]{\ensuremath{\dfrac{\partial^2 }{\partial #1^2}}}
+
+
+%..ENUMERATION
+    \newenvironment{abc}{\begin{enumerate}[(a)]}{\end{enumerate}}
+    \newenvironment{cabc}{\begin{compactenum}[(a)]}{\end{compactenum}}
+    \newenvironment{romanenum}{\begin{enumerate}[i.]}{\end{enumerate}}
+    \newenvironment{cromanenum}{\begin{compactenum}[i.]}{\end{compactenum}}
+
+%..FUNCTIONS
+    \DeclareMathOperator{\arsinh}{arsinh}
+    \DeclareMathOperator{\arcosh}{arcosh}
+    \DeclareMathOperator{\artanh}{artanh}
+    \DeclareMathOperator{\arcoth}{arcoth}
+    \DeclareMathOperator{\arccot}{arccot}
+    \DeclareMathOperator{\Arg}{Arg}
+    \DeclareMathOperator{\Log}{Log}
+    \newcommand{\dis}[1]{\hspace{#1cm}}
+    \newcommand{\abs}[1]{\ensuremath{\left\vert#1\right\vert}}
+    \newcommand{\attention}{\raisebox{-1pt}{{\makebox[1.6em][c]{\makebox[0pt][c]{\raisebox{.13em}{\small!}}\makebox[0pt][c]{\color{red}\Large$\bigtriangleup$}}}}}
+    \DeclareMathOperator{\meq}{\stackrel{!}{=}}
+    
+    
+% section color box
+\setkomafont{section}{\mysection}
+\newcommand{\mysection}[1]{%
+    \Large\sffamily\bfseries%
+    \setlength{\fboxsep}{0cm}%already boxed
+    \colorbox{\StyleColor!40}{%
+        \begin{minipage}{\linewidth}%
+            \vspace*{2pt}%Space before
+            #1
+            \vspace*{-1pt}%Space after
+        \end{minipage}%
+    }}
+
+%subsection color box
+\setkomafont{subsection}{\mysubsection}
+\newcommand{\mysubsection}[1]{%
+    \normalsize \sffamily\bfseries%
+    \setlength{\fboxsep}{0cm}%already boxed
+    \colorbox{\StyleColor!20}{%
+        \begin{minipage}{\linewidth}%
+            \vspace*{2pt}%Space before
+             #1
+            \vspace*{-1pt}%Space after
+        \end{minipage}%
+    }}
+
+%subsubsection color box
+\setkomafont{subsubsection}{\mysubsubsection}
+\newcommand{\mysubsubsection}[1]{%
+	\normalsize \sffamily\bfseries%
+	\setlength{\fboxsep}{0cm}%already boxed
+	\colorbox{\StyleColor!10}{%
+		\begin{minipage}{\linewidth}%
+			\vspace*{2pt}%Space before
+			#1
+			\vspace*{-1pt}%Space after
+		\end{minipage}%
+}}
+
+% highlighter
+\newcommand{\hilight}[1]{\colorbox{\StyleColor}{#1}}
+\newcommand{\highlighty}[1]{%
+  \setlength{\fboxsep}{0pt}\colorbox{yellow!100}{\ensuremath{#1}}}
+
+\newcommand{\highlightg}[1]{%
+  \setlength{\fboxsep}{0pt}\colorbox{green!100}{\ensuremath{#1}}}
+
+\newcommand{\highlightbg}[1]{%
+   \colorbox{green!100}{$\displaystyle #1$}}  
+
+% equation box        
+\newcommand{\eqbox}[1]{\setlength{\fboxrule}{1mm}\fcolorbox{\StyleColor}{white}{\hspace{0.5em}$\displaystyle#1$\hspace{0.5em}}}
+
+%center equationbox
+\newcommand{\ceqbox}[1]{\vspace*{4pt} \begin{center}\eqbox{#1}\end{center}\vspace*{4pt}}
