@@ -14,11 +14,15 @@
 % Include general settings and customized commands
 \input{settings/general}
 \input{settings/commands}
+
+% \bibliography{semiconductordevices}
+% \bibliographystyle{ieeetr}
+
 %change page style for header
 \pagestyle{fancy}
 \footskip 20pt
 
-
+ 
 % -----------------------------------------------------------------------
 \IfFileExists{../build/revision.tex}{
   \input{../build/revision.tex}
@@ -490,6 +494,86 @@
       &\text{Electrons:} & J_n &= nq\mu\vec{E}+qD_n\Abl{n}{x} \\
       &\text{Holes:} & J_p &= pq\mu\vec{E}-qD_p\Abl{p}{x} \\
     \end{align*}
+
+  % ---------------------------------------------------------------------------
+  \section{Excess Carriers}
+  % ---------------------------------------------------------------------------
+  \subsection{Variables}
+    \begin{tabular}[h]{l l}
+      $G_{n/p}$   & Generation rate of el/hole \\
+      $R_{n/p}$   & Recombination rate of el/hole \\
+      $J_{n/p}$   & Current density of el/hole \\
+      $L_{n/p}$   & Minority carrier diffusion length \\
+      $D_{n/p}$   & Diffusion constant \\
+      $\mu_{n/p}$ & Carrier mobility \\
+    \end{tabular}
+
+  \subsection{Continuity equation}
+    \textbf{Objective:} Accounting for carrier densities when drift, diffusion and G/R take place.
+    \cgraphic{0.7}{img/continuity.png}
+    
+    \begin{align*}
+      &\text{Change in e} & \Pabl{n}{t} &= \frac{1}{q}\Pabl{J_n}{x}+(G_m-R_n) \\
+      &\text{Change in hole} & \Pabl{p}{t} &= -\frac{1}{q}\Pabl{J_p}{x}+(G_p-R_p)
+    \end{align*}
+
+    \subsubsection{Electrons}
+    Written for electrons in p-type material
+    \begin{align*}
+      \Pabl{n_p}{t} &= n_p\mu_n\Pabl{\vec{E}}{x}+\mu_n\vec{E}\Pabl{n_p}{x} + D_n\Pablq{n_p}{x} \\ &+ G_n - \frac{n_p-n_{p0}}{\tau_n}
+    \end{align*}
+
+    \subsubsection{Holes}
+    Written for holes in n-type material
+    \begin{align*}
+      \Pabl{p_n}{t} &= p_n\mu_p\Pabl{\vec{E}}{x}+\mu_p\vec{E}\Pabl{p_n}{x} + D_p\Pablq{p_n}{x} \\ &+ G_p - \frac{p_n-p_{n0}}{\tau_p}
+    \end{align*}
+
+    \subsubsection{Steady state}
+    For steady state considerations:
+
+    \ceqbox{0=D_n\Pablq{n_p}{x}+G_n-\frac{n_p-n_{p0}}{\tau_n}}
+    
+    \subsubsection{Einstein relation}
+    \begin{center}
+      \eqbox{D_p = \frac{kT}{q}\mu_p} \eqbox{D_n = \frac{kT}{q}\mu_n}
+    \end{center}
+
+    \subsubsection{Semi-infinite sample}
+    \cgraphicd{0.49}{img/semiinf1.png}{img/semiinf2.png}
+    \begin{align*}
+      p(x) &= p_{n0} + (p_n(0)-p_{n0}) \exp\left(-\frac{x}{L_p}\right) \\
+      L_p &= \sqrt{D_p\tau_p}
+    \end{align*}
+
+    \subsubsection{Finite sample}
+    \cgraphicd{0.49}{img/finitesample1.png}{img/finitesample2.png}
+    \begin{align*}
+      p_n(x) &= p_{n0} + (p_n(0)-p_{n0}) \frac{\sinh\left(\frac{W-x}{L_p}\right)}{\sinh\left(\frac{W}{L_p}\right)}
+    \end{align*}
+
+    If $W \ll L_p$ then recombination is weak, few holes recombine in the time required for them to cross the region $W$.
+    The excess carrier profile bebomes linear:
+    \[p_n(x) = (p_n(0)-P_{n0})\frac{W-x}{W}\]
+
+    % \begin{align*}
+
+    % \end{align*}
+    % \begin{align*}
+
+    % \end{align*}
+
+
+  \subsection{Equilibrium: constant fermi level}
+  \cgraphic{0.7}{img/pnfermilevel.png}
+  In equilibrium, the Fermi level mus be constant to balance transfer rates so that no net current flows.
+  \ceqbox{E_{F1} = E_{F2}}
+
+
+  \subsection{Doping: Band bending}
+  Near the transition region, the distance between the Fermi level and conducition/valence band edge changes.
+  Far away from the junction, the material does not ``know'' there is a junction.
+
 
 
 \end{multicols*}
