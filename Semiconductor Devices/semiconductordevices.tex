@@ -29,11 +29,11 @@
   \rhead{Compiled: \compiledate \hspace{1em} on \hostname \hspace{1em} from commit: \revision \hspace{1em} Noah Huetter}
 }{\rhead{Noah Huetter}}
 
-\lhead{ETH Semiconductor Devices}
+\lhead{ETH Semiconductor Devices 2019}
 \chead{\thepage}
 \cfoot{}
 \headheight 17pt \headsep 10pt
-\title{ETH Semiconductor Devices}
+\title{ETH Semiconductor Devices 2019}
 \author{Noah Huetter}
 
 \date{\today}
@@ -53,12 +53,6 @@
   % ---------------------------------------------------------------------------
   \section{Introduction}
   % ---------------------------------------------------------------------------
-    \subsection{Electric Field}
-    \begin{itemize}
-      \item Electrical current is the movement of electrical charge $Q$.
-      \item 
-    \end{itemize}
-
     \subsection{Electric resistivity/conductivity}
     \cgraphic{1}{img/conductor.png}
     Conductivity $\sigma$ is a material property describing how easily certain material can conduct electrical current. Resistivity $\rho = 1/\sigma$ describes how much a material opposes the current flow. The resistance of a square/round piece of metal is:
@@ -125,21 +119,31 @@
   \cgraphic{1}{img/elements.png}
   \textbf{Electronegativity}: Tendency to attract electrons. Increases from Bottom to Top / Left to Right.
 
-  \subsubsection{Simple Metals}
-  (\textit{e.g.} Alkali Metals, like Na) Collective interaction of mobile electron fluid with positive metal ions. \textbf{Occurs when teh coordination number is greater than the nu,ber of valenve electrons}. Close packed structures. The material is mechanically soft. 
-  \subsubsection{Transition Metals}
-  (\textit{e.g.} Mo, W) Bon is covalent-like. Transision metals are much harder than simple metals and located in the center of the transition metals row.
-  \subsubsection{Transition Metals}
-  (Column \rom{4}, \rom{3}-\rom{5}, \rom{2}-\rom{6}) Based on hybridization of ``s'' and ``p'' orbitals. \textbf{Bonds are very directional}, material is mechanically stiff (brittle). Generally habe a diamond-like crystal structure.
+  % \subsubsection{Simple Metals}
+  % (\textit{e.g.} Alkali Metals, like Na) Collective interaction of mobile electron fluid with positive metal ions. 
+  % \textbf{Occurs when teh coordination number is greater than the nu,ber of valenve electrons}. Close packed structures. The material is mechanically soft. 
+  % \subsubsection{Transition Metals}
+  % (\textit{e.g.} Mo, W) Bon is covalent-like. Transision metals are much harder than simple metals and located in the center of the transition metals row.
+  % \subsubsection{Transition Metals}
+  % (Column \rom{4}, \rom{3}-\rom{5}, \rom{2}-\rom{6}) Based on hybridization of ``s'' and ``p'' orbitals. 
+  % \textbf{Bonds are very directional}, material is mechanically stiff (brittle). Generally habe a diamond-like crystal structure.
 
   \subsection{Band Gap}
   \cgraphic{1}{img/bandgap.png}
   In solids, we are concerned about the atoms' outermost (\textit{i.e.} valence) electrons because they determine the bonding and the electronic properties.
 
-  On the far right in the figure, atoms are well seperated and non-interacting. Their energy states are sharp (atomic-like). As they get closer, the outermost (valence) electrons begin to interact and their energy levels start to shift with respect to the isolated value. \textbf{The number of states is conserved}. This is a consequence of the \textbf{Pauli Exclusion Principle}. Bands can be seperated by \textbf{energy gaps} where no electron is permitted to exist.
+  On the far right in the figure, atoms are well seperated and non-interacting. 
+  Their energy states are sharp (atomic-like). 
+  As they get closer, the outermost (valence) electrons begin to interact and their energy levels start to shift with respect to the isolated value. 
+  \textbf{The number of states is conserved}. 
+  This is a consequence of the \textbf{Pauli Exclusion Principle}. 
+  Bands can be seperated by \textbf{energy gaps} where no electron is permitted to exist.
 
   \subsubsection{Partially Filled / Empty Band}
-  Are associated with electrical \textbf{conduction}. As atoms approach each other to form solid, valence electron distributions overlap. Equilibrium distance ~ maximum density of electrons for isolated atoms.  Lowering of potential barriers between atoms allows electrons to move freely.
+  Are associated with electrical \textbf{conduction}. 
+  As atoms approach each other to form solid, valence electron distributions overlap. 
+  Equilibrium distance ~ maximum density of electrons for isolated atoms.  
+  Lowering of potential barriers between atoms allows electrons to move freely.
 
   \subsubsection{Full Band}
   \textbf{Isolation}, electrons are there but no net current. At equilibrium atomic separation, bands are seperated by a forbidden energy gap. At low T, valence band full, conduction band empty: \textit{i.e.} no current.
@@ -163,12 +167,15 @@
   \subsection{Intrinsic carriers}
   \cgraphic{1}{img/intrinsiccarriers}
   Two types of carriers: electrons and holes.
-  \begin{itemize}
-    \item Each Si atom is surrounded by 8 $e^-$ at 0K, 4 come from the atom itself, 1 from each of its 4 nearest neighbours.
-    \item As $T$ increases, thermal energy eventually excites some $e^-$ out of their bond. Equivalently, the FD distribution broadens around $E_F$, increasing the prob. that conduction band states become occupied.
-    \item A empty state (a ``hole'') is left in the bonding (valence band) state. The valence band is then not full anymore, and it therefore becomes conductive too.
-    \item \textbf{Consequence}: We now have two partially filled bands. Both the conduction and valence bands can now carry current because neither is completely full, not empty.
-  \end{itemize}
+  
+  Each Si atom is surrounded by 8 $e^-$ at 0K, 4 come from the atom itself, 1 from each of its 4 nearest neighbours.
+  As $T$ increases, thermal energy eventually excites some $e^-$ out of their bond. 
+  Equivalently, the FD distribution broadens around $E_F$, increasing the prob. that conduction band states become occupied.
+  A empty state (a ``hole'') is left in the bonding (valence band) state. 
+  The valence band is then not full anymore, and it therefore becomes conductive too.
+  \textbf{Consequence}: We now have two partially filled bands. 
+  Both the conduction and valence bands can now carry current because neither is completely full, not empty.
+  
 
   \subsubsection{Detailed balance}
   In equilibrium, $n_0$ and $p_0$ are constant but the reaction still operates in both directions. This is called ``detailed balance''.
@@ -176,13 +183,11 @@
   Free electron $n_0$ and hole $p_0$ density and activation energy $E_a$ for bond breaking.
 
   \subsubsection{Intrinsic carrier density}
-  \cgraphic{0.5}{img/intrinsiccarrierdensity}
-  \begin{itemize}
-    \item The intrinsic carrier concentration depends exponentially on temperature $T$
-    \item And on the energy gap of the material (Si: 1.12 eV, GaAs: 1.42 eV, @ 300K)
-    \item Different energy gaps thus have a huge impact on $n_i$
-    \item $n_i$ becomes large at high $T$ (limits high-$T$ operation of devices)
-  \end{itemize}
+  \cgraphic{0.8}{img/intrinsiccarrierdensity}
+  The intrinsic carrier concentration depends exponentially on temperature $T$
+  And on the energy gap of the material (Si: 1.12 eV, GaAs: 1.42 eV, @ 300K)
+  Different energy gaps thus have a huge impact on $n_i$
+  $n_i$ becomes large at high $T$ (limits high-$T$ operation of devices)
 
   \subsubsection{Electric field}
   Electrons move opposite to electric field, holes move parallel to E-field.
@@ -369,7 +374,7 @@
   % ---------------------------------------------------------------------------
   \section{Excess Carriers}
   % ---------------------------------------------------------------------------
-  \subsection{Variables}
+  % \subsection{Variables}
   \cgraphic{0.9}{img/dopingvars.png}
 
     \begin{tabular}[h]{l l}
@@ -423,9 +428,8 @@
 
     The minority carrier lifetime describes how fast the excess carrier concentration decays towards equil. when excitation ends. 
     Determined by majority carrier concentration.
-    \ceqbox{\tau_p = \frac{1}{\beta n_{n0}}}
+    \includegraphics[width=0.7\columnwidth,keepaspectratio]{img/lightonoff.png}\eqbox{\tau_p = \frac{1}{\beta n_{n0}}}
 
-    \cgraphic{0.7}{img/lightonoff.png}
     Light on:
     \begin{align*}
       G_L &= U = \frac{p_n-p_{n0}}{\tau_p} & p_n(t \leq 0) &= p_{n0} + \tau_pG_L
@@ -438,7 +442,6 @@
     \end{align*}
 
     Generally:
-    \todo[inline]{Check these}
     \eqbox{\Delta n = \tau_{n_0}R_n}
 
   \subsection{Indirect Generation/Recombination}
@@ -462,26 +465,21 @@
     Fick's first law of diffusion:
     \[J_{\text{diff}} = -D\Delta N = -D \left( \Pabl{N}{x}\vec{x_u} + \Pabl{N}{y}\vec{y_u} \dots \right)\]
 
-    \begin{itemize}
-      \item In thermal equi. and uniform distribution, free charge carriers are in constant motion. 
-      Net current is thus zero.
-      \item Statistical mechanics show that particles at temp. $T$ have avg. thermal energy of $3kT/2$
-      \item For a particle of mass $m$ this corresponds to an avg. thermal velocity
-      \[\frac{1}{2}mv_{th}^2=\frac{3}{2}kT\]
-      \item In a crystal we must use the \textbf{effective mass}
-    \end{itemize}
-
+    In thermal equi. and uniform distribution, free charge carriers are in constant motion. 
+    Net current is thus zero.
+    Statistical mechanics show that particles at temp. $T$ have avg. thermal energy of $3kT/2$
+    For a particle of mass $m$ this corresponds to an avg. thermal velocity
+    \[\frac{1}{2}mv_{th}^2=\frac{3}{2}kT\]
+    In a crystal we must use the \textbf{effective mass}
     The electron diffusion current:
     \[ J_{\text{diff},n} = -qF = qD_n\Abl{n}{x}\]
 
   \subsection{Drift}
     Result of an electric field as driving force.
-    \begin{itemize}
-      \item Zero field: Electrons move thermally (randomly) in all directions (no net flow)
-      \item Non-zero field: There is a net drift of electrons, opposite to the E-field
-      \item We can then define a drift velocity of electrons $v_{dr,n}$
-      \item Electrons do not accelerate indefinitely due to collisions
-    \end{itemize}
+    Zero field: Electrons move thermally (randomly) in all directions (no net flow)
+    Non-zero field: There is a net drift of electrons, opposite to the E-field
+    We can then define a drift velocity of electrons $v_{dr,n}$
+    Electrons do not accelerate indefinitely due to collisions
     \begin{align*}
       J_{dr,n} &= -qnv_{dr,n} & v_{dr,n} &= -\mu_nE \\
       J_{dr,p} &= qpv_{dr,h} & v_{dr,h} &= \mu_pE \\
@@ -498,7 +496,7 @@
   % ---------------------------------------------------------------------------
   \section{Excess Carriers}
   % ---------------------------------------------------------------------------
-  \subsection{Variables}
+  % \subsection{Variables}
     \begin{tabular}[h]{l l}
       $G_{n/p}$   & Generation rate of el/hole \\
       $R_{n/p}$   & Recombination rate of el/hole \\
@@ -510,21 +508,19 @@
 
   \subsection{Continuity equation}
     \textbf{Objective:} Accounting for carrier densities when drift, diffusion and G/R take place.
-    \cgraphic{0.7}{img/continuity.png}
+    \cgraphic{0.5}{img/continuity.png}
     
     \begin{align*}
       &\text{Change in e} & \Pabl{n}{t} &= \frac{1}{q}\Pabl{J_n}{x}+(G_m-R_n) \\
       &\text{Change in hole} & \Pabl{p}{t} &= -\frac{1}{q}\Pabl{J_p}{x}+(G_p-R_p)
     \end{align*}
 
-    \subsubsection{Electrons}
-    Written for electrons in p-type material
+    Written for \textbf{electrons} in p-type material
     \begin{align*}
       \Pabl{n_p}{t} &= n_p\mu_n\Pabl{\vec{E}}{x}+\mu_n\vec{E}\Pabl{n_p}{x} + D_n\Pablq{n_p}{x} \\ &+ G_n - \frac{n_p-n_{p0}}{\tau_n}
     \end{align*}
 
-    \subsubsection{Holes}
-    Written for holes in n-type material
+    Written for \textbf{holes} in n-type material
     \begin{align*}
       \Pabl{p_n}{t} &= p_n\mu_p\Pabl{\vec{E}}{x}+\mu_p\vec{E}\Pabl{p_n}{x} + D_p\Pablq{p_n}{x} \\ &+ G_p - \frac{p_n-p_{n0}}{\tau_p}
     \end{align*}
@@ -565,7 +561,7 @@
 
 
   \subsection{Equilibrium: constant fermi level}
-  \cgraphic{0.7}{img/pnfermilevel.png}
+  \cgraphic{0.5}{img/pnfermilevel.png}
   In equilibrium, the Fermi level mus be constant to balance transfer rates so that no net current flows.
   \ceqbox{E_{F1} = E_{F2}}
 
