@@ -955,7 +955,7 @@
  				\item[$-$] without an internet-wide notion of a link cost metric
  			\end{itemize}		
 		 \end{itemize}
-	 	Link-state and Distance-vector do both not solve these problems, but \textbf{BGP} does:
+	 	Link-state and Distance-vector do both not solve these problems, but \textbf{BGP} (Border Gateway Protocol) does:
 	 	%\vspace{-0.2cm}
 	 	\begin{itemize}[noitemsep]
 	 		\item BGP relies on \textbf{path-vector routing} to support flexible routing policies and avoid count-to-infinity.
@@ -975,10 +975,132 @@
  				\item preferably none to minimize carried traffic
  			\end{itemize}
 	 	\end{itemize}
+	 	\textbf{BGP}\\
+	 	\vspace{-0.2cm}
+	 	\begin{enumerate}[noitemsep]
+	 		\item \textbf{BGP Policies} $\vert$ Follow the money
+	 		\item \textbf{Protocol} $\vert$ How does it work
+	 		\item \textbf{Problems} $\vert$ Security, performance 
+	 	\end{enumerate}
+	 	\textbf{1. Policies}\\
+	 	BGP is a "follow the money" protocol. Two ASes connect only if they have a business relationship. There are two main business relationships today: 
+	 	\begin{enumerate}[label=(\roman*),noitemsep]
+	 		\item Customer/Provider
+	 		\item Peer/Peer
+	 	\end{enumerate}
+	 	(i) Customer/Provider\\
+	 	Customers pays providers to get full Internet connectivity (monthly bill).\\
+	 	The amount paid is based on peak usage, usually according to the 95\% rule.\\
+	 	Most ISPs discount unit price of data, if you pre-commit to a certain volume (Mengenrabatt).\par 
 	 	
+	 	(ii)Peer/Peer\\
+	 	Peers \textbf{don't} pay each other for connectivity, they do it out of \textbf{common interest}. $\rightarrow$ If they exchange tons of traffic, they save money by connecting directly to each other.\par 
 	 	
+	 	Follow the money:\\ 
+	 	\includegraphics[width=\columnwidth]{images/Network_Layer/follow_the_money.png}
+	 	\textcolor{ForestGreen}{Allowed}: Swisscom/Salt/Sunrise make money, without paying someone to provide them. $\rightarrow$ Providers transit traffic for their customer.\\ 
+	 	\textcolor{Red}{Forbidden 1}: Swisscom and Deutsche get money by sending over ETH, the ETH network will collapse, because all the traffic will be sent over them. $\rightarrow$ Customer do not transit traffic between their provider.\\
+	 	\textcolor{Red}{Forbidden 2}: Sunrise won't receive upon, but has to provide content over their network. $\rightarrow$ Peers do not transit traffic between each other.\par 
+	 	
+	 	These policies are defined by constraining which BGP routes are \textbf{selected} and \textbf{exported}.\par 
+	 	
+	 	\textbf{Selection}\\
+	 	Which path to use? \textcolor{Red}{Control outbound traffic}\\
+	 	Selection rule For a destination p, prefer routes coming from: 
+	 	\begin{itemize}[noitemsep]
+	 		\item Customers over 
+	 		\item Peers over 
+	 		\item Providers
+	 	\end{itemize}
+	 	There will always be a provider route, but not necessarily a customer/peer route.\par 
+	 	
+	 	\textbf{Export}\\
+	 	Which path to advertise? \textcolor{Red}{Control inbound traffic}\\
+	 	Route exportation:\\
+	 	\begin{tabular}{c | c c c c} 
+	 			&  &  & send to &  \\ 
+ 				\hline
+	 			&  & customer & peer & provider \\ 
+	 			& costumer & \checkmark & \checkmark & \checkmark \\ 
+	 			from & peer & \checkmark & - & - \\ 
+	 			& provider & \checkmark & - & - \\ 
+	 	\end{tabular} \\
+ 		\vspace{-0.2cm}
+ 		\begin{itemize}[noitemsep]
+ 			\item  Routes coming from customers are propagated to everyone else.
+ 			\item  Routes coming from peers and providers are only propagated to
+ 		\end{itemize}
+ 		\par
+ 		
+ 		\textbf{2. Protocol}\\
+ 		BGP sessions come in two flavors: 
+ 		\begin{itemize}[noitemsep]
+ 			\item externeal BGP (\textbf{eBGP})
+ 			\begin{itemize}
+ 				\item[$-$] Connect border routers in different ASes
+ 				\item[$-$] Used to learn routes to \textcolor{Red}{external destinations}\\
+ 				\includegraphics[width=0.8\columnwidth]{images/Network_Layer/eBGP_session.png}
+ 			\end{itemize}
+ 			\item internal BGP (\textbf{iBGP})
+ 			\begin{itemize}
+ 				\item[$-$] Connect the routers in the same AS
+ 				\item[$-$] Used to to disseminate (verbreiten) externally-learned routes internally
+ 				\item[$-$] Routes disseminated internally are then announced externally again using eBGP\\ 
+ 				\includegraphics[width=0.8\columnwidth]{images/Network_Layer/iBGP_session.png}
+ 			\end{itemize}
+ 		\end{itemize}        
+		On the wire BGP is simple and only composed of four messages: 
+		\begin{itemize}[noitemsep]
+			\item Open 
+			\begin{itemize}
+				\item[$-$] establish TCP-based BGP sessions
+			\end{itemize} 
+			\item Notification 
+			\begin{itemize}
+				\item[$-$] report unusual conditions 
+			\end{itemize}
+			\item \textbf{Update} 
+			\begin{itemize}
+				\item[$-$] inform neighbor of a new best route
+				\item[$-$] change in best route
+				\item[$-$] removal of best route
+			\end{itemize} 
+			\item Keepalive
+			\begin{itemize}
+				\item[$-$] inform neighbor that connection is alive
+			\end{itemize}
+		\end{itemize}
+		Update is the most important one. They carry an IP \textbf{prefix} together with a set of \textbf{attributes}. Attributes: 
+		\begin{itemize}[noitemsep]
+			\item Next-Hop
+			\begin{itemize}
+				\item[$-$] egress point identification
+			\end{itemize}
+			\item AS-Path
+			\begin{itemize}
+				\item[$-$] loop avoidance
+				\item[$-$] outbound traffic control
+				\item[$-$] inbound traffic control
+			\end{itemize}
+			\item Local-Pref
+			\begin{itemize}
+				\item[$-$] outbound traffic control
+			\end{itemize}
+			\item Med
+			\begin{itemize}
+				\item[$-$] inbound traffic control
+			\end{itemize}
+		\end{itemize}
+		The \textbf{Next-Hop} is a global attribute which indicates where to send the traffic next. The Next-Hop is sent when the route enters an AS, it does not change within the AS.\\
+		\includegraphics[width=\columnwidth]{images/Network_Layer/next_hop.png}
+		The \textbf{AS-Path} is a global attribute that lists all the ASes a route has traversed (in reverse order).\\
+		\includegraphics[width=\columnwidth]{images/Network_Layer/as_path.png}
+		The \textbf{Local-Pref} is a \textit{local} attribute set at the border, it represents how \textit{preferred} a route is.\\
+		\includegraphics[width=\columnwidth]{images/Network_Layer/local_pref.png}
+		The \textbf{MED} is a global attribute which encodes the relative proximity of a prefix wrt to the announcer.\\
+
 		 
-		  
+			
 		\end{multicols*}
 	\setcounter{secnumdepth}{3}
 \end{document}
