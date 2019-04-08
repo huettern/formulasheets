@@ -993,7 +993,7 @@
 	 	The amount paid is based on peak usage, usually according to the 95\% rule.\\
 	 	Most ISPs discount unit price of data, if you pre-commit to a certain volume (Mengenrabatt).\par 
 	 	
-	 	(ii)Peer/Peer\\
+	 	(ii) Peer/Peer\\
 	 	Peers \textbf{don't} pay each other for connectivity, they do it out of \textbf{common interest}. $\rightarrow$ If they exchange tons of traffic, they save money by connecting directly to each other.\par 
 	 	
 	 	Follow the money:\\ 
@@ -1072,32 +1072,88 @@
 		\end{itemize}
 		Update is the most important one. They carry an IP \textbf{prefix} together with a set of \textbf{attributes}. Attributes: 
 		\begin{itemize}[noitemsep]
-			\item Next-Hop
+			\item \textbf{Next-Hop}
 			\begin{itemize}
 				\item[$-$] egress point identification
 			\end{itemize}
-			\item AS-Path
+			\item \textbf{AS-Path}
 			\begin{itemize}
 				\item[$-$] loop avoidance
 				\item[$-$] outbound traffic control
 				\item[$-$] inbound traffic control
 			\end{itemize}
-			\item Local-Pref
+			\item \textbf{Local-Pref}
 			\begin{itemize}
 				\item[$-$] outbound traffic control
 			\end{itemize}
-			\item Med
+			\item \textbf{Med}
 			\begin{itemize}
 				\item[$-$] inbound traffic control
 			\end{itemize}
 		\end{itemize}
-		The \textbf{Next-Hop} is a global attribute which indicates where to send the traffic next. The Next-Hop is sent when the route enters an AS, it does not change within the AS.\\
+		The \textbf{Next-Hop} is a global attribute which indicates where to send the traffic next. The Next-Hop is sent when the route enters an AS, it does not change within the AS. It only changes when going form one AS to an other!\\
+		Solution:\\
+		Force overwrite of Next-Hop to a virtual IP-address (\textbf{loopback} address) given to the router (unique identifier in internal network) and advertise this via OSPF in the internal network. Method is called \textcolor{Red}{\textbf{Next-Hop-Self}}.
 		\includegraphics[width=\columnwidth]{images/Network_Layer/next_hop.png}
-		The \textbf{AS-Path} is a global attribute that lists all the ASes a route has traversed (in reverse order).\\
+		\par 
+		The \textbf{AS-Path} is a global attribute that lists all the ASes a route has traversed (in reverse order):\\
 		\includegraphics[width=\columnwidth]{images/Network_Layer/as_path.png}
-		The \textbf{Local-Pref} is a \textit{local} attribute set at the border, it represents how \textit{preferred} a route is.\\
+		\par 
+		The \textbf{Local-Pref} is a \textit{local} attribute set at the border, it represents how \textit{preferred} a route is. Where do I want to send my traffic. Here all the routers will prefer DT over Swisscom:\\
 		\includegraphics[width=\columnwidth]{images/Network_Layer/local_pref.png}
-		The \textbf{MED} is a global attribute which encodes the relative proximity of a prefix wrt to the announcer.\\
+		\par 
+		The \textbf{MED} is a global attribute which encodes the relative proximity of a prefix wrt to the announcer. You can \textbf{influence} your neighbor and try to tell them where to send your receiving traffic (Only works with multiple connections to the \textbf{same AS}). In the end though, the sender decides where he sends the traffic $\rightarrow$ I can influence not control:\\
+		\begin{center}
+			\includegraphics[width=0.7\columnwidth]{images/Network_Layer/med.png}
+		\end{center}
+		\par 
+		Each BGP router processes updates according to a precise \textbf{pipeline}: 
+		\includegraphics[width=\columnwidth]{images/Network_Layer/pipeline.png}
+		\par 
+		How to choose best route - prefer routes with:
+		\vspace{-0.2cm} 
+		\begin{enumerate}[noitemsep]
+			\item higher Local-Pref
+			\item shortest AS-Path length
+			\item lower MED
+			\item learned via eBGP instead of iGBP
+			\item lower iGBP metric to next-hop
+			\item smaller egress IP-address
+		\end{enumerate}
+		\par 
+		\textbf{3. Problems}\\
+		BGP suffers from many problems!
+		\begin{enumerate}[label=(\roman*), noitemsep]
+			\item \textbf{Reachability}
+			\item \textbf{Security}
+			\item \textbf{Convergence} 
+			\item \textbf{Performance} 
+			\item \textbf{Anomalies}
+			\item \textbf{Relevance} 
+		\end{enumerate}
+	    i) \textbf{Reachability}\\
+		Policy routing does not guarantee reachability, even if the network is physically connected.\par 
+		
+		ii) \textbf{Security}
+		\vspace{-0.2cm}
+		 \begin{itemize}[noitemsep]
+		 	\item \textbf{IP Hijacking}
+			\begin{itemize}
+				\item[$-$] Steal IP-prefix and receive all the traffic that is not intended for you $\rightarrow$ Blackhole/Snooping/Impersonation 
+			\end{itemize}
+			\item \textbf{Bogus AS-paths}
+			\begin{itemize}
+				\item[$-$] Remove ASes form the path
+				\item[$-$] Add Ases to the path
+				\item[$-$] Add AS hop(s) at the end of the path
+			\end{itemize}
+			\item \textbf{Invalid paths}
+			\begin{itemize}
+				\item AS exports a route it shouldn't
+			\end{itemize}
+			\item \textbf{ Missing/Inconsistent routes}	
+		\end{itemize}
+		
 
 		 
 			
