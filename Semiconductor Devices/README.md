@@ -6,7 +6,7 @@
 - [x] Week 3
 - [x] Week 4
 - [x] Week 5
-- [ ] Week 6
+- [x] Week 6 -> Check with exercise 6 solutions
 - [ ] Week 7
 - [ ] Week 8
 - [ ] Week 9

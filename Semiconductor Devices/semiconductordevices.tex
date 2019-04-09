@@ -570,6 +570,71 @@
   Near the transition region, the distance between the Fermi level and conducition/valence band edge changes.
   Far away from the junction, the material does not ``know'' there is a junction.
 
+  % ---------------------------------------------------------------------------
+  \section{PN Junction}
+  % ---------------------------------------------------------------------------
+    \begin{tabular}[h]{l l}
+      $N_a$   & Acceptor concentration in p-region \\
+      $N_d$   & Donor concentration in n-region \\
+      $n_{n0}=N_d$   & Equi. maj. carrier e in n reg. \\
+      $p_{p0}=N_a$   & Equi. maj. carrier h in p reg. \\
+      $n_{p0}=n_i^2/N_a$  & Equi. min. carrier e in p reg.  \\
+      $p_{n0}=n_i^2/N_d$  & Equi. min. carrier h in n reg.  \\
+      $n_p$   &  Total min. carrier e in p reg.\\
+      $p_n$   &  Total min. carrier h in n reg.\\
+      $n_p(-x_p)$   &  Min. carr. e in p-reg at depl-edge\\
+      $p_n(x_n)$    &  Min. carr. h in n-reg at depl-edge\\
+      $\Delta n_p$   & Excess min. car. e in p-reg \\
+      $\Delta n_n$   & Excess min. car. h in n-reg \\
+      $V_{bi}$& Builtin voltage at equilibrium \\
+      $x_n$   & End of depletion region on n-side\\
+      $x_p$   & Start of depletion region\\
+      $W$     & Depletion region width\\
+      $V_a$     & Forward applied voltage\\
+      $J_s$     & Reverse saturation cur. dens.\\
+    \end{tabular}
+    \begin{align*}
+      \Delta n_p &= n_p - n_{p0} & \Delta n_n &= p_n - p_{n0} \\
+    \end{align*}
+
+  \subsection{Diode}
+    \cgraphic{0.999}{img/diode}
+    The amount of band bending balances the drift/diffusion currents.
+
+  \subsection{Equilibrium}
+    \cgraphic{0.7}{img/diode_eq_band}
+    \[V_{bi} = \frac{kT}{q}\ln\left(\frac{N_aN_d}{n_i^2}\right)\]
+  
+  \subsection{Space Charge Width}
+    \cgraphic{0.6}{img/space_charge_width}
+    \begin{align*}
+      x_n &= \left\{ \frac{2\epsilon_sV_{bi}}{q}\left[\frac{N_a}{N_d}\right]\left[\frac{1}{N_a+N_d}\right] \right\}^{1/2}\\
+      x_p &= \left\{ \frac{2\epsilon_sV_{bi}}{q}\left[\frac{N_d}{N_a}\right]\left[\frac{1}{N_a+N_d}\right] \right\}^{1/2} \\
+      W  &= \left\{ \frac{2\epsilon_sV_{bi}}{q}\left[ \frac{N_a+N_d}{N_aN_d} \right] \right\}^{1/2}
+    \end{align*}
+
+    
+  \subsection{Forward Bias}
+    Applying an external forward voltage is called forward bias or minority carrier injection.
+    This voltage subtracts from $V_{bi}$.
+    Minority carriers at depletion edges increase by factor $\exp(qV_F/kT)$.
+    Known as \textbf{Shockley Boundary Conditions}.
+    \cgraphic{0.6}{img/shockley2}
+    \begin{align*}
+      n_p(-x_p) &= n_{p0}\exp\left(\frac{qV_a}{kT}\right) & p_n(x_n) &= p_{n0}\exp\left(\frac{qV_a}{kT}\right)
+    \end{align*}
+
+  \subsection{Ideal Junction Current}
+    The ideal current $J$ is calculated by:
+    \begin{align*}
+      J_s &= \left[ \frac{qD_pp_{n0}}{L_p} + \frac{qD_nn_{p0}}{L_n} \right] \\
+      J   &= J_s \left[ \exp\left(\frac{qV_a}{kT}\right) -1 \right] 
+    \end{align*}
+    
+    Recalling
+    \begin{align*}
+      D_i &= \frac{kT}{q}\mu_i = \frac{L_i^2}{\tau_i} \quad i\in[n,p]\\
+    \end{align*}
 
 
 \end{multicols*}
