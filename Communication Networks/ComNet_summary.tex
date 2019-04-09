@@ -279,18 +279,18 @@
 			See the following pictures for an example with a resulting spanning tree and one with no spanning tree, hence no valid forwarding state.
 			\includegraphics[width=\columnwidth]{images/Concepts/check_s_t.png}
 			 
-			\subsubsection{How to compute forwarding states}
+			\subsubsection{How to compute forwarding states}\label{kap:How to compute forwarding}
 			Producing valid routing state is harder $\rightarrow$ prevent dead ends (easy) \& loops (hard). Prevent loops is the hard part, this is where routing protocols differ. There are three ways to compute valid routing state: 
 			\begin{enumerate}[noitemsep]
-				\item Use tree-like topologies $\vert$ Spanning-tree
-			 	\item Rely on a global network view $\vert$ Link-state
-			 	\item Rely on distributed computation $\vert$ Distance vector 
+				\item Use tree-like topologies $\vert$ \textbf{Spanning-tree}
+			 	\item Rely on a global network view $\vert$ \textbf{Link-state}
+			 	\item Rely on distributed computation $\vert$ \textbf{Distance vector} 
 		 	\end{enumerate}
 			In the Internet we use 3., because it is not possible to make precise map of whole Internet.\\
 			In Networks we use 2.\\
 			Inside (part of) Networks we use 1. \par
 			
-			\textbf{1. Tree-like topologies}\\
+			\textbf{1. Spanning Tree}\\
 			The easiest way to avoid loops is to route traffic in a loop free topology (Sherlock). Simple algorithm: 
 			%\vspace{-0.2cm}
 			\begin{enumerate}[noitemsep]
@@ -322,7 +322,7 @@
 				\end{itemize} 
 			\end{itemize}
 			
-			\textbf{2. Rely on a global network view}\\
+			\textbf{2. Link-state}\\
 			If \textbf{each routers} knows the entire graph, it can \textbf{locally} compute paths to all other nodes. Once a node \textit{u} knows the entire topology, it can compute shortest paths using \textbf{Dijkstra's algorithm}:
 			\includegraphics[width=\columnwidth]{images/Concepts/Dijkstra.png}
 			$u$ is the node running the algorithm\\
@@ -337,7 +337,7 @@
 		    $\rightarrow$ At the end of the flooding process everyone should have the exact same view of the network. \\
 		    I can configure wight of links \textbf{static} by hand (Dijkstra will converge), or \textbf{dynamic} (may be problematic).\par 
 		    
-		    \textbf{3. Rely on distributed computation}\\
+		    \textbf{3.Distance-vector}\\
 		    Paths can be computed in distributed computation.\\
 		    Let $d_x(y)$ be the cost of the least-cost path known by $x$ to reach $y$. \\
 		    Each node bundles these distances into one message (vector) that it \textbf{repeatedly} sends to all its neighbors. \\
@@ -354,7 +354,7 @@
 		    $d_u(D)=\min\{3+d_A(D), 2+d_E(D)\}=6$\\
 		    As before $u$ can directyl infer its forwarding table, by directing the traffic to its best neighbor (the one which advertises the smallest cost). Evaluating the complexity of DV is harder. 
 		    
-		    \subsection{Reliable delivery}
+		    \subsection{Reliable delivery}\label{Subsec:Reliable_Delivery}
 		    How do you ensure reliable transport on top of best-effort delivery?\\
 		    \textbf{Goals:}
 		    \begin{itemize}[noitemsep]
@@ -776,8 +776,617 @@
    		\includegraphics[width=\columnwidth]{images/Network_Layer/filtering2.png}
    		\textcolor{Red}{Exactly the same forwarding!}
    		
-   		\subsection{IP header}
+   		\subsection{IPv4 packet}
+   		This is what an IPv4 Packet looks like:
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/IPv4_packet.png}
+   		\textbf{Version} $\vert$  "4" or "6", tells us what other fields to expect\\ 
+   		\textbf{Header length} $\vert$ Denotes the number of 32-bits word in the header (typically 5 (20 Bytes)) \\ 
+   		\textbf{ToS} $\vert$ Allows different pakctes to be treated differently (low delay (VoIP), high bandwidth (Video))\\
+   		\textbf{Total length} $\vert$ Denotes the number of Bytes in the entire packet (max. 65 635, mostly 1500 because ether.)\\
+   		\textbf{Identification} $\vert$ Uniquely identifies the fragments of a particular packet.\\
+   		\textbf{Flag} $\vert$ Tells you if more packets are coming or not.\\
+   		\textbf{Fragment Offset} $\vert$ Used if need to reorder packets in right order.\\
+   		\textbf{Time To Live} $\vert$ Used to identify packets in a loop and drop them.\\
+   		\textbf{Protocol} $\vert$ Identifies the higher level protocol carried in the packet ("6" for TCP, "17" for UDP).\\
+   		\textbf{Header Checksum} $\vert$ Sum of all 16 bits words in the header (does not protect the payload).\\
+   		\textbf{Source IP} $\vert$ Uniquely identifies the Source host.\\
+   		\textbf{Destination IP} $\vert$ Uniquely identifies the Destination host.\\
+   		\textbf{Options} $\vert$ Used to provide flexibility, but mostly deactivated because security. (record route, strict source route, loose source route, timestamp, traceroute, router alert)\\
+   		
+   		\subsection{IPv6 packet}
+   		coming soon
+   		
+   		\subsection{Internet routing}
+   		Internet routing comes in two flavors: \textcolor{Red}{\textbf{intra}}- and \textcolor{ForestGreen}{\textbf{inter}}-domain routing.
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/intra_vs_inter.png}
+   		\textcolor{Red}{\textbf{Intra}} vs. \textcolor{ForestGreen}{\textbf{Inter}} domain routing
+   		\begin{center}
+   				\includegraphics[width=0.5\columnwidth]{images/Network_Layer/intra_vs_inter_2.png}
+   		\end{center}
    	
+   		\subsubsection{Intra-domain routing}
+   		Find paths \textbf{within} a network.\\
+   		Intra-domain routing enables routers to compute \textbf{good forwarding paths} to any internal subnet. What is \textbf{good}?\\
+   		\textbf{Definition:} A good path is a path that minimizes some network wide metric (cost, delay load, loss,...).\\
+   		\textbf{Approach:} Assign to each link wa weight (usually static), compute the \textit{shortest path} to each destination.\par
+   		
+   		\textbf{Link-state protocols}\\
+   		 In link-state routing, routers build a precise map of the network by flooding local views to everyone. 
+   		 \begin{itemize}[noitemsep]
+   		 	\item Each router keeps track of its incident links and cost $\vert$ as well as weather it is up or down
+   		 	\item Each router broadcast its own links state $\vert$ to give every router a complete view of the graph
+   		 	\item Routers run Dijkstra on the corresponding graph $\vert$ to compute their shortest path and forwarding table. 
+   		 \end{itemize}
+   	 	Flooding is performed as in the L2 learning, except that it is \textbf{reliable}. All nodes are \textbf{ensured} to receive the latest version of all link-states.\\
+   	 	\begin{itemize}[noitemsep]
+   	 		\item Challanges: 
+   	 		\begin{itemize}
+   	 			\item[$-$] packet loss
+   	 			\item[$-$] out of order arrival
+   	 		\end{itemize}
+    		\item Solution:
+    		\begin{itemize}
+    			\item[$-$] ACK \& Retransmission
+    			\item[$-$] Sequence number
+    			\item[$-$] Time-To-Live for each link-state
+    		\end{itemize}
+   	 	\end{itemize}  
+   		A link-state node initates flooding in 3 conditions: 
+   		\begin{itemize}[noitemsep]
+   			\item \textbf{Topology change} $\vert$ link or node failure/recovery
+   			\item \textbf{Configuration change} $\vert$ link cost change
+   			\item \textbf{Periodically} $\vert$ Refresh (account for possible data corruption)
+   		\end{itemize}
+   		Once a node knows the entire topology, it can run Dijkstra to compute shortest-path.\\
+   		By default, link-state protocols detect changes using software based beaconing:\\
+   		Routers periodically exchange "Hello" in both directions and trigger a failure after few missed "Hellos". Tradeoff between: 
+   		\begin{itemize}[noitemsep]
+   			\item Detection speed
+   			\item Bandwidth and CPU overhead
+   			\item false positive/negative
+   		\end{itemize}  
+   		During network changes, the link-state database of each node might differ. Inconsistencies lead to transient disruptions in the form of black holes or loops.\\
+   		\textbf{Blackholes} appear due to detection delay, as nodes do not immediately detect failure $\rightarrow$ depends on the timeout for detecting lost "Hellos".\\
+   		\textbf{Transient loops} appear due to inconsistent link-state database.
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/transient_loop.png} 
+   		Convergence is the process during which routers seek to actively regain a consistent view of the network.\\
+   		Network convergence time depends on 4 main factors:
+   		\begin{itemize}[noitemsep]
+   			\item \textbf{Detection}
+   			\begin{itemize}
+   				\item[$-$] realizing that a link/neighbor is down
+   				\item[$-$] few ms
+   				\item[$-$] smaller timers
+   			\end{itemize} 
+   			\item \textbf{Flooding}
+   			\begin{itemize}
+   				\item[$-$] flooding news to entire network
+   				\item[$-$] few ms
+   				\item[$-$] high-priority flooding
+   			\end{itemize}  
+   			\item \textbf{Computation}
+   			\begin{itemize}
+   				\item[$-$] recomputing Dijkstra
+   				\item[$-$] few ms
+   				\item[$-$] incremental algorithms
+   			\end{itemize}
+   			\item \textbf{Table update}
+   			\begin{itemize}
+   				\item[$-$] updating forward table
+   				\item[$-$] potentially \textcolor{Red}{minutes}!
+   				\item[$-$] better table design
+   			\end{itemize}
+   		\end{itemize} 
+   		The problem with updating the forwarding table is that they are flat, means:
+   		\vspace{-0.2cm}
+   		\begin{itemize}[noitemsep]
+   			\item[$-$] Entries do not share any information $\vert$ even if they are identical
+   			\item[$-$] Upon failure, all of them have to be updated $\vert$ inefficient, but also unnecessary 
+   		\end{itemize} 
+   		The solution is to add a layer of \textbf{indirection} (Dereferenzierung):\\
+   		Replay this:\\
+   		\includegraphics[width=0.7\columnwidth]{images/Network_Layer/forward_table.png}\\
+   		With that:\\
+   		\includegraphics[width=\columnwidth]{images/Network_Layer/forward_table_pointer.png}
+   		Now we only need to update 1 entry, the one in the pointer table! Hierarchical tables are able to converge within 150ms \textit{independently} on the number of prefixes!\\
+   		Today, tow link-state protocols are widely used:
+   		\begin{itemize}[noitemsep]
+   			\item \textbf{OSPF}
+   			\begin{itemize}
+   				\item[$-$] used in many enterprise \& ISPs
+   				\item[$-$] work on top of IP
+   				\item[$-$] only route IPv4 by default
+   			\end{itemize}
+   			\item \textbf{IS-IS}
+   			\begin{itemize}
+   				\item[$-$] used mostly in large ISPs
+   				\item[$-$] work on top of link layer
+   				\item[$-$] network protocol agnostic
+   			\end{itemize}
+   		\end{itemize} 
+		\par
+		
+		\textbf{Distance-vector protocols}\\
+		Distance vector protocols are based on Bellman-Ford algorithm (see \ref{kap:How to compute forwarding} (3.))\\
+		The same reasons as with the link-state cause the nodes to send new DVs.\\
+		What happens when a link changes it cost?
+		\vspace{-0.2cm}
+		\begin{itemize}[noitemsep]
+			\item Decrease cost
+			\begin{itemize}
+				\item[$-$] The algorithms terminates fast
+				\item[$\rightarrow$] \textcolor{ForestGreen}{Good news travel fast}
+			\end{itemize}
+			\item Increase cost
+			\begin{itemize}
+				\item[$-$] The algorithm takes a while to terminate
+				\item[$\rightarrow$] \textcolor{Red}{Bad news travel slow}
+			\end{itemize}
+		\end{itemize}
+		This problem is known as \textcolor{Red}{count-to-infinity}, a type of routing loop.\\
+		Solution: Whenever a router uses another one, it will announce it an infinite cost. This technique is known as \textbf{poisoned reverse}. This method does \textcolor{Red}{not} solve loops involving 3 or more nodes.\\
+		Actual distance-vector protocols mitigate this issue by using small "infinity" (e.g "16").\\
+		(Please see slides and exercises for examples of this problem and the solution method).\par
+		
+		\textbf{Link-state vs. Distance-vector routing:}
+		\includegraphics[width=\columnwidth]{images/Network_Layer/state_vs_vector.png}
+		 
+		 \subsubsection{Inter-domain routing}
+		 Find paths \textbf{between} networks.\\
+		 The Internet is a network of neteorks, referred to as Autonomous Systems (AS). Each AS has a number which identifies it. \\
+		 \textbf{BGP} is the routing protocol "gluing" the entire Internet together.
+		 \includegraphics[width=\columnwidth]{images/Network_Layer/BGP_gluing.png}
+		 Using BGP, ASes exchange information about the IP prefixes they can reach, directly or indirectly. \\
+		 BGP needs to solve three key challenges:
+		 \begin{itemize}[noitemsep]
+		 	\item \textbf{Scalability}
+		 	\begin{itemize}
+		 		\item[$-$] There is a huge \# number of networks and prefixes
+		 		\item[$-$] 700k prefixes, $>$50k networks, millions of routers 
+		 	\end{itemize}
+	 		\item \textbf{Privacy}
+	 		\begin{itemize}
+	 			\item[$-$] Networks do not want to divulge internal topologies
+	 			\item[$-$] Or their business relationships
+	 		\end{itemize}
+ 			\item \textbf{Policy enforcement}
+ 			\begin{itemize}
+ 				\item[$-$] Networks need to control where to send and receive traffic
+ 				\item[$-$] without an internet-wide notion of a link cost metric
+ 			\end{itemize}		
+		 \end{itemize}
+	 	Link-state and Distance-vector do both not solve these problems, but \textbf{BGP} (Border Gateway Protocol) does:
+	 	%\vspace{-0.2cm}
+	 	\begin{itemize}[noitemsep]
+	 		\item BGP relies on \textbf{path-vector routing} to support flexible routing policies and avoid count-to-infinity.
+	 		\item BGP announcements carry \textbf{complete path} information instead of distances.
+	 		\item Each AS appends itself to the path when it propagates announcements
+	 	\end{itemize}
+	 	Complete path information enables ASes to easily detect a loop (if they see themselves in the path).\\
+	 	Each AS can apply local routing policies, each AS is free to: 
+	 	%\vspace{-0.2cm}
+	 	\begin{itemize}[noitemsep]
+	 		\item Select and use any path
+	 		\begin{itemize}
+	 			\item[$-$]prefarably the cheapest one
+	 		\end{itemize}
+ 			\item Decide which path to export (if any) to which neighbor 
+ 			\begin{itemize}
+ 				\item preferably none to minimize carried traffic
+ 			\end{itemize}
+	 	\end{itemize}
+	 	\textbf{BGP}\\
+	 	\vspace{-0.2cm}
+	 	\begin{enumerate}[noitemsep]
+	 		\item \textbf{BGP Policies} $\vert$ Follow the money
+	 		\item \textbf{Protocol} $\vert$ How does it work
+	 		\item \textbf{Problems} $\vert$ Security, performance 
+	 	\end{enumerate}
+	 	\textbf{1. Policies}\\
+	 	BGP is a "follow the money" protocol. Two ASes connect only if they have a business relationship. There are two main business relationships today: 
+	 	\begin{enumerate}[label=(\roman*),noitemsep]
+	 		\item Customer/Provider
+	 		\item Peer/Peer
+	 	\end{enumerate}
+	 	(i) Customer/Provider\\
+	 	Customers pays providers to get full Internet connectivity (monthly bill).\\
+	 	The amount paid is based on peak usage, usually according to the 95\% rule.\\
+	 	Most ISPs discount unit price of data, if you pre-commit to a certain volume (Mengenrabatt).\par 
+	 	
+	 	(ii) Peer/Peer\\
+	 	Peers \textbf{don't} pay each other for connectivity, they do it out of \textbf{common interest}. $\rightarrow$ If they exchange tons of traffic, they save money by connecting directly to each other.\par 
+	 	
+	 	Follow the money:\\ 
+	 	\includegraphics[width=\columnwidth]{images/Network_Layer/follow_the_money.png}
+	 	\textcolor{ForestGreen}{Allowed}: Swisscom/Salt/Sunrise make money, without paying someone to provide them. $\rightarrow$ Providers transit traffic for their customer.\\ 
+	 	\textcolor{Red}{Forbidden 1}: Swisscom and Deutsche get money by sending over ETH, the ETH network will collapse, because all the traffic will be sent over them. $\rightarrow$ Customer do not transit traffic between their provider.\\
+	 	\textcolor{Red}{Forbidden 2}: Sunrise won't receive upon, but has to provide content over their network. $\rightarrow$ Peers do not transit traffic between each other.\par 
+	 	
+	 	These policies are defined by constraining which BGP routes are \textbf{selected} and \textbf{exported}.\par 
+	 	
+	 	\textbf{Selection}\\
+	 	Which path to use? \textcolor{Red}{Control outbound traffic}\\
+	 	Selection rule For a destination p, prefer routes coming from: 
+	 	\begin{itemize}[noitemsep]
+	 		\item Customers over 
+	 		\item Peers over 
+	 		\item Providers
+	 	\end{itemize}
+	 	There will always be a provider route, but not necessarily a customer/peer route.\par 
+	 	
+	 	\textbf{Export}\\
+	 	Which path to advertise? \textcolor{Red}{Control inbound traffic}\\
+	 	Route exportation:\\
+	 	\begin{tabular}{c | c c c c} 
+	 			&  &  & send to &  \\ 
+ 				\hline
+	 			&  & customer & peer & provider \\ 
+	 			& costumer & \checkmark & \checkmark & \checkmark \\ 
+	 			from & peer & \checkmark & - & - \\ 
+	 			& provider & \checkmark & - & - \\ 
+	 	\end{tabular} \\
+ 		\vspace{-0.2cm}
+ 		\begin{itemize}[noitemsep]
+ 			\item  Routes coming from customers are propagated to everyone else.
+ 			\item  Routes coming from peers and providers are only propagated to
+ 		\end{itemize}
+ 		\par
+ 		
+ 		\textbf{2. Protocol}\\
+ 		BGP sessions come in two flavors: 
+ 		\begin{itemize}[noitemsep]
+ 			\item externeal BGP (\textbf{eBGP})
+ 			\begin{itemize}
+ 				\item[$-$] Connect border routers in different ASes
+ 				\item[$-$] Used to learn routes to \textcolor{Red}{external destinations}\\
+ 				\includegraphics[width=0.8\columnwidth]{images/Network_Layer/eBGP_session.png}
+ 			\end{itemize}
+ 			\item internal BGP (\textbf{iBGP})
+ 			\begin{itemize}
+ 				\item[$-$] Connect the routers in the same AS
+ 				\item[$-$] Used to to disseminate (verbreiten) externally-learned routes internally
+ 				\item[$-$] Routes disseminated internally are then announced externally again using eBGP\\ 
+ 				\includegraphics[width=0.8\columnwidth]{images/Network_Layer/iBGP_session.png}
+ 			\end{itemize}
+ 		\end{itemize}        
+		On the wire BGP is simple and only composed of four messages: 
+		\begin{itemize}[noitemsep]
+			\item Open 
+			\begin{itemize}
+				\item[$-$] establish TCP-based BGP sessions
+			\end{itemize} 
+			\item Notification 
+			\begin{itemize}
+				\item[$-$] report unusual conditions 
+			\end{itemize}
+			\item \textbf{Update} 
+			\begin{itemize}
+				\item[$-$] inform neighbor of a new best route
+				\item[$-$] change in best route
+				\item[$-$] removal of best route
+			\end{itemize} 
+			\item Keepalive
+			\begin{itemize}
+				\item[$-$] inform neighbor that connection is alive
+			\end{itemize}
+		\end{itemize}
+		Update is the most important one. They carry an IP \textbf{prefix} together with a set of \textbf{attributes}. Attributes: 
+		\begin{itemize}[noitemsep]
+			\item \textbf{Next-Hop}
+			\begin{itemize}
+				\item[$-$] egress point identification
+			\end{itemize}
+			\item \textbf{AS-Path}
+			\begin{itemize}
+				\item[$-$] loop avoidance
+				\item[$-$] outbound traffic control
+				\item[$-$] inbound traffic control
+			\end{itemize}
+			\item \textbf{Local-Pref}
+			\begin{itemize}
+				\item[$-$] outbound traffic control
+			\end{itemize}
+			\item \textbf{Med}
+			\begin{itemize}
+				\item[$-$] inbound traffic control
+			\end{itemize}
+		\end{itemize}
+		The \textbf{Next-Hop} is a global attribute which indicates where to send the traffic next. The Next-Hop is sent when the route enters an AS, it does not change within the AS. It only changes when going form one AS to an other!\\
+		Solution:\\
+		Force overwrite of Next-Hop to a virtual IP-address (\textbf{loopback} address) given to the router (unique identifier in internal network) and advertise this via OSPF in the internal network. Method is called \textcolor{Red}{\textbf{Next-Hop-Self}}.
+		\includegraphics[width=\columnwidth]{images/Network_Layer/next_hop.png}
+		\par 
+		The \textbf{AS-Path} is a global attribute that lists all the ASes a route has traversed (in reverse order):\\
+		\includegraphics[width=\columnwidth]{images/Network_Layer/as_path.png}
+		\par 
+		The \textbf{Local-Pref} is a \textit{local} attribute set at the border, it represents how \textit{preferred} a route is. Where do I want to send my traffic. Here all the routers will prefer DT over Swisscom:\\
+		\includegraphics[width=\columnwidth]{images/Network_Layer/local_pref.png}
+		\par 
+		The \textbf{MED} is a global attribute which encodes the relative proximity of a prefix wrt to the announcer. You can \textbf{influence} your neighbor and try to tell them where to send your receiving traffic (Only works with multiple connections to the \textbf{same AS}). In the end though, the sender decides where he sends the traffic $\rightarrow$ I can influence not control:\\
+		\begin{center}
+			\includegraphics[width=0.7\columnwidth]{images/Network_Layer/med.png}
+		\end{center}
+		\par 
+		Each BGP router processes updates according to a precise \textbf{pipeline}: 
+		\includegraphics[width=\columnwidth]{images/Network_Layer/pipeline.png}
+		\par 
+		How to choose best route - prefer routes with:
+		\vspace{-0.2cm} 
+		\begin{enumerate}[noitemsep]
+			\item higher Local-Pref
+			\item shortest AS-Path length
+			\item lower MED
+			\item learned via eBGP instead of iGBP
+			\item lower iGBP metric to next-hop
+			\item smaller egress IP-address
+		\end{enumerate}
+		\par 
+		\textbf{3. Problems}\\
+		BGP suffers from many problems!
+		\begin{enumerate}[label=(\roman*), noitemsep]
+			\item \textbf{Reachability}
+			\item \textbf{Security}
+			\item \textbf{Convergence} 
+			\item \textbf{Performance} 
+			\item \textbf{Anomalies}
+			\item \textbf{Relevance} 
+		\end{enumerate}
+	    i) \textbf{Reachability}\\
+		Policy routing does not guarantee reachability, even if the network is physically connected.\par 
+		
+		ii) \textbf{Security}
+		\vspace{-0.2cm}
+		 \begin{itemize}[noitemsep]
+		 	\item \textbf{IP Hijacking}
+			\begin{itemize}
+				\item[$-$] Steal IP-prefix and receive all the traffic that is not intended for you $\rightarrow$ Blackhole/Snooping/Impersonation 
+			\end{itemize}
+			\item \textbf{Bogus AS-paths}
+			\begin{itemize}
+				\item[$-$] Remove ASes form the path
+				\item[$-$] Add Ases to the path
+				\item[$-$] Add AS hop(s) at the end of the path
+			\end{itemize}
+			\item \textbf{Invalid paths}
+			\begin{itemize}
+				\item AS exports a route it shouldn't
+			\end{itemize}
+			\item \textbf{ Missing/Inconsistent routes}	
+		\end{itemize}
+		\par
+		 
+		iii) \textbf{Convergence}\\
+		With arbitrary policies, BGP may have multiple stable states and never converges. It is possible that networks oscillate forever! Policy oscillations are a direct consequence of policy autonomy.
+		\begin{itemize}[noitemsep]
+			\item[$-$] Checking BGP correctness/convergence is not possible, even when you know all the policies!
+		\end{itemize}
+		\textbf{But}
+		\begin{itemize}[noitemsep]
+			\item[$-$] If all ASes follow the provider/peer/customer rules, BGP is \textbf{guaranteed} to converge, otherwise the network wouldn't be economical. 
+		\end{itemize}
+		\par 
+		iv) \textbf{Performance}\\
+		BGP path selection is mostly economical, not based on accurate performance criteria
+		\includegraphics[width=\columnwidth]{images/Network_Layer/BGP_performance.png}
+		\par 
+		
+		v) \textbf{Anomalies}\\
+		BGP configuration is hard to get right. Human factors are responsible for 50\% to s80\% of network outages.
+		\begin{itemize}[noitemsep]
+			\item BGP is both bloated and underspecified
+			\begin{itemize}
+				\item[$-$] Lots of knobs and sometimes conflicting interpretations
+			\end{itemize}
+			\item BGP is often manually configured
+			\begin{itemize}
+				\item[$-$] Humans make often mistakes
+			\end{itemize}
+			\item BGP abstraction is fundamentally flawed
+			\begin{itemize}
+				\item[$-$] disjoint, router-based config. to effect AS-wide policy
+			\end{itemize} 
+		\end{itemize}
+		\par 
+		
+		vi) \textbf{Relevance}\\
+		The world of BGP policies is rapidly changing: 
+		\begin{itemize}[noitemsep]
+			\item ISPs are now eyeballs talking to content networks
+			\begin{itemize}
+				\item[$-$] e.g., Swisscom and Netflix/Youtube/Spotify
+			\end{itemize}
+			\item Transit becomes less important and less profitable
+			\begin{itemize}
+				\item[$-$] Traffic moves more and more to interconnection points
+ 			\end{itemize}
+ 			\item No system practices, yet 
+ 			\begin{itemize}
+ 				\item[$-$] details of peering arrangements are private anyway
+ 			\end{itemize}
+		\end{itemize}
+		
+		\section{The Transport Layer} 
+		\subsection{General stuff and context}
+		What problems should be solved on transport layer? 
+		\begin{itemize}[noitemsep]
+			\item Data delivering to the correct application
+			\begin{itemize}
+				\item[$-$] IP just points towards next protocol
+				\item[$-$] Transport need to demultiplex incoming data (ports)
+			\end{itemize}
+			\item Files or bytestreams abstractions for the applications
+			\begin{itemize}
+				\item[$-$] Network deals with packets
+				\item[$-$] Transport layer need to translate between them
+			\end{itemize}
+			\item Reliable transfer (if needed)
+			\item Not overloading the receiver
+			\item Not overloading the network
+		\end{itemize}
+		What is needed to address these? 
+		\begin{itemize}[noitemsep]
+			\item Demultiplexing 
+			\begin{itemize}
+				\item[$-$] \textbf{Identifier for applicaiton process}
+				\item[$-$] Going from host-to-host (IP) to process-to-process
+			\end{itemize}
+			\item Translating between bytestream and packets
+			\begin{itemize}
+				\item[$-$] \textbf{Do segmentation and reassembly}
+			\end{itemize}
+			\item Reliability
+			\begin{itemize}
+				\item[$-$] \textbf{ACKS and all that stuff}
+			\end{itemize}
+			\item Corruption
+			\begin{itemize}
+				\item[$-$] \textbf{Checksum}
+			\end{itemize}
+			\item Not overloading receivers
+			\begin{itemize}
+				\item[$-$] \textbf{Flow Control}
+				\item[$-$] Limit data in receiver's buffer
+			\end{itemize}
+			\item Not overloading network
+			\begin{itemize}
+				\item[$-$] \textbf{Congestion Control}
+			\end{itemize}
+		\end{itemize}
+		What transport protocols do \textbf{NOT} provide:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Delay} and/or \textbf{bandwidth} guarantees
+			\item Sessions that survive change of IP address
+		\end{itemize}
+		\textbf{Sockets}\\
+		A socket is a software abstraction by which an application process exchanges network messages with the operating system. (\textbf{OS abstraction}).\\
+		Two important types of sockets: 
+		\begin{itemize}[noitemsep]
+			\item UDP sockets
+			\item TCP sockets
+		\end{itemize}
+		\par 
+		
+		\textbf{Ports}\\
+		Is a \textbf{network abstraction}. Think of it as a \textbf{logical} interface on the host.\\
+		Port is used as a transport layer identifier (16 bits) to tell which app (socket) gets which packets. OS stores mapping between sockets and ports.\\
+		There exist some well known ports (0-1023):
+		\begin{tabular}{l l}
+			ssh & 22\\
+			http & 80\\
+			https & 443\\
+			... & ...\\
+		\end{tabular}\\
+		Ports randomly given to clients lay in the range 1024-65535. 
+		\subsection{UDP: User Datagram Protocol}
+		UDP provides a \textbf{connectionless}/\textbf{unreliable} transport service.\\
+		UDP provides only two services to the App. layer:
+		\begin{itemize}[noitemsep]
+			\item Multiplexing/Demultiplexing among processes
+			\item Discarding corrupted packets (optional)
+		\end{itemize}
+		Therefore it is a very lightweight communication between processes.\\
+		\textcolor{ForestGreen}{Advantages}: 
+		\vspace{-0.2cm}
+		\begin{itemize}[noitemsep]
+			\item \textcolor{ForestGreen}{Finer Control over what data is sent and when}
+			\begin{itemize}
+				\item[$-$] As soon as an application process writes into a sockets UDP will package the data and send the packet
+			\end{itemize}
+			\item \textcolor{ForestGreen}{No delay for connection establishment}
+			\begin{itemize}
+				\item[$-$] UDP just blasts away without any formal preliminaries which avoids introducing any unnecessary delays. 
+			\end{itemize}
+			\item \textcolor{ForestGreen}{No connection state}
+			\begin{itemize}
+				\item[$-$] No allocation of buffers, sequence numbers, timers,... making it easier to handle many active clients at once
+			\end{itemize}
+			\item \textcolor{ForestGreen}{Small packet header overhead}
+			\begin{itemize}
+				\item[$-$] UDP header is only 8 bytes
+			\end{itemize}
+		\end{itemize}
+		Popular applications that use UDP: 
+		\begin{itemize}[noitemsep]
+			\item VoIP
+			\item Video conferencing
+			\item online gaming
+			\item streaming
+			\item DNS
+		\end{itemize}
+	
+		\subsection{TCP: Transmission Control Protocol}
+		TCP provides a \textbf{connection-oriented, reliable, bytestream} transport service.
+		\begin{itemize}[noitemsep]
+			\item \textbf{Reliable, in-order delivery} (see also \ref{Subsec:Reliable_Delivery} )
+			\begin{itemize}
+				\item[$-$] Ensure byte stream arrives intact
+				\begin{itemize}
+					\item[$-$] ACKs
+					\item[$-$] Checksums
+					\item[$-$] Timeouts and retransmissions	
+				\end{itemize}
+			\end{itemize}
+			\item \textbf{Connection oriented}
+			\begin{itemize}
+				\item[$-$] Set-up and tear-down of TCP session
+			\end{itemize}
+			\item \textbf{Full duplex stream of bytes service}
+			\begin{itemize}
+				\item[$-$] Sends ans receives stream of bytes, not messages
+			\end{itemize}
+			\item \textbf{Flow control} (see also \ref{Subsec:Reliable_Delivery})
+			\begin{itemize}
+				\item[$-$] Ensure taht sender doesn't overwhelm receiver
+				\begin{itemize}
+					\item[$-$] sliding window
+					\item[$-$] Cumulative ACKs
+				\end{itemize}
+			\end{itemize}
+			\item \textbf{Congestion Control}
+			\begin{itemize}
+				\item[$-$] Dynamic adaption to network path's capacity
+			\end{itemize}
+		\end{itemize}
+		The TCP header looks as follows: \\
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/TCP_header.png}
+		
+		\subsubsection{Segments and Sequence Numbers}
+		TCP stream-of-bytes service is provided by using segments:\\ 
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/segment_send.png}
+		Segments are sent either if they reached their maximal size (\textbf{MSS} (usually 1460)) or a time out is reached. The segment is embedded in the IP packet:
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/TCP_in_IP.png}
+		The MSS depends on the MTU and the IP/TCP-header:\\
+		MSS = MTU $-$ (IP header) $-$ (TCP header)\\
+		The \textbf{ISN} (Initial Sequence Number) identifies the first byte of the byte-stream. Because security reasons this number is picked randomly. \\
+		The receiver will send an ACK with the sequence number of the \textbf{next expected} byte!:
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/ACK_seqnumb.png}
+		
+		\subsubsection{Connection Establishment/Teardown}
+		To establish connection hosts exchange ISNs with the \textbf{SYN}:\\
+		\begin{center}
+			\includegraphics[height=0.5\columnwidth]{images/Transport_Layer/SYN.png}
+		\end{center}
+		If SYN gets lost, sender waits some time and transmits it again (hard to set timer reasonable).\\
+		Tearing down connection can be made in three different ways: 
+		\begin{itemize}[noitemsep]
+			\item One side at a time (normal)
+			\item Both together $\vert$ send FIN+ACK (normal)
+			\item Abrupt $\vert$ RST (not normal)
+		\end{itemize} 
+		In the normal cases the sender of the last ACK stays some time in Zombi-Mode in case its ACK got lost. 
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/TCP_FIN.png}
+		\par 
+		
+		\textbf{TCP state transitions}\\
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/state_transitions.png}
+		
+		\subsubsection{Timeouts and Retransmissions}	
+		Setting the timeout value is very difficult, in order to do it measurements of the \textbf{RTT} (Round Trip Time) are used.
+		To define the RTT an exponential averaging of the measurements is used:
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/RTT_calc.png} 
+		
+		
+		
 		\end{multicols*}
 	\setcounter{secnumdepth}{3}
 \end{document}
