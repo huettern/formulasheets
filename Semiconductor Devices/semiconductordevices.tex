@@ -547,7 +547,8 @@
     \begin{align*}
       p_n(x) &= p_{n0} + (p_n(0)-p_{n0}) \frac{\sinh\left(\frac{W-x}{L_p}\right)}{\sinh\left(\frac{W}{L_p}\right)}
     \end{align*}
-
+    
+    \subsubsection{Short diode}
     If $W \ll L_p$ then recombination is weak, few holes recombine in the time required for them to cross the region $W$.
     The excess carrier profile bebomes linear:
     \[p_n(x) = (p_n(0)-P_{n0})\frac{W-x}{W}\]
@@ -613,16 +614,36 @@
       W  &= \left\{ \frac{2\epsilon_sV_{bi}}{q}\left[ \frac{N_a+N_d}{N_aN_d} \right] \right\}^{1/2}
     \end{align*}
 
-    
   \subsection{Forward Bias}
+    Condition:
+    \begin{align*}
+      \left. \begin{array}{rl}
+        n_p(-x_p) &> n_{p0} \\
+        p_n(x_n) &> p_{n0} \\
+        \end{array} \right\} \text{forward biased}
+    \end{align*} 
+
+    Injection strength:
+    \begin{align*}
+      \left. \begin{array}{rl}
+        n_p &< N_a \\
+        p_n &< N_d \\
+        \end{array} \right\} \text{low level injection} \\
+      \left. \begin{array}{rl}
+        n_p &> N_a \\
+        p_n &> N_d \\
+        \end{array} \right\} \text{high level injection}
+    \end{align*} 
+
     Applying an external forward voltage is called forward bias or minority carrier injection.
     This voltage subtracts from $V_{bi}$.
     Minority carriers at depletion edges increase by factor $\exp(qV_F/kT)$.
     Known as \textbf{Shockley Boundary Conditions}.
     \cgraphic{0.6}{img/shockley2}
     \begin{align*}
-      n_p(-x_p) &= n_{p0}\exp\left(\frac{qV_a}{kT}\right) & p_n(x_n) &= p_{n0}\exp\left(\frac{qV_a}{kT}\right)
+      n_p(-x_p) &= n_{p0}e^{\left(\frac{qV_a}{kT}\right)} & p_n(x_n) &= p_{n0}e^{\left(\frac{qV_a}{kT}\right)}
     \end{align*}
+    \eqbox{n_{p0}=\frac{n_i^2}{N_a}} \eqbox{p_{n0}=\frac{n_i^2}{N_d}}
 
   \subsection{Ideal Junction Current}
     The ideal current $J$ is calculated by:
@@ -633,7 +654,14 @@
     
     Recalling
     \begin{align*}
-      D_i &= \frac{kT}{q}\mu_i = \frac{L_i^2}{\tau_i} \quad i\in[n,p]\\
+      D_i &= \frac{kT}{q}\mu_i = \frac{L_i^2}{\tau_i} & L_i&=\sqrt{D_i\tau_i} & &i\in\{n,p\}\\
+    \end{align*}
+
+    \subsection{One sided junction}
+    If one side of a junction is much more doped than the other:
+    \begin{align*}
+      N_a \gg N_d \leadsto p^+n  \\
+      N_d \gg N_a \leadsto n^+p  \\
     \end{align*}
 
 
