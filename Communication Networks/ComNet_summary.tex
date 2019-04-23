@@ -1384,6 +1384,151 @@
 		Setting the timeout value is very difficult, in order to do it measurements of the \textbf{RTT} (Round Trip Time) are used.
 		To define the RTT an exponential averaging of the measurements is used:
 		\includegraphics[width=\columnwidth]{images/Transport_Layer/RTT_calc.png} 
+		Once a segment is retransmitted, it is not used for the measurement.\\
+		A timeout is very expensive, therefore we rely mostly on duplicate ACKs:\\
+		\textbf{Duplicate ACKs} are a sign of a isolated loss. One could trigger a resend upon recieving $k$ duplicate ACKs (TCP uses $k = 3$)
+		
+		\subsubsection{Congestion Control}
+		Because of traffic burstiness and lack of BW reservation, congestion is inevitable and very harmful. Van Jacobsen saved us with Congestion Control.\\
+		Congestion control aims at solving \textbf{three problems}:
+		\begin{itemize}[noitemsep]
+			\item \textbf{BW estimation}
+			\begin{itemize}
+				\item[$-$] How to adjust the BW of a single flow to the bottleneck BW?
+			\end{itemize}
+			\item \textbf{BW adaption}
+			\begin{itemize}
+				\item[$-$] How to adjust the BW of a single flow to variation of the bottleneck BW?
+			\end{itemize}
+			\item \textbf{Fairness}
+			\begin{itemize}
+				\item[$-$] How to share BW fairly among flows, without overloading the network.
+			\end{itemize} 
+		\end{itemize}
+		Congestion control differs from flow control, TCP solves both using two distinct windows:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Flow Control}
+			\begin{itemize}
+				\item[$-$] prevents one fast sender from overloading a slow receiver
+				\item[$\rightarrow$] Solved using a receiving window (\textbf{RWND}) 
+			\end{itemize}
+			\item \textbf{Congestion Control} 
+			\begin{itemize}
+				\item[$-$] prevents a set of senders from overloading the network
+				\item[$\rightarrow$] Solved using a congestion window (\textbf{CWND})
+			\end{itemize}
+		\end{itemize}
+		Sender window = min(CWND, RWND)\par 
+		
+		\textbf{Detecting congestion}\\
+		There are essentially three ways to detect congestion:
+		\begin{itemize}[noitemsep]
+			\item[$-$] Network could tell the source
+			\begin{itemize}
+				\item[$-$] \textcolor{Red}{Signal could be lost}
+			\end{itemize}
+			\item[$-$] Measure packet delay
+			\begin{itemize}
+				\item[$-$] \textcolor{Red}{Signal is noisy}
+			\end{itemize}
+			\item[$-$] Measure packet loss
+			\begin{itemize}
+				\item[$-$] \textcolor{ForestGreen}{Fail-safe signal that TCP already has to detect}
+			\end{itemize}
+		\end{itemize}
+		$\rightarrow$ Packet dropping is the best solution! Detecting losses can be done using \textbf{ACKs} or \textbf{timeouts}, the two signal differ in their degree of severity:
+		\begin{itemize}[noitemsep]
+			\item Duplicated ACKs
+			\begin{itemize}
+				\item[$-$] \textbf{mild} congestion signal
+				\item[$\rightarrow$] packets are still making it
+			\end{itemize}
+			\item Timeout
+			\begin{itemize}
+				\item[$-$] \textbf{Severe} congestion signal
+				\item[$\rightarrow$] multiple consequent losses
+			\end{itemize}
+		\end{itemize} 
+		\par
+		
+		\textbf{Reacting to congestion}\\
+		TCP approach is to \textbf{gently increase} when not congested and to \textbf{rapidly decrease} when congested.\par 
+		
+		1) Get a first order estimate of the available BW.\\
+		$\rightarrow$ start slow but rapidly increase until a packet drop occurs. This increase phase, known as \textbf{slow start}, corresponds to an exponential increase of the CWND. The problem with slow start is that it can result in full window of packet loss $\rightarrow$ we need a more gentle adjustment once we have a rough estimate of the BW.\\ 
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/slow_start.png}
+		\par 
+		
+		2)Track the available BW and oscillate around its current value\\
+		$\rightarrow$ Tow possible variations: 
+		\begin{itemize}[noitemsep]
+			\item[$-$] Multiple Decrease/Increase (MD/MI)
+			\item[$-$] Additive Decrease/Increase (AD/AI)
+		\end{itemize} 
+		This leads to four alternative designs: AIAD, AIMD, MIAD, MIMD. To select one scheme, we need to consider \textbf{fairness} $\rightarrow$ two identical flows should end up with the same BW. In the following graph we can plot the system trajectories and analyze the systems behavior. The blue dots are the result of the AIMD scheme.\\
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/trajectory_plot.png}
+		In practice TCP implements \textbf{AIMD} (gentle increase / aggressive decrease), because it converges to fairness and efficiency and then oscillates around the optimum in a stable way.\\
+		TCP congestion control almost complete:
+		\vspace{0.1cm}
+		\begin{center}
+			\includegraphics[width=0.9\columnwidth]{images/Transport_Layer/congestion_code.png}
+		\end{center}
+		\vspace{0.1cm}
+		Congestion control makes TCP throughput look like a sawtooth:\\
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/tcp_throughput.png}
+		\par 
+		
+		\section{The Application Layer}
+		\subsection{DNS}
+		Internet has one global system for naming hosts $\rightarrow$ DNS. The DNS system is a distributed database which enables to resolve a name into an IP address.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/dns_ip.png}
+		In practice, names can be mapped to more than one IP and IPs can be mapped by more than one name.\\
+		To scale, DNS adopt three intertwined hierarchies: 
+		\begin{itemize}[noitemsep]
+			\item Naming structure
+			\begin{itemize}
+				\item[$-$] Hierarchy of addresses
+			\end{itemize}
+			\item Management
+			\begin{itemize}
+				\item[$-$] Hierarchy of authority over names 
+			\end{itemize}
+			\item Infrastructure
+			\begin{itemize}
+				\item[$-$] Hierarchy of DNS servers
+			\end{itemize}
+		\end{itemize}
+		The following tree structure shows the hierarchy of addresses, management and infrastructure.   
+		\includegraphics[width=\columnwidth]{images/Application_Layer/dns_tree.png}
+		There are 13 root-servers (managed professionally).\\
+		Top Level Domain (TLD) servers are also managed professionally by private or non-profit organizations.\\
+		The bottom (and bulk) of the hierarchy is managed by Internet Service Provider or locally. \\
+		Every server knows the address of the root servers.\\
+		Each root server knows the address of all TLD servers. From there on, each server knows the address of all children.\\
+		DNS query and reply uses UDP port 53, reliability is implemented by repeating requests.\\
+		A DNS server stores Resource Records composed of a name, value, type, TTL.
+		\vspace{0.2cm}
+		
+		\begin{tabular}{l l l}
+			\textbf{Records} & \textbf{Name}  & \textbf{Value} \\ 
+			A	  & hostname   & IP address  \\ 
+			NS	  & domain 	   & DNS sevrer name \\ 
+			MX	  & domain 	   & Mail server name \\ 
+			CNAME & alias 	   & Canonical name \\  
+			PTR	  & IP address & corresponding hostname \\ 
+		\end{tabular} 
+	
+		DNS resolution can either be \textbf{recursive} or \textbf{iterative}:\par
+		
+		\textbf{Recursive}\\
+		When performing a recursive query, the client offloads  the task of resolving to the server. 
+		Because of security and scalability reasons, this is almost never used.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/dns_recursive.png}
+		\par 
+		
+		\textbf{Iterative}\\
+		When performing an iterative query, the server only returns the address of the next server to query.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/dns_iterative.png}
 		
 		
 		
