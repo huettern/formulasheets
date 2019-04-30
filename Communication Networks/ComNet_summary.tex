@@ -1504,7 +1504,7 @@
 		Top Level Domain (TLD) servers are also managed professionally by private or non-profit organizations.\\
 		The bottom (and bulk) of the hierarchy is managed by Internet Service Provider or locally. \\
 		Every server knows the address of the root servers.\\
-		Each root server knows the address of all TLD servers. From there on, each server knows the address of all children.\\
+		Each root server knows the address of all TLD servers. From there on, each server knows the address of all its children (but not children of children).\\
 		DNS query and reply uses UDP port 53, reliability is implemented by repeating requests.\\
 		A DNS server stores Resource Records composed of a name, value, type, TTL.
 		\vspace{0.2cm}
@@ -1522,14 +1522,281 @@
 		
 		\textbf{Recursive}\\
 		When performing a recursive query, the client offloads  the task of resolving to the server. 
-		Because of security and scalability reasons, this is almost never used.\\
+		Because of security and scalability reasons, this is never used.\\
 		\includegraphics[width=\columnwidth]{images/Application_Layer/dns_recursive.png}
 		\par 
 		
 		\textbf{Iterative}\\
 		When performing an iterative query, the server only returns the address of the next server to query.\\
 		\includegraphics[width=\columnwidth]{images/Application_Layer/dns_iterative.png}
+		\par 
 		
+		To reduce resolution time, DNS relies on caching:
+		\begin{itemize}[noitemsep]
+			\item DNS servers cache responses to former queries
+			\begin{itemize}
+				\item[$-$] Also your client and the application caches.
+			\end{itemize}
+			\item Authoritative servers associate a life time (TTL) to each record
+			\begin{itemize}
+				\item[$-$] Short TTL: flexible in changing IP $\rightarrow$ load balance, reacting to shut downs ...
+				\item[$-$] Long TTL: fewer queries $\rightarrow$ less junk traffic
+				\item[$-$] Setting TTL is a trade off and differs for each destination, e.g. google $\approx$ 240s, ETH $\approx$ 6000s
+			\end{itemize}
+		\end{itemize}
+		As top-level servers rarely change \& popular website visited often, caching is very effective, practical hit rate $\approx$ 75\%.
+		
+		\subsection{Web}
+		Founded in $\sim$1990 by Tim Berners-Lee the goal of the World Wide Web was to provide distributed access to data. The World Wide Web is a distributed database of "pages" linked together via the Hypertext Transport Protocol (\textbf{HTTP}). The Web was and still is so successful as it enables everyone to self-publish content very easily.\\
+		The WWW is made of three key components: 
+		\begin{itemize}[noitemsep]
+			\item Infrastructure
+			\begin{itemize}
+				\item[$-$] Clients/Browsers
+				\item[$-$] Servers
+				\item[$-$] Proxies
+			\end{itemize}
+			\item Content
+			\begin{itemize}
+				\item[$-$] Objects (files, pictures, videos,...)
+				\item[$-$] Web sites (collection if Objects)
+			\end{itemize}
+			\item Implementation
+			\begin{itemize}
+				\item[$-$] URL: name content
+				\item[$-$] HTTP: transport content
+			\end{itemize}
+		\end{itemize}
+		
+		\subsubsection{Implementation}
+		\textbf{URL: name content:}\\
+		A Uniform Resource Locater refers to an Internet resource:\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/web_url.png}
+		\par 
+		
+		\textbf{HTTP: transport content}\\
+		HTTP is a rather simple synchronous request/reply protocol
+		\begin{itemize}[noitemsep]
+			\item HTTP is layered over a bidirectional byte stream
+			\begin{itemize}
+				\item[$-$] almost always TCP
+			\end{itemize}
+			\item HTTP is text-based (ASCII)
+			\begin{itemize}
+				\item[$-$] human readable
+ 			\end{itemize}
+ 			\item HTTP is stateless
+ 			\begin{itemize}
+ 				\item[$-$] It maintains no info about past client requests
+ 			\end{itemize}
+		\end{itemize}
+		
+		\underline{1. Protocol}\\
+		HTTP clients make request to the server. Request headers are of variable lengths, but still, human readable.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/http_request.png}
+		HTTP servers answers to clients request. Like request headers, response headers are of variable length and human readable.\\ 
+		\includegraphics[width=\columnwidth]{images/Application_Layer/http_answer.png}
+		\par 
+		
+		HTTP is a stateless protocol, meaning each request is treated independently:
+		\begin{itemize}[noitemsep]
+			\item \textcolor{ForestGreen}{Advantages:}
+			\begin{itemize}
+				\item \textcolor{ForestGreen}{Server side scalability}
+				\item \textcolor{ForestGreen}{Failure handling is trivial}
+			\end{itemize}
+			\item \textcolor{red}{Disadvantages:}
+			\begin{itemize}
+				\item \textcolor{red}{Some Applications need state} \\
+				shopping carts, user profiles, tracking
+			\end{itemize} 
+		\end{itemize}
+		HTTP makes the client maintain the state, through the so called \textbf{cookies}.
+		\begin{itemize}[noitemsep]
+			\item Client stores small state
+			\begin{itemize}
+				\item[$-$] On behalf of server X
+			\end{itemize}
+			\item Client sends state in all future reqeust to X
+			\item Can provide authentication
+		\end{itemize}
+		\par 
+		
+		\underline{2. Performance}
+		Performance goals vary, depending on who you ask: 
+		\begin{itemize}[noitemsep]
+			\item Users
+			\begin{itemize}
+				\item[$-$] Fast downloads
+				\item[$-$] High availability
+			\end{itemize}
+			\item Network operators
+			\begin{itemize}
+				\item[$-$] No overload
+			\end{itemize}
+			\item Content provider
+			\begin{itemize}
+				\item[$-$] Happy users
+				\item[$-$] Cost-effective infrastructure 
+			\end{itemize}
+		\end{itemize}
+		Solution:
+		\begin{enumerate}[label=(\roman*),noitemsep]
+			\item Improve HTTP to compensate for TCP weakspots
+			\item Caching 
+			\item Replication
+		\end{enumerate}
+		\par 
+		
+		i)Improve HTTP\\
+		Relying on TCP forces a HTTP client to open a connection before exchanging anything. Most Web pages have multiple objects, naive HTTP opens a TCP connection for each object.\\
+		Solutions:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Multiple} TCP connections in parallel
+			\begin{itemize}
+				\item[$-$] Network operator is not happy
+			\end{itemize}
+			\item Use \textbf{persistent} connections across multiple requests
+			\begin{itemize}
+				\item[$-$] Avoid overhead
+				\item[$-$] Allow TCP to learn more accurate RTT
+				\item[$-$] Allow TCP congestion window to increase
+			\end{itemize}
+			\item \textbf{Pipeline} requests \& replies asynchronously, on one connection
+			\begin{itemize}
+				\item[$-$] Send all requests, then send all replies $\rightarrow$ only 2 RTTs!
+			\end{itemize}
+		\end{itemize}
+		Considering the time to retrieve \textit{n} small objects, pipeline wins.\\
+		Considering the time to retrieve \textit{n} big objects, there is no clear winner, as bandwidth matters most.\par 
+		
+		ii) Caching\\
+		Leverages the fact that highly popular \textbf{content largely overlaps}. Caching it saves time for your browser and decreases network and server load. Yet, a significant portion of the HTTP objects are \textbf{uncachable}:
+		\begin{itemize}[noitemsep]
+			\item Dynamic data
+			\begin{itemize}
+				\item[$-$] Stock prices, score
+			\end{itemize}
+			\item Scripts
+			\begin{itemize}
+				\item[$-$] Results based on parameters
+ 			\end{itemize}
+ 			\item Cookies
+ 			\begin{itemize}
+ 				\item[$-$] Results may be based on passed data
+ 			\end{itemize}
+ 			\item SSL
+ 			\begin{itemize}
+ 				\item Cannot cache encrypted data 
+ 			\end{itemize}
+ 			\item Advertising
+ 			\begin{itemize}
+ 				\item[$-$] Wants to measure \# of hits
+ 			\end{itemize}
+		\end{itemize}
+		To limit staleness of cached objects, HTTP enables client to validate cached objects $\rightarrow$ \textit{TTL}, \textit{if-modified}.\\
+		Caching is performed at different locations:
+		\begin{itemize}[noitemsep]
+			\item Client
+			\begin{itemize}
+				\item[$-$] \textbf{Browser cache}
+			\end{itemize}
+			\item Close to the client
+			\begin{itemize}
+				\item[$-$] \textbf{Forward proxy}
+				\item[$-$] Content Distribution Network (CDN)
+			\end{itemize}
+			\item Close to the destination 
+			\begin{itemize}
+				\item[$-$] \textbf{Reverse Proxy}
+			\end{itemize}
+		\end{itemize}
+		\textbf{Reverse proxies} cache documents close to the servers, decreasing their load:\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/reverse_proxy.png}
+		\par
+		
+		\textbf{Forward proxies} cache documents close to clients, decreasing network traffic, server load and latencies:\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/forward_proxy.png}
+		\par 
+		
+		iii) Replication\\
+		The idea of replication is to duplicate popular content all around the globe.
+		\begin{itemize}[noitemsep]
+			\item Spreads load on server
+			\begin{itemize}
+				\item[$-$] e.g. across multiple data-centers
+			\end{itemize}
+			\item Places content closer to client
+			\begin{itemize}
+				\item[$-$] only way to beat the "speed of light"
+			\end{itemize}
+			\item helps speeding up uncachable content
+			\begin{itemize}
+				\item[$-$] Still have to pull it, but from closer
+			\end{itemize}
+		\end{itemize}
+		The problem of CDNs is to direct and serve your request from a close non-overloaded replica.
+		\begin{itemize}[noitemsep]
+			\item \textbf{DNS-based}
+			\begin{itemize}
+				\item[$-$] Returns not the same IP address based on:
+				\begin{itemize}
+					\item[$-$] Client geo-localization
+					\item[$-$] Server laod
+				\end{itemize}
+			\end{itemize}
+			\item \textbf{BGP Anycast}
+			\begin{itemize}
+				\item[$-$] Advertise the same IP prefix form different locations
+				\begin{itemize}
+					\item[$-$] Avoided in practice, because BGP mostly does not follow shortest path. 
+				\end{itemize}
+			\end{itemize}
+		\end{itemize} 
+		
+		\subsection{Video streaming}
+		We want the highest video quality without annoying buffering. In practice, things are complex:\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/netflix_way.png}
+		The three steps behind most contemporary solutions:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Encode} video in multiple bitrates
+			\begin{itemize}
+				\item[$-$] To enable adaptive quality.
+			\end{itemize}
+			\item \textbf{Replicate} using a content delivery network
+			\begin{itemize}
+				\item[$-$] Bring the content physically closer to the customer
+			\end{itemize}
+			\item Video player picks bitrate \textbf{adaptively}
+			\begin{itemize}
+				\item[$-$] Estimate available BW
+				\item[$-$] Pick bitrate $\le$ available BW
+			\end{itemize}
+		\end{itemize}
+		
+		\subsubsection{Encoding}
+		Simple solution for encoding $\rightarrow$ use a "\textbf{bitrate ladder}". This table maps the available BW to the resolution which will be sent.\\
+		Problem: This doesn't take into account the \textbf{variability} in the video content. A Comic will need less BW to be shown in good quality than a sports video. \\
+		Solution: Every content will get its own table. \\
+		Your player download \textbf{chunks} of video at different bitrates. Depending on your network connectivity, your player fetches chunk of different quality. Your player gets the information about the chunks via "\textbf{Manifest}" which is downloaded at the beginning.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/encoding_chunks.png}
+		
+		\subsubsection{Replication}
+		Put your Hardware with all your content around the globe to increase availability. See below an example of Netflix:\\ 
+		\includegraphics[width=\columnwidth]{images/Application_Layer/netflix_recreation.png}
+		
+		\subsection{Adaption}
+		The available BW varies extremely and therefore it is difficult to set the bitrate according to the capacity estimation:\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/adaption_capacity.png}
+		In case of Netflix this method resulted in $\approx$ 30\% unnecessary rebuffers.\\
+		A better way to adapt the bitrate is according to the buffer itself $\rightarrow$ \textbf{buffer-based adaption}:
+		\begin{tabbing}
+			\hspace{3cm} \= \hspace{1cm} \=  a \kill
+			Nearly empty buffer \> $\Rightarrow$ \> small rate \\
+			Nearly full buffer \> $\Rightarrow$ \> large rate
+		\end{tabbing}
+		\includegraphics[width=\columnwidth]{images/Application_Layer/buffer_adaption.png}
+		 
 		
 		
 		\end{multicols*}
