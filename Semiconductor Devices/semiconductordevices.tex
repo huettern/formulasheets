@@ -657,12 +657,88 @@
       D_i &= \frac{kT}{q}\mu_i = \frac{L_i^2}{\tau_i} & L_i&=\sqrt{D_i\tau_i} & &i\in\{n,p\}\\
     \end{align*}
 
+    \subsubsection{Short diode}
+    For a short diode $L_p,L_n$ become $W_d, W_a$ respecively if $W_{a,d} \ll L_{n,p}$.
+    \begin{align*}
+      J_s &= \left[ \frac{qD_pp_{n0}}{W_d} + \frac{qD_nn_{p0}}{W_a} \right] \\
+    \end{align*}
+
+
     \subsection{One sided junction}
     If one side of a junction is much more doped than the other:
     \begin{align*}
       N_a \gg N_d \leadsto p^+n  \\
       N_d \gg N_a \leadsto n^+p  \\
     \end{align*}
+
+    % ---------------------------------------------------------------------------
+    \section{Complementary effects}
+    % ---------------------------------------------------------------------------
+    \begin{tabular}[h]{l l}
+      $C_j$   & Depletion capacitance \\
+      $C_d$   & Diffusion capacitance \\
+      $J_g$   & Current due to generation \\
+      $J_r$   & Current due to recombination \\
+      $J_{\text{rev/fwd}}$ & Non-ideal current densities \\
+    \end{tabular}
+
+    \subsection{Summary}
+    \renewcommand{\labelenumi}{\alph{enumi})}
+    \setlength{\fboxsep}{1pt}
+    \begin{enumerate}[topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+    \item \colorbox[rgb]{0.99,0.90,0.77}{Recombination in depletion region}
+    \item \colorbox[rgb]{0.84,0.93,0.81}{Ideal injection}
+    \item \colorbox[rgb]{0.75,0.85,0.99}{High-level injection}
+    \item \colorbox[rgb]{0.89,0.75,0.93}{Series resistance}
+    \item \colorbox[rgb]{0.98,0.79,0.78}{Generation in depletion region}
+    \end{enumerate}
+
+    \cgraphic{0.8}{img/nonidealsummary.png}
+    
+    \subsection{Depletion Capacitance}
+    For Silicon $\epsilon_r = 11.9$.
+    \begin{align*}
+      C_j &= \frac{\epsilon_0\epsilon_r}{W} \\
+      \frac{1}{C_j^2} &= \frac{1}{\epsilon_0\epsilon_r} \frac{2(V_{bi}-V_f)}{q} \left( \frac{1}{N_a} + \frac{1}{N_d}\right) \\
+    \end{align*}
+
+    \subsection{Diffusion Capacitance}
+    The stored charged $Q_p$ due to the excess hole density contributes a capacitance $C_d$.
+    \begin{align*}
+      J &= qD_p\Abl{p_n}{x} = qD_p\frac{p_{n0}\left(e^{qV_f/kT}-1\right)}{W_n} \\
+      Q_p &= qW_n\frac{p_{n0}\left(e^{qV_f/kT}-1\right)}{2} \\
+      C_d &= \Abl{Q_p}{V_f} = \frac{\tau}{r_d} = \frac{W_n^2}{2D_p}\frac{J}{kT/q}
+    \end{align*}
+
+    $C_j$ dominates in reverse bias, $C_d$ becomes dominant in forward bias due to minority carrier charge storage.
+
+    \cgraphic{0.8}{img/cap.png}
+
+    \subsection{Generation Current in reverse bias}
+    $J_g$ adds to the ideal reverse saturation current density $J_s$ due to electron hole pair generation.
+    \begin{align*}
+      J_g &= \frac{qWn_i}{\tau_g} & J_{\text{rev}} &= J_s + J_g\\
+    \end{align*}
+
+    \subsection{Reverse Breakdown}
+    Tunneling occurs in thin, highly doped junctions while avalanche multiplication arises in thick, more lightly doped junctions.
+    Tunneling results in a sharp breakdown characteristic (Zener diode) and avalanch mult. in a more soft slope.
+    \cgraphic{0.8}{img/breakdown.png}
+
+    \subsection{Recombination in forward bias}
+    In forward bias the $pn$ is greater than $n_i^2$: recombination takes place.
+
+    \begin{align*}
+      J_r &= \frac{qWn_i}{2\tau_r}e^{qV_f/2kT} & J_{f\text{wd}} &= J_s + J_r\\
+    \end{align*}
+
+    \subsection{Series resistance}
+    Ohmic losses occur in the undoped regions at high current which leads to voltage drop.
+    \cgraphic{0.5}{img/serres.png}
+
+    % ---------------------------------------------------------------------------
+    % \section{}
+    % ---------------------------------------------------------------------------
 
 
 \end{multicols*}

@@ -7,8 +7,8 @@
 - [x] Week 4
 - [x] Week 5
 - [x] Week 6
-- [ ] Week 7
-- [ ] Week 8
+- [x] Week 7
+- [x] Week 8 -> check with exercises 7,8
 - [ ] Week 9
 - [ ] Week 10
 - [ ] Week 11
