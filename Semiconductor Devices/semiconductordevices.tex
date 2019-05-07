@@ -680,6 +680,7 @@
       $J_g$   & Current due to generation \\
       $J_r$   & Current due to recombination \\
       $J_{\text{rev/fwd}}$ & Non-ideal current densities \\
+      $\eta$  & Ideality factor \\
     \end{tabular}
 
     \subsection{Summary}
@@ -723,11 +724,13 @@
     \subsection{Reverse Breakdown}
     Tunneling occurs in thin, highly doped junctions while avalanche multiplication arises in thick, more lightly doped junctions.
     Tunneling results in a sharp breakdown characteristic (Zener diode) and avalanch mult. in a more soft slope.
+    \begin{align*}
+      N_a &\approx N_d \to \text{Tunneling} & N_a &\neq N_d \to \text{Avalanche}
+    \end{align*}
     \cgraphic{0.8}{img/breakdown.png}
 
     \subsection{Recombination in forward bias}
     In forward bias the $pn$ is greater than $n_i^2$: recombination takes place.
-
     \begin{align*}
       J_r &= \frac{qWn_i}{2\tau_r}e^{qV_f/2kT} & J_{f\text{wd}} &= J_s + J_r\\
     \end{align*}
@@ -735,6 +738,14 @@
     \subsection{Series resistance}
     Ohmic losses occur in the undoped regions at high current which leads to voltage drop.
     \cgraphic{0.5}{img/serres.png}
+
+    \subsection{Ideality factor}
+    The factor $\eta$ characterizes the diode forward current ideality and is often called the \textit{ideality factor}.
+    From graph with two points $I_{f1,2}, V_{f1,2}$ $\eta$ can be calculated.
+    \begin{align*}
+      J_{FT} &\propto \exp\left(\frac{qV_F}{\eta\cdot kT}\right) & 
+      \frac{I_{f1}}{I_{f2}} &= \frac{e^{ qV_{f1}/\eta kT }} {e^{ qV_{f2}/\eta kT }} \to\eta=\dots
+    \end{align*}
 
     % ---------------------------------------------------------------------------
     % \section{}
