@@ -1785,7 +1785,7 @@
 		Put your Hardware with all your content around the globe to increase availability. See below an example of Netflix:\\ 
 		\includegraphics[width=\columnwidth]{images/Application_Layer/netflix_recreation.png}
 		
-		\subsection{Adaption}
+		\subsubsection{Adaption}
 		The available BW varies extremely and therefore it is difficult to set the bitrate according to the capacity estimation:\\
 		\includegraphics[width=\columnwidth]{images/Application_Layer/adaption_capacity.png}
 		In case of Netflix this method resulted in $\approx$ 30\% unnecessary rebuffers.\\
@@ -1796,9 +1796,115 @@
 			Nearly full buffer \> $\Rightarrow$ \> large rate
 		\end{tabbing}
 		\includegraphics[width=\columnwidth]{images/Application_Layer/buffer_adaption.png}
-		 
 		
+		\subsection{E-Mail}
+		We'll study e-mail form three different perspectives:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Content}
+			\begin{itemize}
+				\item[$-$] Format: Header/Content
+				\item[$-$] Encoding: MIME
+			\end{itemize}
+			\item \textbf{Infrastructure/Transmission}
+			\begin{itemize}
+				\item[$-$] SMTP: Simple Mail Transfer Protocol
+				\item[$-$] Infrastructure: mail-servers 
+			\end{itemize}
+			\item \textbf{Retrieval}
+			\begin{itemize}
+				\item[$-$] POP: Post Office Protocol
+				\item[$-$] IMAP: Internet Access Message Protocol
+			\end{itemize}
+		\end{itemize}
 		
+		\subsubsection{Content}
+		"What is inside the envelope"\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/email_content.png}
+		E-mail relies on 7-bit U.S ASCII, if you want to send non-English text or even binary files you need the Multipurpose Internet Mail Extensions (\textbf{MIME}). MIME defines: 
+		\begin{itemize}[noitemsep]
+			\item Additional headers for the e-mail body:
+			\begin{itemize}
+				\item[$-$] MIME-Version
+				\item[$-$] Content-Type
+				\item[$-$] Content transfer encoding
+			\end{itemize}
+			\item A set of content-types and subtypes:
+			\begin{itemize}
+				\item Image with subtypes gif, jpeg
+				\item Text with subtypes plain, html and rich text
+				\item Application with subtypes postscript or msword
+				\item Mulitpart with subtypes mixed or alternative
+			\end{itemize}
+			\item Base64 to encode binary data to ASCII
+			\begin{itemize}
+				\item[$-$] Binary files are encoded in ASCII with base64 and then the ASCII file is sent!
+			\end{itemize}
+		\end{itemize}
+		
+		\subsubsection{Infrastructure / Transmission}
+		An e-mail address is composed  of two parts identifying the \textbf{local mailbox} and the \textbf{domain}.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/email_identify.png}
+		We can divide the e-mail infrastructure into five functions (M=Mail, A=Agent): 
+		\begin{tabbing}
+			Transmission \=  Queues, receives, sends mail to other MTAs \kill
+			User\> Use to read/write e-mails (mail client)\\
+			Submission \> Process email and forward to local MTA\\
+			Transmission \> Queues, receives, sends mail to MTAs\\
+			Delivery \> Deliver email to user mailbox\\
+			Retrieval \> Fetches email from user mailbox
+		\end{tabbing}
+		MSA/MTA/MDA and MUA/MRA are often packaged together leading to simpler workflows.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/email_package.png}
+		Simple Mail Transfer Protocol (\textbf{SMTP}) is the current standard for transmitting e-mails.
+		\begin{itemize}[noitemsep]
+			\item SMTP is text based, client-server protocol 
+			\begin{itemize}
+				\item[$-$] client sends the email, server receives it
+			\end{itemize}
+			\item SMTP uses reliable data transfer
+			\begin{itemize}
+				\item[$-$] Built on top of TCP 
+				\item Port 25 and 465 (25 should not be used anymore $\rightarrow$ SPAM)
+			\end{itemize}
+			\item SMTP is a push-like protocol 
+			\begin{itemize}
+				\item[$-$] Sender pushes the file to the receiving server (no pull)
+			\end{itemize}
+		\end{itemize} 
+		\begin{enumerate}
+			\item The sender MUA uses SMTP to transmit the e-mail first to the local MTA (e.g. mail.ethz.ch, gmail.com, hotmail.com)
+			\item The local MTA then looks up the MTA of the recipient domain (DNS MX..) and transmits the email further.
+			\item Once the e-mail is stored at the recipient domain, IMAP or POP is used to retrieve it by the recipient MUA. 
+		\end{enumerate}
+		\includegraphics[width=\columnwidth]{images/Application_Layer/email_way.png}
+		Emails typically go through at least two SMTP servers, but often way more. Separate SMTP servers for separate functions $\rightarrow$ SPAM-filtering, virus scanning, data leak prevention, ... .\\
+		
+		\subsubsection{Retrieval}
+		\textbf{POP} (Post Office Protocol):\\
+		POP is a simple protocol which which was designed to support user with intermittent Internet connectivity.\\
+		POP enables e-mail users to:
+		\begin{itemize}[noitemsep]
+			\item Retrieve e-mails locally $\vert$ when connected
+			\item View/Manipulate e-mails $\vert$ when disconnected
+		\end{itemize} 
+		POP is heavily limited $\rightarrow$ it does not do well with multiple clients or always-on connectivity.\par 
+		
+		\textbf{IMAP} (Internet Message Access Protocol):\\
+		Unlike POP, IMAP was designed with multiple clients in mind: 
+		\begin{itemize}[noitemsep]
+			\item Support multiple mailboxes and searches on the server
+			\begin{itemize}
+				\item[$-$] Client can create, rename, move mailboxes \& search on server
+			\end{itemize}
+			\item Access to individual MIME parts and partial fetch
+			\begin{itemize}
+				\item[$-$] Clients can download only the text part of an email. 
+			\end{itemize}
+			\item Support multiple clients connected to one mailbox
+			\begin{itemize}
+				\item Server keeps state about each message (e.g. read, replied to, ...)
+			\end{itemize}
+		\end{itemize} 		
 		\end{multicols*}
 	\setcounter{secnumdepth}{3}
 \end{document}
