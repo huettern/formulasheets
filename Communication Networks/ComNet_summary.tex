@@ -1384,9 +1384,527 @@
 		Setting the timeout value is very difficult, in order to do it measurements of the \textbf{RTT} (Round Trip Time) are used.
 		To define the RTT an exponential averaging of the measurements is used:
 		\includegraphics[width=\columnwidth]{images/Transport_Layer/RTT_calc.png} 
+		Once a segment is retransmitted, it is not used for the measurement.\\
+		A timeout is very expensive, therefore we rely mostly on duplicate ACKs:\\
+		\textbf{Duplicate ACKs} are a sign of a isolated loss. One could trigger a resend upon recieving $k$ duplicate ACKs (TCP uses $k = 3$)
 		
+		\subsubsection{Congestion Control}
+		Because of traffic burstiness and lack of BW reservation, congestion is inevitable and very harmful. Van Jacobsen saved us with Congestion Control.\\
+		Congestion control aims at solving \textbf{three problems}:
+		\begin{itemize}[noitemsep]
+			\item \textbf{BW estimation}
+			\begin{itemize}
+				\item[$-$] How to adjust the BW of a single flow to the bottleneck BW?
+			\end{itemize}
+			\item \textbf{BW adaption}
+			\begin{itemize}
+				\item[$-$] How to adjust the BW of a single flow to variation of the bottleneck BW?
+			\end{itemize}
+			\item \textbf{Fairness}
+			\begin{itemize}
+				\item[$-$] How to share BW fairly among flows, without overloading the network.
+			\end{itemize} 
+		\end{itemize}
+		Congestion control differs from flow control, TCP solves both using two distinct windows:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Flow Control}
+			\begin{itemize}
+				\item[$-$] prevents one fast sender from overloading a slow receiver
+				\item[$\rightarrow$] Solved using a receiving window (\textbf{RWND}) 
+			\end{itemize}
+			\item \textbf{Congestion Control} 
+			\begin{itemize}
+				\item[$-$] prevents a set of senders from overloading the network
+				\item[$\rightarrow$] Solved using a congestion window (\textbf{CWND})
+			\end{itemize}
+		\end{itemize}
+		Sender window = min(CWND, RWND)\par 
 		
+		\textbf{Detecting congestion}\\
+		There are essentially three ways to detect congestion:
+		\begin{itemize}[noitemsep]
+			\item[$-$] Network could tell the source
+			\begin{itemize}
+				\item[$-$] \textcolor{Red}{Signal could be lost}
+			\end{itemize}
+			\item[$-$] Measure packet delay
+			\begin{itemize}
+				\item[$-$] \textcolor{Red}{Signal is noisy}
+			\end{itemize}
+			\item[$-$] Measure packet loss
+			\begin{itemize}
+				\item[$-$] \textcolor{ForestGreen}{Fail-safe signal that TCP already has to detect}
+			\end{itemize}
+		\end{itemize}
+		$\rightarrow$ Packet dropping is the best solution! Detecting losses can be done using \textbf{ACKs} or \textbf{timeouts}, the two signal differ in their degree of severity:
+		\begin{itemize}[noitemsep]
+			\item Duplicated ACKs
+			\begin{itemize}
+				\item[$-$] \textbf{mild} congestion signal
+				\item[$\rightarrow$] packets are still making it
+			\end{itemize}
+			\item Timeout
+			\begin{itemize}
+				\item[$-$] \textbf{Severe} congestion signal
+				\item[$\rightarrow$] multiple consequent losses
+			\end{itemize}
+		\end{itemize} 
+		\par
 		
+		\textbf{Reacting to congestion}\\
+		TCP approach is to \textbf{gently increase} when not congested and to \textbf{rapidly decrease} when congested.\par 
+		
+		1) Get a first order estimate of the available BW.\\
+		$\rightarrow$ start slow but rapidly increase until a packet drop occurs. This increase phase, known as \textbf{slow start}, corresponds to an exponential increase of the CWND. The problem with slow start is that it can result in full window of packet loss $\rightarrow$ we need a more gentle adjustment once we have a rough estimate of the BW.\\ 
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/slow_start.png}
+		\par 
+		
+		2)Track the available BW and oscillate around its current value\\
+		$\rightarrow$ Tow possible variations: 
+		\begin{itemize}[noitemsep]
+			\item[$-$] Multiple Decrease/Increase (MD/MI)
+			\item[$-$] Additive Decrease/Increase (AD/AI)
+		\end{itemize} 
+		This leads to four alternative designs: AIAD, AIMD, MIAD, MIMD. To select one scheme, we need to consider \textbf{fairness} $\rightarrow$ two identical flows should end up with the same BW. In the following graph we can plot the system trajectories and analyze the systems behavior. The blue dots are the result of the AIMD scheme.\\
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/trajectory_plot.png}
+		In practice TCP implements \textbf{AIMD} (gentle increase / aggressive decrease), because it converges to fairness and efficiency and then oscillates around the optimum in a stable way.\\
+		TCP congestion control almost complete:
+		\vspace{0.1cm}
+		\begin{center}
+			\includegraphics[width=0.9\columnwidth]{images/Transport_Layer/congestion_code.png}
+		\end{center}
+		\vspace{0.1cm}
+		Congestion control makes TCP throughput look like a sawtooth:\\
+		\includegraphics[width=\columnwidth]{images/Transport_Layer/tcp_throughput.png}
+		\par 
+		
+		\section{The Application Layer}
+		\subsection{DNS}
+		Internet has one global system for naming hosts $\rightarrow$ DNS. The DNS system is a distributed database which enables to resolve a name into an IP address.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/dns_ip.png}
+		In practice, names can be mapped to more than one IP and IPs can be mapped by more than one name.\\
+		To scale, DNS adopt three intertwined hierarchies: 
+		\begin{itemize}[noitemsep]
+			\item Naming structure
+			\begin{itemize}
+				\item[$-$] Hierarchy of addresses
+			\end{itemize}
+			\item Management
+			\begin{itemize}
+				\item[$-$] Hierarchy of authority over names 
+			\end{itemize}
+			\item Infrastructure
+			\begin{itemize}
+				\item[$-$] Hierarchy of DNS servers
+			\end{itemize}
+		\end{itemize}
+		The following tree structure shows the hierarchy of addresses, management and infrastructure.   
+		\includegraphics[width=\columnwidth]{images/Application_Layer/dns_tree.png}
+		There are 13 root-servers (managed professionally).\\
+		Top Level Domain (TLD) servers are also managed professionally by private or non-profit organizations.\\
+		The bottom (and bulk) of the hierarchy is managed by Internet Service Provider or locally. \\
+		Every server knows the address of the root servers.\\
+		Each root server knows the address of all TLD servers. From there on, each server knows the address of all its children (but not children of children).\\
+		DNS query and reply uses UDP port 53, reliability is implemented by repeating requests.\\
+		A DNS server stores Resource Records composed of a name, value, type, TTL.
+		\vspace{0.2cm}
+		
+		\begin{tabular}{l l l}
+			\textbf{Records} & \textbf{Name}  & \textbf{Value} \\ 
+			A	  & hostname   & IP address  \\ 
+			NS	  & domain 	   & DNS sevrer name \\ 
+			MX	  & domain 	   & Mail server name \\ 
+			CNAME & alias 	   & Canonical name \\  
+			PTR	  & IP address & corresponding hostname \\ 
+		\end{tabular} 
+	
+		DNS resolution can either be \textbf{recursive} or \textbf{iterative}:\par
+		
+		\textbf{Recursive}\\
+		When performing a recursive query, the client offloads  the task of resolving to the server. 
+		Because of security and scalability reasons, this is never used.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/dns_recursive.png}
+		\par 
+		
+		\textbf{Iterative}\\
+		When performing an iterative query, the server only returns the address of the next server to query.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/dns_iterative.png}
+		\par 
+		
+		To reduce resolution time, DNS relies on caching:
+		\begin{itemize}[noitemsep]
+			\item DNS servers cache responses to former queries
+			\begin{itemize}
+				\item[$-$] Also your client and the application caches.
+			\end{itemize}
+			\item Authoritative servers associate a life time (TTL) to each record
+			\begin{itemize}
+				\item[$-$] Short TTL: flexible in changing IP $\rightarrow$ load balance, reacting to shut downs ...
+				\item[$-$] Long TTL: fewer queries $\rightarrow$ less junk traffic
+				\item[$-$] Setting TTL is a trade off and differs for each destination, e.g. google $\approx$ 240s, ETH $\approx$ 6000s
+			\end{itemize}
+		\end{itemize}
+		As top-level servers rarely change \& popular website visited often, caching is very effective, practical hit rate $\approx$ 75\%.
+		
+		\subsection{Web}
+		Founded in $\sim$1990 by Tim Berners-Lee the goal of the World Wide Web was to provide distributed access to data. The World Wide Web is a distributed database of "pages" linked together via the Hypertext Transport Protocol (\textbf{HTTP}). The Web was and still is so successful as it enables everyone to self-publish content very easily.\\
+		The WWW is made of three key components: 
+		\begin{itemize}[noitemsep]
+			\item Infrastructure
+			\begin{itemize}
+				\item[$-$] Clients/Browsers
+				\item[$-$] Servers
+				\item[$-$] Proxies
+			\end{itemize}
+			\item Content
+			\begin{itemize}
+				\item[$-$] Objects (files, pictures, videos,...)
+				\item[$-$] Web sites (collection if Objects)
+			\end{itemize}
+			\item Implementation
+			\begin{itemize}
+				\item[$-$] URL: name content
+				\item[$-$] HTTP: transport content
+			\end{itemize}
+		\end{itemize}
+		
+		\subsubsection{Implementation}
+		\textbf{URL: name content:}\\
+		A Uniform Resource Locater refers to an Internet resource:\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/web_url.png}
+		\par 
+		
+		\textbf{HTTP: transport content}\\
+		HTTP is a rather simple synchronous request/reply protocol
+		\begin{itemize}[noitemsep]
+			\item HTTP is layered over a bidirectional byte stream
+			\begin{itemize}
+				\item[$-$] almost always TCP
+			\end{itemize}
+			\item HTTP is text-based (ASCII)
+			\begin{itemize}
+				\item[$-$] human readable
+ 			\end{itemize}
+ 			\item HTTP is stateless
+ 			\begin{itemize}
+ 				\item[$-$] It maintains no info about past client requests
+ 			\end{itemize}
+		\end{itemize}
+		
+		\underline{1. Protocol}\\
+		HTTP clients make request to the server. Request headers are of variable lengths, but still, human readable.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/http_request.png}
+		HTTP servers answers to clients request. Like request headers, response headers are of variable length and human readable.\\ 
+		\includegraphics[width=\columnwidth]{images/Application_Layer/http_answer.png}
+		\par 
+		
+		HTTP is a stateless protocol, meaning each request is treated independently:
+		\begin{itemize}[noitemsep]
+			\item \textcolor{ForestGreen}{Advantages:}
+			\begin{itemize}
+				\item \textcolor{ForestGreen}{Server side scalability}
+				\item \textcolor{ForestGreen}{Failure handling is trivial}
+			\end{itemize}
+			\item \textcolor{red}{Disadvantages:}
+			\begin{itemize}
+				\item \textcolor{red}{Some Applications need state} \\
+				shopping carts, user profiles, tracking
+			\end{itemize} 
+		\end{itemize}
+		HTTP makes the client maintain the state, through the so called \textbf{cookies}.
+		\begin{itemize}[noitemsep]
+			\item Client stores small state
+			\begin{itemize}
+				\item[$-$] On behalf of server X
+			\end{itemize}
+			\item Client sends state in all future reqeust to X
+			\item Can provide authentication
+		\end{itemize}
+		\par 
+		
+		\underline{2. Performance}
+		Performance goals vary, depending on who you ask: 
+		\begin{itemize}[noitemsep]
+			\item Users
+			\begin{itemize}
+				\item[$-$] Fast downloads
+				\item[$-$] High availability
+			\end{itemize}
+			\item Network operators
+			\begin{itemize}
+				\item[$-$] No overload
+			\end{itemize}
+			\item Content provider
+			\begin{itemize}
+				\item[$-$] Happy users
+				\item[$-$] Cost-effective infrastructure 
+			\end{itemize}
+		\end{itemize}
+		Solution:
+		\begin{enumerate}[label=(\roman*),noitemsep]
+			\item Improve HTTP to compensate for TCP weakspots
+			\item Caching 
+			\item Replication
+		\end{enumerate}
+		\par 
+		
+		i)Improve HTTP\\
+		Relying on TCP forces a HTTP client to open a connection before exchanging anything. Most Web pages have multiple objects, naive HTTP opens a TCP connection for each object.\\
+		Solutions:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Multiple} TCP connections in parallel
+			\begin{itemize}
+				\item[$-$] Network operator is not happy
+			\end{itemize}
+			\item Use \textbf{persistent} connections across multiple requests
+			\begin{itemize}
+				\item[$-$] Avoid overhead
+				\item[$-$] Allow TCP to learn more accurate RTT
+				\item[$-$] Allow TCP congestion window to increase
+			\end{itemize}
+			\item \textbf{Pipeline} requests \& replies asynchronously, on one connection
+			\begin{itemize}
+				\item[$-$] Send all requests, then send all replies $\rightarrow$ only 2 RTTs!
+			\end{itemize}
+		\end{itemize}
+		Considering the time to retrieve \textit{n} small objects, pipeline wins.\\
+		Considering the time to retrieve \textit{n} big objects, there is no clear winner, as bandwidth matters most.\par 
+		
+		ii) Caching\\
+		Leverages the fact that highly popular \textbf{content largely overlaps}. Caching it saves time for your browser and decreases network and server load. Yet, a significant portion of the HTTP objects are \textbf{uncachable}:
+		\begin{itemize}[noitemsep]
+			\item Dynamic data
+			\begin{itemize}
+				\item[$-$] Stock prices, score
+			\end{itemize}
+			\item Scripts
+			\begin{itemize}
+				\item[$-$] Results based on parameters
+ 			\end{itemize}
+ 			\item Cookies
+ 			\begin{itemize}
+ 				\item[$-$] Results may be based on passed data
+ 			\end{itemize}
+ 			\item SSL
+ 			\begin{itemize}
+ 				\item Cannot cache encrypted data 
+ 			\end{itemize}
+ 			\item Advertising
+ 			\begin{itemize}
+ 				\item[$-$] Wants to measure \# of hits
+ 			\end{itemize}
+		\end{itemize}
+		To limit staleness of cached objects, HTTP enables client to validate cached objects $\rightarrow$ \textit{TTL}, \textit{if-modified}.\\
+		Caching is performed at different locations:
+		\begin{itemize}[noitemsep]
+			\item Client
+			\begin{itemize}
+				\item[$-$] \textbf{Browser cache}
+			\end{itemize}
+			\item Close to the client
+			\begin{itemize}
+				\item[$-$] \textbf{Forward proxy}
+				\item[$-$] Content Distribution Network (CDN)
+			\end{itemize}
+			\item Close to the destination 
+			\begin{itemize}
+				\item[$-$] \textbf{Reverse Proxy}
+			\end{itemize}
+		\end{itemize}
+		\textbf{Reverse proxies} cache documents close to the servers, decreasing their load:\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/reverse_proxy.png}
+		\par
+		
+		\textbf{Forward proxies} cache documents close to clients, decreasing network traffic, server load and latencies:\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/forward_proxy.png}
+		\par 
+		
+		iii) Replication\\
+		The idea of replication is to duplicate popular content all around the globe.
+		\begin{itemize}[noitemsep]
+			\item Spreads load on server
+			\begin{itemize}
+				\item[$-$] e.g. across multiple data-centers
+			\end{itemize}
+			\item Places content closer to client
+			\begin{itemize}
+				\item[$-$] only way to beat the "speed of light"
+			\end{itemize}
+			\item helps speeding up uncachable content
+			\begin{itemize}
+				\item[$-$] Still have to pull it, but from closer
+			\end{itemize}
+		\end{itemize}
+		The problem of CDNs is to direct and serve your request from a close non-overloaded replica.
+		\begin{itemize}[noitemsep]
+			\item \textbf{DNS-based}
+			\begin{itemize}
+				\item[$-$] Returns not the same IP address based on:
+				\begin{itemize}
+					\item[$-$] Client geo-localization
+					\item[$-$] Server laod
+				\end{itemize}
+			\end{itemize}
+			\item \textbf{BGP Anycast}
+			\begin{itemize}
+				\item[$-$] Advertise the same IP prefix form different locations
+				\begin{itemize}
+					\item[$-$] Avoided in practice, because BGP mostly does not follow shortest path. 
+				\end{itemize}
+			\end{itemize}
+		\end{itemize} 
+		
+		\subsection{Video streaming}
+		We want the highest video quality without annoying buffering. In practice, things are complex:\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/netflix_way.png}
+		The three steps behind most contemporary solutions:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Encode} video in multiple bitrates
+			\begin{itemize}
+				\item[$-$] To enable adaptive quality.
+			\end{itemize}
+			\item \textbf{Replicate} using a content delivery network
+			\begin{itemize}
+				\item[$-$] Bring the content physically closer to the customer
+			\end{itemize}
+			\item Video player picks bitrate \textbf{adaptively}
+			\begin{itemize}
+				\item[$-$] Estimate available BW
+				\item[$-$] Pick bitrate $\le$ available BW
+			\end{itemize}
+		\end{itemize}
+		
+		\subsubsection{Encoding}
+		Simple solution for encoding $\rightarrow$ use a "\textbf{bitrate ladder}". This table maps the available BW to the resolution which will be sent.\\
+		Problem: This doesn't take into account the \textbf{variability} in the video content. A Comic will need less BW to be shown in good quality than a sports video. \\
+		Solution: Every content will get its own table. \\
+		Your player download \textbf{chunks} of video at different bitrates. Depending on your network connectivity, your player fetches chunk of different quality. Your player gets the information about the chunks via "\textbf{Manifest}" which is downloaded at the beginning.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/encoding_chunks.png}
+		
+		\subsubsection{Replication}
+		Put your Hardware with all your content around the globe to increase availability. See below an example of Netflix:\\ 
+		\includegraphics[width=\columnwidth]{images/Application_Layer/netflix_recreation.png}
+		
+		\subsubsection{Adaption}
+		The available BW varies extremely and therefore it is difficult to set the bitrate according to the capacity estimation:\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/adaption_capacity.png}
+		In case of Netflix this method resulted in $\approx$ 30\% unnecessary rebuffers.\\
+		A better way to adapt the bitrate is according to the buffer itself $\rightarrow$ \textbf{buffer-based adaption}:
+		\begin{tabbing}
+			\hspace{3cm} \= \hspace{1cm} \=  a \kill
+			Nearly empty buffer \> $\Rightarrow$ \> small rate \\
+			Nearly full buffer \> $\Rightarrow$ \> large rate
+		\end{tabbing}
+		\includegraphics[width=\columnwidth]{images/Application_Layer/buffer_adaption.png}
+		
+		\subsection{E-Mail}
+		We'll study e-mail form three different perspectives:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Content}
+			\begin{itemize}
+				\item[$-$] Format: Header/Content
+				\item[$-$] Encoding: MIME
+			\end{itemize}
+			\item \textbf{Infrastructure/Transmission}
+			\begin{itemize}
+				\item[$-$] SMTP: Simple Mail Transfer Protocol
+				\item[$-$] Infrastructure: mail-servers 
+			\end{itemize}
+			\item \textbf{Retrieval}
+			\begin{itemize}
+				\item[$-$] POP: Post Office Protocol
+				\item[$-$] IMAP: Internet Access Message Protocol
+			\end{itemize}
+		\end{itemize}
+		
+		\subsubsection{Content}
+		"What is inside the envelope"\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/email_content.png}
+		E-mail relies on 7-bit U.S ASCII, if you want to send non-English text or even binary files you need the Multipurpose Internet Mail Extensions (\textbf{MIME}). MIME defines: 
+		\begin{itemize}[noitemsep]
+			\item Additional headers for the e-mail body:
+			\begin{itemize}
+				\item[$-$] MIME-Version
+				\item[$-$] Content-Type
+				\item[$-$] Content transfer encoding
+			\end{itemize}
+			\item A set of content-types and subtypes:
+			\begin{itemize}
+				\item Image with subtypes gif, jpeg
+				\item Text with subtypes plain, html and rich text
+				\item Application with subtypes postscript or msword
+				\item Mulitpart with subtypes mixed or alternative
+			\end{itemize}
+			\item Base64 to encode binary data to ASCII
+			\begin{itemize}
+				\item[$-$] Binary files are encoded in ASCII with base64 and then the ASCII file is sent!
+			\end{itemize}
+		\end{itemize}
+		
+		\subsubsection{Infrastructure / Transmission}
+		An e-mail address is composed  of two parts identifying the \textbf{local mailbox} and the \textbf{domain}.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/email_identify.png}
+		We can divide the e-mail infrastructure into five functions (M=Mail, A=Agent): 
+		\begin{tabbing}
+			Transmission \=  Queues, receives, sends mail to other MTAs \kill
+			User\> Use to read/write e-mails (mail client)\\
+			Submission \> Process email and forward to local MTA\\
+			Transmission \> Queues, receives, sends mail to MTAs\\
+			Delivery \> Deliver email to user mailbox\\
+			Retrieval \> Fetches email from user mailbox
+		\end{tabbing}
+		MSA/MTA/MDA and MUA/MRA are often packaged together leading to simpler workflows.\\
+		\includegraphics[width=\columnwidth]{images/Application_Layer/email_package.png}
+		Simple Mail Transfer Protocol (\textbf{SMTP}) is the current standard for transmitting e-mails.
+		\begin{itemize}[noitemsep]
+			\item SMTP is text based, client-server protocol 
+			\begin{itemize}
+				\item[$-$] client sends the email, server receives it
+			\end{itemize}
+			\item SMTP uses reliable data transfer
+			\begin{itemize}
+				\item[$-$] Built on top of TCP 
+				\item Port 25 and 465 (25 should not be used anymore $\rightarrow$ SPAM)
+			\end{itemize}
+			\item SMTP is a push-like protocol 
+			\begin{itemize}
+				\item[$-$] Sender pushes the file to the receiving server (no pull)
+			\end{itemize}
+		\end{itemize} 
+		\begin{enumerate}
+			\item The sender MUA uses SMTP to transmit the e-mail first to the local MTA (e.g. mail.ethz.ch, gmail.com, hotmail.com)
+			\item The local MTA then looks up the MTA of the recipient domain (DNS MX..) and transmits the email further.
+			\item Once the e-mail is stored at the recipient domain, IMAP or POP is used to retrieve it by the recipient MUA. 
+		\end{enumerate}
+		\includegraphics[width=\columnwidth]{images/Application_Layer/email_way.png}
+		Emails typically go through at least two SMTP servers, but often way more. Separate SMTP servers for separate functions $\rightarrow$ SPAM-filtering, virus scanning, data leak prevention, ... .\\
+		
+		\subsubsection{Retrieval}
+		\textbf{POP} (Post Office Protocol):\\
+		POP is a simple protocol which which was designed to support user with intermittent Internet connectivity.\\
+		POP enables e-mail users to:
+		\begin{itemize}[noitemsep]
+			\item Retrieve e-mails locally $\vert$ when connected
+			\item View/Manipulate e-mails $\vert$ when disconnected
+		\end{itemize} 
+		POP is heavily limited $\rightarrow$ it does not do well with multiple clients or always-on connectivity.\par 
+		
+		\textbf{IMAP} (Internet Message Access Protocol):\\
+		Unlike POP, IMAP was designed with multiple clients in mind: 
+		\begin{itemize}[noitemsep]
+			\item Support multiple mailboxes and searches on the server
+			\begin{itemize}
+				\item[$-$] Client can create, rename, move mailboxes \& search on server
+			\end{itemize}
+			\item Access to individual MIME parts and partial fetch
+			\begin{itemize}
+				\item[$-$] Clients can download only the text part of an email. 
+			\end{itemize}
+			\item Support multiple clients connected to one mailbox
+			\begin{itemize}
+				\item Server keeps state about each message (e.g. read, replied to, ...)
+			\end{itemize}
+		\end{itemize} 		
 		\end{multicols*}
 	\setcounter{secnumdepth}{3}
 \end{document}
