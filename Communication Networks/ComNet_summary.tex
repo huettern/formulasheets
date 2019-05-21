@@ -31,9 +31,11 @@
 	\begin{multicols*}{4}
 		%
 		\section*{Disclaimer}
-		This should be a summary of the Communication Networks course. The goal is to
-		update it weekly with the currently taught material.  	
-		\newpage
+		This summary is part of the lecture ``ETH Communication Networks'' by Prof. Dr. Laurent Vanbever (FS19). It is based on the lecture. \\[6pt]
+		Please report errors to \href{mailto:doberm@student.ethz.ch}{doberm@student.ethz.ch} such that others can benefit as well.\\[6pt]	
+		The upstream repository can be found at \href{https://github.com/noah95/formulasheets}{https://github.com/noah95/formulasheets}
+		\vfill\null
+		\pagebreak
 		
 		\maketitle 
 		\thispagestyle{fancy}
@@ -2560,11 +2562,149 @@
 			\end{itemize}
 		\end{itemize} 
 		
+		\section{Programmable Networks}
+		Is meant to be a short introduction at this point. For the exam not that relevant (hopefully), but basic concepts should be known.
 		
+		\subsection{The network management crisis} 
+		Networks are large \textbf{distributed systems} running a set of \textbf{distributed algorithms}. These algorithms produce the forwarding state which drives IP traffic to its destination. Operators adapt their network forwarding behavior by configuring \textbf{each network device individually}. Configuring each element is often done manually, using low-level, vendor-specific "languages". A single mistyped line is enough to bring the whole network down. The correct configuration and management of the network can be a huge pain, as we experienced in our project. Solving this problem is hard, because network devices are completely locked down (closed HW, closed SW (thanks Cisco)).\\ 
+		\includegraphics[width=\columnwidth]{images/Programmable_Networks/distributed_stuff.png}
 		
+		\subsection{Software Defined Networking (SDN)}
+		SDN is predicated around two simple concepts:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Separate} the control- from the data-plane
+			\item Provide open \textbf{API} ot directly access data-plane
+		\end{itemize}
+		Instead that every node has a separate control-plane, a logically-centralized control is introduced.\\
+		\includegraphics[width=\columnwidth]{images/Programmable_Networks/sdn_principle.png}
+	
+		SDN \textcolor{ForestGreen}{Advantages:}
+		\begin{itemize}[noitemsep]
+			\item \textcolor{ForestGreen}{Simpler management}
+			\begin{itemize}
+				\item No need to invert control-plane operations
+			\end{itemize}
+			\item \textcolor{ForestGreen}{Faster pace of innovation}
+			\begin{itemize}
+				\item Less dependence of vendors and standards
+			\end{itemize}
+			\item \textcolor{ForestGreen}{Easier interoperability}
+			\begin{itemize}
+				\item Compatibility only in "wire" protocols
+			\end{itemize}
+			\item \textcolor{ForestGreen}{Simpler cheaper equipment}
+			\begin{itemize}
+				\item Minimal Software
+			\end{itemize}
+		\end{itemize}
 		
+		\subsubsection{OpenFlow Networks}
+		OpenFlow is an API to a switch flow table. In the flow table simple packet-handling rules can be defined: 
+		\begin{itemize}[noitemsep]
+			\item \textbf{Pattern}
+			\begin{itemize}
+				\item Match packet header bits, i.e. flowspace
+			\end{itemize}
+			\item \textbf{Actions}
+			\begin{itemize}
+				\item Drop, forward, modify, send to controller
+			\end{itemize}
+			\item \textbf{Priority}
+			\begin{itemize}
+				\item Disambiguate overlapping patterns
+			\end{itemize}
+			\item \textbf{Counters}
+			\begin{itemize}
+				\item \#Bytes and \#packets
+			\end{itemize}
+		\end{itemize}
+		Example of a switch flow table and an incoming packet with longest prefix match (\textbf{Exam style question!}):\\
+		\includegraphics[width=\columnwidth]{images/Programmable_Networks/flow_table.png}
+		OpenFlow switches can emulate different kind of boxes!:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Router}
+			\begin{itemize}
+				\item Match: longest DST IP Prefix
+				\item Action: forward out a link
+			\end{itemize}
+			\item \textbf{Switch}
+			\begin{itemize}
+				\item Match: DST Mac address
+				\item Action: forward or flood
+			\end{itemize}
+			\item \textbf{Firewall}
+			\begin{itemize}
+				\item Match: IP address and TCP/UDP port numbers
+				\item Action: permit or deny
+			\end{itemize}
+			\item \textbf{NAT}
+			\begin{itemize}
+				\item Match: IP address and port 
+				\item Action: rewrite address and port
+			\end{itemize}
+		\end{itemize}
+		Example OpenFlow applications:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Dynamic access control}
+			\begin{itemize}
+				\item Inspect first packet of a connection
+				\item Consult the access control policy
+				\item Install rules ot block or access policy
+			\end{itemize}
+			\item \textbf{Seamless mobility/migration}
+			\begin{itemize}
+				\item See host send traffic at new location
+				\item Modify rules to reroute the traffic
+			\end{itemize}
+			\item \textbf{Server load balancing}
+			\begin{itemize}
+				\item Pre-install load-balancing policy
+				\item Split traffic based on source IP
+			\end{itemize}
+			\item Network virtualization
+			\item Using multiple wireless access points
+			\item Energy-efficient networking
+			\item Adaptive traffic monitoring
+			\item Denial-of-Service attack detection
+		\end{itemize}
+		
+		\subsubsection{Challanges}
+		\begin{itemize}[noitemsep]
+			\item \textcolor{Red}{\textbf{Heterogeneous Switches}}
+			\begin{itemize}
+				\item Number of packet-handling rules
+				\item Range of matches and actions
+				\item Multi-stage pipeline of packet processing
+				\item Offload some control-plane functionality
+			\end{itemize}
+			\item \textcolor{Red}{\textbf{Controller delay and overhead}}
+			\begin{itemize}
+				\item Controller is much slower than the switch
+				\item Processing packets leads to delay and overhead
+				\item Need to keep most packets in the fast path
+			\end{itemize}
+			\item \textcolor{Red}{\textbf{Distributed Controller}}
+			\begin{itemize}
+				\item Needed for scalability
+				\item Needed for security
+			\end{itemize}
+			\item \textcolor{Red}{\textbf{Testing and debugging}}
+			\begin{itemize}
+				\item Still plenty of room for bugs
+			\end{itemize}
+			\item \textcolor{Red}{\textbf{Programming abstractions}}
+			\begin{itemize}
+				\item An API makes network programming possible, not easy!
+			\end{itemize}
+			
+			\subsection{Deep Network Programmability}
+			As we see OpenFlow is not all roses, therefore Protocol Independent Switch Architecture (\textbf{PISA}) and \textbf{P4} entered the game. PISA is used for high-speed programmable packet forwarding. Architecture of PISA:\\
+			\includegraphics[width=\columnwidth]{images/Programmable_Networks/PISA.png}
+			By default PISA doesn't do anything, it's just an "architecture". P4 is a domain specific language which describes how a PISA architecture should process packets:\\
+			\includegraphics[width=\columnwidth]{images/Programmable_Networks/PISA_P4.png}
+			If you think this is the shit, consider taking Advanced Topics in Communication Networks.
+		\end{itemize}
 		
 	\end{multicols*}
 	\setcounter{secnumdepth}{3}
 \end{document}
-
