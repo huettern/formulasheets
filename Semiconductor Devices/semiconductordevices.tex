@@ -750,11 +750,9 @@
     % ---------------------------------------------------------------------------
     \section{Depletion approximation}
     % ---------------------------------------------------------------------------
-
     \subsection{Depletion width correction}
     Using the Gummel correction.
     $2V_t$ for a 2-sided junction, $V_t$ for single sided junction.
-
     \begin{align*}
       V_t &= \frac{kT}{q} \quad\text{Thermal voltage} \\
       W &= \sqrt{\frac{2\epsilon_s}{q}\left(\frac{1}{N_a} + \frac{1}{N_d}\right)(V_{bi}-2V_t)}
@@ -762,13 +760,12 @@
 
     \subsection{Debye Length}
     The length of the region where the doping concentration changes.
-    
     \begin{align*}
       L_D &= \sqrt{\frac{\epsilon_sV_t}{qN_d}}
     \end{align*}
 
     \subsection{Junction Capacitance}
-    
+    $V_t=0$ for depletion approximation.
     \begin{align*}
       \Psi &= V_{bi} + V_R &
       C_j &\approx \sqrt{\frac{\epsilon_sqN_d}{2(\Psi - V_t)}}

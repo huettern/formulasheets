@@ -9,7 +9,7 @@
 - [x] Week 6
 - [x] Week 7
 - [x] Week 8
-- [x] Week 9 -> Validate with ex9 solutions
+- [x] Week 9
 - [ ] Week 10
 - [ ] Week 11
 - [ ] Week 12
