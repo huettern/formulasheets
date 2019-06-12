@@ -772,6 +772,50 @@
     \end{align*}
 
     % ---------------------------------------------------------------------------
+    \section{Bipolar transistor}
+    % ---------------------------------------------------------------------------
+    \subsection{Modes of operation}
+    \textbf{E/B junction} injects minority carriers into base. \textbf{B/C junction} extracts minority carriers from base. \textbf{Objective} current gain.
+    
+    \cgraphic{0.8}{img/bjt_op.png}
+
+    \subsubsection{Noral "Active" Mode}
+    E/B junction fowrard-biased: Minority carrier injection. B/C reverse-biased: Minority carrier extraction.
+    Recombination in base consumes e/h pairs.
+    
+    \cgraphic{0.8}{img/fwdactive.png}
+
+    \subsection{NPN vs PNP}
+    \cgraphic{0.8}{img/pnp.png}
+    \cgraphic{0.8}{img/npn.png}
+
+    \subsection{Forward active mode}
+    \subsubsection{PNP}
+    \ceqbox{\beta = \frac{D_{pB}}{D_{nE}}\frac{L_n}{W}\frac{N_{AE}}{N_{DB}}}
+
+    In order to be useful as a transistor we want
+    \begin{align*}
+      I_{pC} &= I_{pE} \gg I_{nE} = I_B \\
+      \frac{n_{iB}^2}{N_{DB}} &\gg \frac{n_{iE}^2}{N_{AE}} \to N_{AE} \gg N_{DB}
+    \end{align*}
+
+    \ceqbox{I_C = \alpha I_E = \frac{\alpha}{1-\alpha}I_B = \beta I_B}
+
+    \begin{align*}
+      I_C &= A_E \frac{qD_{pB}}{W_B} \frac{n_i^2}{N_{DB}} (e^{qV_{EB}/kT} - 1) = I_S(e^{qV_{EB}/kT} - 1) \\
+      g_M &= \Abl{I_C}{V_{EB}} = I_S e^{qV_{EB}/kT} \frac{q}{kT} \approx \frac{I_C}{kT/q}
+    \end{align*}
+
+    \subsubsection{NPN}
+    \ceqbox{\beta = \frac{D_{nB}}{D_{pE}}\frac{L_{pE}}{W_B}\frac{N_{DE}}{N_{AB}}}
+
+    \subsection{Early Effect}
+    
+    \subsection{}
+    \subsection{}
+
+
+    % ---------------------------------------------------------------------------
     % \section{}
     % ---------------------------------------------------------------------------
 
