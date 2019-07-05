@@ -3,7 +3,7 @@
 ## Downloads
 Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.0`.
 
-### Formulasheets
+### Completed
 | Name          | Status | Download      | Statistics |
 | ------------- |--------|---------------|------------|
 | Leistungselektronik | Finished | [link](https://github.com/noah95/formulasheets/releases/download/v1.0/leistungselektronik.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/leistungselektronik.pdf.svg) |
@@ -11,7 +11,7 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 | Communication Networks | Finished | [link](https://github.com/noah95/formulasheets/releases/download/v2.0/ComNet_summary.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v2.0/ComNet_summary.pdf.svg) |
 
 
-### Summaries
+### Working
 | Name          | Status | Download      | Statistics |
 | ------------- |--------|---------------|------------|
 | Semiconductor Devices | WIP | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/semiconductordevices.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/semiconductordevices.pdf.svg) |
