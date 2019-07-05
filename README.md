@@ -8,15 +8,16 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 | ------------- |--------|---------------|------------|
 | Leistungselektronik | Finished | [link](https://github.com/noah95/formulasheets/releases/download/v1.0/leistungselektronik.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/leistungselektronik.pdf.svg) |
 | Analysis III - PDE | Finished | [link](https://github.com/noah95/formulasheets/releases/download/v1.0/analysis3pde.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/analysis3pde.pdf.svg) |
+| Communication Networks | Finished | [link](https://github.com/noah95/formulasheets/releases/download/v2.0/ComNet_summary.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v2.0/ComNet_summary.pdf.svg) |
+
 
 ### Summaries
 | Name          | Status | Download      | Statistics |
 | ------------- |--------|---------------|------------|
 | Semiconductor Devices | WIP | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/semiconductordevices.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/semiconductordevices.pdf.svg) |
-| Communication Networks | WIP | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/ComNet_summary.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/ComNet_summary.pdf.svg) |
 | Electrodynamics | stall | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/electrodynamics.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/electrodynamics.pdf.svg) |
 | Introduction to Machine Learning | stall | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/IntroToML_summary.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/IntroToML_summary.pdf.svg) |
-| Numerische Methoden | WIP | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/Numerik_summary.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/Numerik_summary.pdf.svg) |
+| Numerische Methoden | stall | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/Numerik_summary.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/Numerik_summary.pdf.svg) |
 
 ## Build documentation
 
