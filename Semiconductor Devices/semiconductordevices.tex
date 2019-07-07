@@ -779,7 +779,7 @@
     
     \cgraphic{0.8}{img/bjt_op.png}
 
-    \subsubsection{Noral "Active" Mode}
+    \subsubsection{Normal ``Active'' Mode}
     E/B junction fowrard-biased: Minority carrier injection. B/C reverse-biased: Minority carrier extraction.
     Recombination in base consumes e/h pairs.
     
@@ -811,8 +811,75 @@
 
     \subsection{Early Effect}
     
+    \subsection{Diffused Resistor}
+
+    \cgraphic{0.4}{img/difres.png}
+    Resistance is per unit square.
+    \begin{align*}
+      R_{tot} &= R_\Box\frac{L}{W} + 2R_cR_\Box & R_\Box &= \frac{\rho}{x} \\
+      \rho &= \frac{1}{qp\mu_p},\quad p=N_a
+    \end{align*}
+
     \subsection{}
-    \subsection{}
+
+
+    % ---------------------------------------------------------------------------
+    \section{MOS Transistor}
+    % ---------------------------------------------------------------------------
+    \begin{tabular}[h]{l l}
+      $\phi$   & Work function \\
+      $\altchi$    & Electron affinity \\
+    \end{tabular}
+
+    \subsection{Band structure}
+    Workfunction $\phi$ is energy required to extract electron. 
+    In semiconductor materials the electrons get extraced from conduction band, so we use
+    the electron affinity $\altchi$ parameter.
+    \cgraphic{1.0}{img/mosband.png}
+    \begin{align*}
+      &q\phi_s = q\altchi_s + E_g/2 + \phi_{fn} & q\altchi_{SiO2} = q\altchi_s - \Delta E_c \\
+      &\phi_{fn} = (E_i - E_F) = kT\ln\frac{N_a}{n_i}
+    \end{align*}
+
+    \subsection{Gate votlage dependance}
+    The gate voltage creates a depletion region or channel at the interface between Si and oxide.
+    \cgraphic{0.8}{img/mosgaten.png}
+
+    The regimes are called accumulation, depletion and inversion mode.
+    \cgraphic{0.8}{img/mosgatep.png}
+
+    \textbf{Inversion} 
+    Surface potential is double the bulk potential.
+    \[\Psi_S = 2\cdot\Psi_B \quad \Psi_B = \frac{kT}{q}\ln\frac{N_a}{n_i}\]
+
+    \textbf{Gate capacitance} 
+    in accumulation:
+    \[C = C_{Ox} = \frac{\epsilon_{Ox}}{d} \]
+    in depletion:
+    \[C = (C_{Ox}^{-1}+C_{j}^{-1})^{-1} = \frac{\epsilon_{Ox}}{d + \frac{epsilon_{Ox}}{\epsilon_S}}W \]
+
+    \textbf{Depletion width} in general $x_d$ and at inversion transision $x_{dt}$
+    \[\phi_{fp} = V_t\ln\frac{N_a}{n_i} \quad x_d = \sqrt{\frac{2\epsilon_s\phi_s}{qN_d}} \quad x_{dt} = \sqrt{\frac{4\epsilon_s\phi_{fp}}{qN_d}}\]
+    
+    \subsection{Operation mode}
+    \begin{align*}
+      &\begin{cases}
+        V_{DS} \geq V_{GS} - V_t & \text{saturation} \\
+        V_{DS}  <   V_{GS} - V_t & \text{linear}
+      \end{cases} \\
+      I_{D} &= \frac{\mu C_{OX}}{2}\frac{W}{L} (V_{GS} - V_t) ^2 && \text{sat} \\
+      I_{D} &= \frac{\mu C_{OX}}{2}\frac{W}{L} \left( 2(V_{GS} - V_t) V_{DS} - V_{DS}^2 \right) && \text{lin} 
+    \end{align*}
+
+    \subsection{E-Field}
+    Applied voltage $V_a$. If intrinsic, then $\Psi_S = \Psi_B$.
+    \[ V_a = \Psi_S + V_{Ox} \quad \Psi_B = \frac{kT}{q}\ln\frac{N_a}{n_i} \quad W=\sqrt{\frac{2\epsilon_s\Psi_S}{qN_a}}\]
+    \[ E_S = \frac{qN_a}{\epsilon_s}W \quad E_{Ox}=\frac{E_S\epsilon_s}{\epsilon_{Ox}} \quad V_{Ox} = E_{Ox}d \]
+
+    \subsection{Threshold Voltage}
+    Work function difference $\phi_{ms}$ from table.
+    \[ \phi_{ms} = \phi_m - \left(\altchi_S + \frac{E_g}{2q} + \frac{E_i-E_F}{q}\right)  \quad C_{Ox} = \frac{\epsilon_{Ox}}{d} \]
+    \[ V_t = V_{Ox} + \Psi_S + \phi_{ms} \quad V_{Ox} = \frac{\sqrt{2q\epsilon_s N_a \Psi_S}}{C_{Ox}} \]
 
 
     % ---------------------------------------------------------------------------
