@@ -12,6 +12,6 @@
 - [x] Week 9
 - [ ] Week 10
 - [ ] Week 11
-- [ ] Week 12
-- [ ] Week 13
-- [ ] Week 14
+- [x] Week 12
+- [x] Week 13
+- [x] Week 14
