@@ -781,9 +781,9 @@
     \section{Bipolar transistor}
     % ---------------------------------------------------------------------------
     \subsection{Modes of operation}
-    \textbf{E/B junction} injects minority carriers into base. \textbf{B/C junction} extracts minority carriers from base. \textbf{Objective} current gain.
+    E/B junction injects minority carriers into base. B/C junction extracts minority carriers from base.
     
-    \cgraphic{0.8}{img/bjt_op.png}
+    \cgraphic{1.0}{img/bjt_op.png}
 
     \subsubsection{Normal ``Active'' Mode}
     E/B junction fowrard-biased: Minority carrier injection. B/C reverse-biased: Minority carrier extraction.
@@ -791,29 +791,30 @@
     
     \cgraphic{0.8}{img/fwdactive.png}
 
-    \subsection{NPN vs PNP}
-    \cgraphic{0.8}{img/pnp.png}
-    \cgraphic{0.8}{img/npn.png}
+    \subsection{Current flow and gain}
+    For pnp flip signs and change $n \leftrightarrow p$.
+    \cgraphic{0.8}{img/npncurrent.png}
+    \[I_B = I_E - I_C = I_{E,p} + (I_{E,n} - I_{C,n}) - I_{C,p}\]
 
-    \subsection{Forward active mode}
-    \subsubsection{PNP}
-    \ceqbox{\beta = \frac{D_{pB}}{D_{nE}}\frac{L_n}{W}\frac{N_{AE}}{N_{DB}}}
+    Emitter efficiency $\gamma$ and base transport factor $\alpha_T$:
+    \[ \gamma = \frac{I_{E,p}}{I_{E,p} + I_{E,n}} \quad \alpha_T = \frac{I_{C,p}}{I_{E,p}} \]
+
+    Common emitter current gain in forward- and reverse-active mode:
+    \[\beta_F = \frac{I_C}{I_B} = \frac{D_BN_EW_E}{D_EN_BW_B} \quad \beta_R = \frac{I_E}{I_B} = \frac{D_BN_CW_C}{D_CN_BW_B}\]
+
+
+    \subsection{Doping}
+    Focus is on minority carriers. NPN has pnp minority carriers and PNP npn structure. In this image the BJT is in reverse active mode.
+    \cgraphic{0.8}{img/pnpdoping.png}
+    \[\frac{\Delta n_E}{n_{E,0}} = \frac{n_E - n_{E,0}}{n_{E,0}} = e^{\frac{qV_{BE}}{kT}} - 1\]
+    \[\frac{\Delta p_B}{p_{B,0}} = \frac{p_B - p_{B,0}}{p_{B,0}} = e^{\frac{qV_{CB}}{kT}} - 1\]
 
     In order to be useful as a transistor we want
-    \begin{align*}
-      I_{pC} &= I_{pE} \gg I_{nE} = I_B \\
-      \frac{n_{iB}^2}{N_{DB}} &\gg \frac{n_{iE}^2}{N_{AE}} \to N_{AE} \gg N_{DB}
-    \end{align*}
+    \[ I_{pC} = I_{pE} \gg I_{nE} = I_B \]
+    \[ \frac{n_{iB}^2}{N_{DB}} \gg \frac{n_{iE}^2}{N_{AE}} \to N_{AE} \gg N_{DB} \]
 
-    \ceqbox{I_C = \alpha I_E = \frac{\alpha}{1-\alpha}I_B = \beta I_B}
-
-    \begin{align*}
-      I_C &= A_E \frac{qD_{pB}}{W_B} \frac{n_i^2}{N_{DB}} (e^{qV_{EB}/kT} - 1) = I_S(e^{qV_{EB}/kT} - 1) \\
-      g_M &= \Abl{I_C}{V_{EB}} = I_S e^{qV_{EB}/kT} \frac{q}{kT} \approx \frac{I_C}{kT/q}
-    \end{align*}
-
-    \subsubsection{NPN}
-    \ceqbox{\beta = \frac{D_{nB}}{D_{pE}}\frac{L_{pE}}{W_B}\frac{N_{DE}}{N_{AB}}}
+    \[ J_C = \frac{qD_{B}}{W_B} \frac{n_i^2}{N_{B}} (e^{qV_{EB}/kT} - 1) = I_S(e^{qV_{EB}/kT} - 1) \]
+    \[ g_M = \Abl{I_C}{V_{EB}} = I_S e^{qV_{EB}/kT} \frac{q}{kT} \approx \frac{I_C}{kT/q} \]
 
     \subsection{Early Effect}
     Collector-emitter voltage decreases base width which increases collector current.
