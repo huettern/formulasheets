@@ -810,6 +810,17 @@
     \ceqbox{\beta = \frac{D_{nB}}{D_{pE}}\frac{L_{pE}}{W_B}\frac{N_{DE}}{N_{AB}}}
 
     \subsection{Early Effect}
+    Collector-emitter voltage decreases base width which increases collector current.
+    \cgraphic{0.8}{img/early.png}
+    Calculate base width $x_B$ at zero voltage and at two operating points with depletion correction.
+    \[W_{BE} = \sqrt{\frac{2\epsilon_i}{q}\frac{N_B+N_E}{N_BN_E}V_x} \quad V_x = V_{bi}-V_{BE} \]
+    \[W_{BC} = \sqrt{\frac{2\epsilon_i}{q}\frac{N_B+N_C}{N_BN_C}V_x} \quad V_x = V_{bi}+V_{BC} \]
+    \[V_{bi} = \frac{kT}{q}\ln\left(\frac{N_BN_i}{n_i^2}\right) \quad i=E, C\]
+    \[x_B = x_{B0} + W_{B,BC,0} + W_{B,BE,0} - W_{B,BC,1} - W_{B,BE,1} \]
+    Then calculate collector currents at two operating points.
+    \[J_C = \frac{qn_i^2D_B}{N_Bx_B}\left(e^{qV_{EB}/kT}-1\right) \to V_{CE} = V_{BE} + V_{CE}\]
+    \[V_A = J_{C,1}\frac{V_{CE,2}-V_{CE,1}}{J_{C,2}-J_{C,1}} - V_{CE,1} \quad \Abl{I_C}{V_{EC}} = \frac{I_C}{V_A + V_{EC}} \]
+    \cgraphic{0.8}{img/basewidth.png}
     
     \subsection{Diffused Resistor}
 
