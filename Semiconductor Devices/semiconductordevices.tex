@@ -872,13 +872,13 @@
     % ---------------------------------------------------------------------------
     \section{MOS Transistor}
     % ---------------------------------------------------------------------------
-  \ifdefined\makeultracompact
-  \else
-    \begin{tabular}[h]{l l}
-      $\phi$   & Work function \\
-      $\altchi$    & Electron affinity \\
-    \end{tabular}
-  \fi
+    \ifdefined\makeultracompact
+    \else
+      \begin{tabular}[h]{l l}
+        $\phi$   & Work function \\
+        $\altchi$    & Electron affinity \\
+      \end{tabular}
+    \fi
 
     \subsection{Band structure}
     Workfunction $\phi$ is energy required to extract electron. 
@@ -891,11 +891,12 @@
     \end{align*}
 
     \subsection{Gate votlage dependance}
-    The gate voltage creates a depletion region or channel at the interface between Si and oxide.
-    \cgraphic{0.8}{img/mosgaten.png}
-
-    The regimes are called accumulation, depletion and inversion mode.
-    \cgraphic{0.8}{img/mosgatep.png}
+    The gate voltage creates a depletion region or channel at the interface between Si and oxide depending on the regime.
+    The regimes are called \Roe{1} accumulation, \Roe{2} depletion and \Roe{3} inversion mode.
+    The \textbf{NMOS} forms a n-channel and therefore uses p-type substrate.
+    \cgraphic{1.0}{img/nmosbands.png}
+    The \textbf{PMOS} forms a p-channel and therefore uses n-type substrate.
+    \cgraphic{1.0}{img/pmosbands.png}
 
     \textbf{Inversion} 
     Surface potential is double the bulk potential.
@@ -905,12 +906,12 @@
     in accumulation:
     \[C = C_{Ox} = \frac{\epsilon_{Ox}}{d} \]
     in depletion:
-    \[C = (C_{Ox}^{-1}+C_{j}^{-1})^{-1} = \frac{\epsilon_{Ox}}{d + \frac{epsilon_{Ox}}{\epsilon_S}}W \]
+    \[C = (C_{Ox}^{-1}+C_{j}^{-1})^{-1} = \frac{\epsilon_{Ox}}{d + \frac{\epsilon_{Ox}}{\epsilon_S}}W \]
 
-    \textbf{Depletion width} in general $x_d$ and at inversion transision $x_{dt}$
+    \textbf{Depletion width} in general $x_d$ and at inversion transision $x_{dt}$:
     \[\phi_{fp} = V_t\ln\frac{N_a}{n_i} \quad x_d = \sqrt{\frac{2\epsilon_s\phi_s}{qN_d}} \quad x_{dt} = \sqrt{\frac{4\epsilon_s\phi_{fp}}{qN_d}}\]
     
-    \subsection{Operation mode}
+    \subsection{Operating mode}
     \begin{align*}
       &\begin{cases}
         V_{DS} \geq V_{GS} - V_t & \text{saturation} \\
