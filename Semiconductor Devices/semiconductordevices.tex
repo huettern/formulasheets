@@ -22,17 +22,25 @@
 \pagestyle{fancy}
 \footskip 20pt
 
-% Make stuff ultra compact
-\setlength{\parskip}{0pt}
-\setlength{\abovedisplayskip}{0pt}
-\setlength{\belowdisplayskip}{0pt}
-\setlength{\abovedisplayshortskip}{0pt}
-\setlength{\belowdisplayshortskip}{0pt}
+% Uncomment this line to make formulasheet ultra compact
+% This removes
+% - list of variables
+\newcommand{\makeultracompact}{irrelevant}
+
+% Make stuff ultra compact if so desired
+\ifdefined\makeultracompact
+  \setlength{\parskip}{0pt}
+  \setlength{\abovedisplayskip}{0pt}
+  \setlength{\belowdisplayskip}{0pt}
+  \setlength{\abovedisplayshortskip}{0pt}
+  \setlength{\belowdisplayshortskip}{0pt}
+\else
+\fi
  
 % -----------------------------------------------------------------------
 \IfFileExists{../build/revision.tex}{
   \input{../build/revision.tex}
-  \rhead{Compiled: \compiledate \hspace{1em} on \hostname \hspace{1em} from commit: \revision \hspace{1em} Noah Huetter}
+  \rhead{Compiled: \compiledate \hspace{1em} on: \hostname \hspace{1em} from commit: \revision \hspace{1em} Noah Huetter}
 }{\rhead{Noah Huetter}}
 
 \lhead{ETH Semiconductor Devices 2019}
@@ -204,6 +212,8 @@
   Doping is the introduction of impurities with different atomic valence in the pure crystal. These impurities are called \textit{Extrinsic Carriers}.
 
 
+  \ifdefined\makeultracompact
+  \else
   \begin{tabular}[h]{l l}
     $E_D$   & Donor energy level/state \\
     $E_c$   & Conduction band edge\\
@@ -228,6 +238,7 @@
     $N_a^-$   & Conc. of neg. charged (ionized) acceptors \\
     % $$   &  \\
   \end{tabular}
+  \fi
 
   \subsection{Impurity doping}
   It is distinguished between negative and positive doping.
@@ -380,9 +391,10 @@
   % ---------------------------------------------------------------------------
   \section{Excess Carriers}
   % ---------------------------------------------------------------------------
-  % \subsection{Variables}
   \cgraphic{0.9}{img/dopingvars.png}
 
+  \ifdefined\makeultracompact
+  \else
     \begin{tabular}[h]{l l}
       $G_{th}$   & Thermal generation rate \\
       $R_{th}$   & Thermal recombination rate \\
@@ -406,6 +418,7 @@
       $\mu_{n/p}$ & Electron/hole mobility \\
       $J_{n/p}$ & Electron/hole total current dens. \\
     \end{tabular}
+  \fi
 
   \subsection{Direct Generation/Recombination}
     \cgraphic{0.8}{img/genrecomb.png}
@@ -502,7 +515,9 @@
   % ---------------------------------------------------------------------------
   \section{Excess Carriers}
   % ---------------------------------------------------------------------------
-  % \subsection{Variables}
+   
+  \ifdefined\makeultracompact
+  \else
     \begin{tabular}[h]{l l}
       $G_{n/p}$   & Generation rate of el/hole \\
       $R_{n/p}$   & Recombination rate of el/hole \\
@@ -511,6 +526,7 @@
       $D_{n/p}$   & Diffusion constant \\
       $\mu_{n/p}$ & Carrier mobility \\
     \end{tabular}
+  \fi
 
   \subsection{Continuity equation}
     \textbf{Objective:} Accounting for carrier densities when drift, diffusion and G/R take place.
@@ -580,6 +596,8 @@
   % ---------------------------------------------------------------------------
   \section{PN Junction}
   % ---------------------------------------------------------------------------
+  \ifdefined\makeultracompact
+  \else
     \begin{tabular}[h]{l l}
       $N_a$   & Acceptor concentration in p-region \\
       $N_d$   & Donor concentration in n-region \\
@@ -600,9 +618,10 @@
       $V_a$     & Forward applied voltage\\
       $J_s$     & Reverse saturation cur. dens.\\
     \end{tabular}
-    \begin{align*}
-      \Delta n_p &= n_p - n_{p0} & \Delta n_n &= p_n - p_{n0} \\
-    \end{align*}
+  \fi
+  \begin{align*}
+    \Delta n_p &= n_p - n_{p0} & \Delta n_n &= p_n - p_{n0} \\
+  \end{align*}
 
   \subsection{Diode}
     \cgraphic{0.999}{img/diode}
@@ -680,6 +699,8 @@
     % ---------------------------------------------------------------------------
     \section{Complementary effects}
     % ---------------------------------------------------------------------------
+  \ifdefined\makeultracompact
+  \else
     \begin{tabular}[h]{l l}
       $C_j$   & Depletion capacitance \\
       $C_d$   & Diffusion capacitance \\
@@ -688,6 +709,7 @@
       $J_{\text{rev/fwd}}$ & Non-ideal current densities \\
       $\eta$  & Ideality factor \\
     \end{tabular}
+  \fi
 
     \subsection{Summary}
     \renewcommand{\labelenumi}{\alph{enumi})}
@@ -850,10 +872,13 @@
     % ---------------------------------------------------------------------------
     \section{MOS Transistor}
     % ---------------------------------------------------------------------------
+  \ifdefined\makeultracompact
+  \else
     \begin{tabular}[h]{l l}
       $\phi$   & Work function \\
       $\altchi$    & Electron affinity \\
     \end{tabular}
+  \fi
 
     \subsection{Band structure}
     Workfunction $\phi$ is energy required to extract electron. 
