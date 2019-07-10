@@ -15,15 +15,8 @@ script:
 addons:
   ssh_known_hosts: github.com
 after_success:
-- eval "$(ssh-agent -s)"
-- chmod 600 /tmp/deploy_rsa
-- ssh-add /tmp/deploy_rsa
-- git remote add target git@github.com:noah95/formulasheets.git
-- git checkout -b build
-- git add -f */*.pdf
-- git status
-- git commit -am "Build"
-- git push target build --force
+  - test $TRAVIS_BRANCH = "master" && ./deploy_build_branch.sh
+
 deploy:
   provider: releases
   api_key:
@@ -33,4 +26,4 @@ deploy:
   file: "*/*.pdf"
   on:
     repo: noah95/formulasheets
-    tags: true
+    branch: v0.0
