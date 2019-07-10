@@ -566,7 +566,7 @@
     \subsubsection{Semi-infinite sample}
     \cgraphicd{0.49}{img/semiinf1.png}{img/semiinf2.png}
     \begin{align*}
-      p(x) &= p_{n0} + (p_n(0)-p_{n0}) \exp\left(-\frac{x}{L_p}\right) \\
+      p_n(x) &= p_{n0} + (p_n(0)-p_{n0}) \exp\left(-\frac{x}{L_p}\right) \\
       L_p &= \sqrt{D_p\tau_p}
     \end{align*}
 
@@ -579,15 +579,7 @@
     \subsubsection{Short diode}
     If $W \ll L_p$ then recombination is weak, few holes recombine in the time required for them to cross the region $W$.
     The excess carrier profile bebomes linear:
-    \[p_n(x) = (p_n(0)-P_{n0})\frac{W-x}{W}\]
-
-    % \begin{align*}
-
-    % \end{align*}
-    % \begin{align*}
-
-    % \end{align*}
-
+    \[p_n(x) = p_{n0} + (p_n(0)-p_{n0})\frac{W-x}{W}\]
 
   \subsection{Equilibrium: constant fermi level}
   \cgraphic{0.5}{img/pnfermilevel.png}
