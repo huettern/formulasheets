@@ -43,7 +43,11 @@
   \rhead{Compiled: \compiledate \hspace{1em} on: \hostname \hspace{1em} from commit: \revision \hspace{1em} Noah Huetter}
 }{\rhead{Noah Huetter}}
 
-\lhead{ETH Semiconductor Devices 2019}
+\ifdefined\makeultracompact
+  \lhead{ETH Semiconductor Devices 2019 \hspace{1em}compact version}
+\else
+  \lhead{ETH Semiconductor Devices 2019}
+\fi
 \chead{\thepage}
 \cfoot{}
 \headheight 17pt \headsep 10pt
@@ -666,7 +670,7 @@
     This voltage subtracts from $V_{bi}$.
     Minority carriers at depletion edges increase by factor $\exp(qV_F/kT)$.
     Known as \textbf{Shockley Boundary Conditions}.
-    \cgraphic{0.6}{img/shockley2}
+    \cgraphic{0.6}{img/shockleyhand}
     \begin{align*}
       n_p(-x_p) &= n_{p0}e^{\left(\frac{qV_a}{kT}\right)} & p_n(x_n) &= p_{n0}e^{\left(\frac{qV_a}{kT}\right)}
     \end{align*}
@@ -674,10 +678,7 @@
 
   \subsection{Ideal Junction Current}
     The ideal current $J$ is calculated by:
-    \begin{align*}
-      J_s &= \left[ \frac{qD_pp_{n0}}{L_p} + \frac{qD_nn_{p0}}{L_n} \right] \\
-      J   &= J_s \left[ \exp\left(\frac{qV_a}{kT}\right) -1 \right] 
-    \end{align*}
+    \[ J_s = \left[ \frac{qD_pp_{n0}}{L_p} + \frac{qD_nn_{p0}}{L_n} \right] \quad J = J_s \left[ e^\frac{qV_a}{kT} -1 \right] \]
     
     Recalling
     \begin{align*}
@@ -694,17 +695,20 @@
     \subsection{One sided junction}
     If one side of a junction is much more doped than the other:
     \begin{align*}
-      N_a \gg N_d \leadsto p^+n  \\
-      N_d \gg N_a \leadsto n^+p  \\
+      N_a &\gg N_d \leadsto p^+n  & N_d &\gg N_a \leadsto n^+p 
     \end{align*}
 
     \subsection{Energy, field, potential, etc.}
+    \[\Abl{\vec{E}}{x}=\frac{\rho}{\epsilon_s} \]
+    \[ \abs{\vec{E}_\text{max}}=\frac{qN_ax_p}{\epsilon_s}=\frac{qN_dx_n}{\epsilon_s}=\frac{2(V_{bi}+V_R)}{W} = \left[\frac{V}{m}\right]\]
+    \cgraphic{0.5}{img/diodepotential.png}
+    
     Draw the curves using following qualitative eqn. $E_P=E_C$ for $e^-$ and $E_P=-E_C$ for hole.
     \[ V \propto E_F - E_C \quad \vec{E} \propto -\Abl{V}{x} \quad E_K + E_P = \text{const.} \]
     \[ \ln(p) \propto E_i-E_F \quad \ln(n) \propto E_F-E_i \]
     \[ J_{\text{drift}} \propto n\vec{E} \quad J_{\text{diff}} \propto \Abl{n}{x} \]
     \cgraphic{1.0}{img/evejnp.png}
-    
+
     % ---------------------------------------------------------------------------
     \section{Complementary effects}
     % ---------------------------------------------------------------------------
@@ -761,6 +765,7 @@
     \subsection{Reverse Breakdown}
     Tunneling occurs in thin, highly doped junctions while avalanche multiplication arises in thick, more lightly doped junctions.
     Tunneling results in a sharp breakdown characteristic (Zener diode) and avalanch mult. in a more soft slope.
+    Higher doping results in lower breakdown voltage and sharper characteristics.
     \begin{align*}
       N_a &\approx N_d \to \text{Tunneling} & N_a &\neq N_d \to \text{Avalanche}
     \end{align*}
@@ -805,7 +810,8 @@
     $V_t=0$ for depletion approximation.
     \begin{align*}
       \Psi &= V_{bi} + V_R &
-      C_j &\approx \sqrt{\frac{\epsilon_sqN_d}{2(\Psi - V_t)}}
+      C_j &\approx \sqrt{\frac{\epsilon_sqN_d}{2(\Psi - V_t)}} &
+      [C_j] = \frac{F}{m^2}
     \end{align*}
 
     % ---------------------------------------------------------------------------
