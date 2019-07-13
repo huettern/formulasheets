@@ -15,8 +15,8 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 [le-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/leistungselektronik.pdf.svg
 [an3]: https://github.com/noah95/formulasheets/releases/download/v1.0/analysis3pde.pdf
 [an3-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/analysis3pde.pdf.svg
-[comnet]: https://github.com/noah95/formulasheets/releases/download/v2.0/ComNet_summary.pdf
-[comnet-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v2.0/ComNet_summary.pdf.svg
+[comnet]: https://github.com/noah95/formulasheets/releases/download/v2.0.1/ComNet_summary.pdf
+[comnet-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v2.0.1/ComNet_summary.pdf.svg
 
 [semi]: https://github.com/noah95/formulasheets/releases/download/v2.1/semiconductordevices.pdf
 [semi-ex]: https://github.com/noah95/formulasheets/releases/download/v2.1/semiconductordevices-extended.pdf
