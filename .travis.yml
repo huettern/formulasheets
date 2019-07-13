@@ -1,8 +1,7 @@
 language: latex
 branches:
-  except:
-  - build
-  - marco
+  only:
+  - master
 services:
 - docker
 before_install:
