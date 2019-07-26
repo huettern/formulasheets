@@ -127,7 +127,8 @@
   \subsection{Silicon}
   \cgraphic{0.7}{img/siliconstructure.png}
   \textbf{Diamond unit cell}: (a) the cubic unit cell, and (b) the inherent tetrahedral structure. The diamon crystal structure is epecially important in semiconductors. For Silicon, the nuclear diameter is $7.2\text{fm} = 2.7\cdot 10^{-6}\text{nm}$: Matter is impressively ``empty''.
-
+  \[a = \frac{4}{\sqrt{3}}  \cdot \text{nearest neighbour distance} \]
+  
   \subsection{Crystal Planes and Directions}
   \cgraphic{0.8}{img/planes.png}
   \ifdefined\makeultracompact\else
@@ -977,7 +978,12 @@
     \[ \phi_{ms} = \phi_m - \left(\altchi_S + \frac{E_g}{2q} + \frac{E_i-E_F}{q}\right)  \quad C_{Ox} = \frac{\epsilon_{Ox}}{d} \]
     \[ V_t = V_{Ox} + \Psi_S + \phi_{ms} \quad V_{Ox} = \frac{\sqrt{2q\epsilon_s N_a \Psi_S}}{C_{Ox}} \]
 
-
+    \subsection{Frequency dependance}
+    Cutoff frequency $f_T$
+    \begin{align*} f_T &= \frac{g_M}{2\pi(C_{gs}+C_{gd})}
+    = \frac{\mu_n C_{OX} Z(V_{gs} - V_T ) /L }{2\pi\cdot 2C_{OX}ZL/3}  \\
+    &= \frac{3}{4}\frac{\mu_n}{\pi}\frac{(V_{gs}-V_T)}{L^2}
+    \end{align*}
     % ---------------------------------------------------------------------------
     % \section{}
     % ---------------------------------------------------------------------------
