@@ -39,3 +39,9 @@ To update the download links above, the `v0.0` tag has to be overwritten by runn
 git tag -f v0.0
 git push -f origin v0.0
 ```
+
+## Build
+```bash
+brew cask install mactex-no-gui
+make
+```
