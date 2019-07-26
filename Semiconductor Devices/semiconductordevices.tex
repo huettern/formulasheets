@@ -10,7 +10,7 @@
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
 \usepackage{lastpage}
-\usepackage{hyperref}
+% \usepackage{hyperref}
 % Include general settings and customized commands
 \input{settings/general}
 \input{settings/commands}
@@ -25,7 +25,7 @@
 % Uncomment this line to make formulasheet ultra compact
 % This removes
 % - list of variables
-\newcommand{\makeultracompact}{irrelevant}
+% \newcommand{\makeultracompact}{irrelevant}
 
 % Make stuff ultra compact if so desired
 \ifdefined\makeultracompact
@@ -370,7 +370,7 @@
     \textbf{Intrinsic Band Gap} \\
       \begin{align*}
         E_g &= -kT\ln\frac{n_i^2}{N_c N_v} &
-        n_i^2 &= N_v N_v e^{-\frac{E_g}{kT}} \\
+        n_i^2 &= N_c N_v e^{-\frac{E_g}{kT}} \\
         n_0 &= N_ce^{\frac{-(E_c-E_F)}{kT}} &
         p_0 &= N_ve^{\frac{-(E_F-E_v)}{kT}}
       \end{align*}
