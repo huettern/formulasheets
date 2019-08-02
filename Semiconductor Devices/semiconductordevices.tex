@@ -551,7 +551,7 @@
     Total current = drift + diffusion current = electron + hole current.
     \begin{align*}
       &\text{Electrons:} & J_n &= nq\mu\vec{E}+qD_n\Abl{n}{x} \\
-      &\text{Holes:} & J_p &= pq\mu\vec{E}-qD_p\Abl{p}{x} \\
+      &\text{Holes:} & J_p &= \underbrace{pq\mu\vec{E}}_\text{drift}\underbrace{-qD_p\Abl{p}{x}}_\text{diffusion} \\
     \end{align*}
 
   % ---------------------------------------------------------------------------
@@ -869,7 +869,11 @@
     \[ \gamma = \frac{I_{E,p}}{I_{E,p} + I_{E,n}} \quad \alpha_T = \frac{I_{C,p}}{I_{E,p}} \]
 
     Common emitter current gain in forward- and reverse-active mode:
-    \[\beta_F = \frac{I_C}{I_B} = \frac{D_BN_EW_E}{D_EN_BW_B} \quad \beta_R = \frac{I_E}{I_B} = \frac{D_BN_CW_C}{D_CN_BW_B}\]
+    \[\beta_F = \frac{I_C}{I_B} = \frac{D_BN_EW_E}{D_EN_BW_B}\frac{A_C}{A_E}\]
+    \[\beta_R = \frac{I_E}{I_B} = \frac{D_BN_CW_C}{D_CN_BW_B}\frac{A_E}{A_C}\]
+    
+    Common base current gain:
+    \[\alpha = \frac{\beta}{\beta + 1}
 
 
     \subsection{Doping}
@@ -924,6 +928,12 @@
       \begin{tabular}[h]{l l}
         $\phi$   & Work function \\
         $\altchi$    & Electron affinity \\
+        $\epsilon_{Ox}$    & $=\epsilon_{0}\epsilon_{r,Ox}$ \\
+        $\epsilon_{s}$     &  $=\epsilon_{0}\epsilon_{r,s}$ \\
+        $\Psi_B$  & Bulk potential \\
+        $\Psi_S$    & Si surface potential  \\
+        $\phi_{ms}$    & Work function difference $\phi_m-\phi_s$  \\
+        $C_0$  & Oxide capacitance \\
       \end{tabular}
     \fi
 
@@ -977,6 +987,7 @@
     Work function difference $\phi_{ms}$ from table.
     \[ \phi_{ms} = \phi_m - \left(\altchi_S + \frac{E_g}{2q} + \frac{E_i-E_F}{q}\right)  \quad C_{Ox} = \frac{\epsilon_{Ox}}{d} \]
     \[ V_t = V_{Ox} + \Psi_S + \phi_{ms} \quad V_{Ox} = \frac{\sqrt{2q\epsilon_s N_a \Psi_S}}{C_{Ox}} \]
+    $\Psi_S=2\Psi_B$ if inversion mode.
 
     \subsection{Frequency dependance}
     Cutoff frequency $f_T$
@@ -984,6 +995,12 @@
     = \frac{\mu_n C_{OX} Z(V_{gs} - V_T ) /L }{2\pi\cdot 2C_{OX}ZL/3}  \\
     &= \frac{3}{4}\frac{\mu_n}{\pi}\frac{(V_{gs}-V_T)}{L^2}
     \end{align*}
+    
+    \subsection{C-V Characteristics}
+    \[\frac{C}{C_0} = \frac{1}{\sqrt{1+\frac{2\epsilon_{Ox}^2V}{qN_a\epslion_s d^2}}} \quad C_0 = C_{Ox}\]
+    
+    \subsection{Flatband}
+    
     % ---------------------------------------------------------------------------
     % \section{}
     % ---------------------------------------------------------------------------
