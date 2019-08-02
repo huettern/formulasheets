@@ -26,6 +26,7 @@
 % This removes
 % - list of variables
 % \newcommand{\makeultracompact}{irrelevant}
+\let\makeultracompact\undefined
 
 % Make stuff ultra compact if so desired
 \ifdefined\makeultracompact
@@ -65,6 +66,12 @@
 	Please report errors to \href{mailto:huettern@student.ethz.ch}{huettern@student.ethz.ch} such that others can benefit as well.\\[6pt]	
   The upstream repository can be found at \href{https://github.com/noah95/formulasheets}{https://github.com/noah95/formulasheets}
 	\vfill\null
+  \columnbreak
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \tableofcontents
+  \vfill\null
+  %\columnbreak
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 	\pagebreak
   \maketitle 
   \setcounter{page}{1}
@@ -712,13 +719,14 @@
     \begin{align*}
       D_i &= \frac{kT}{q}\mu_i = \frac{L_i^2}{\tau_i} & L_i&=\sqrt{D_i\tau_i} & &i\in\{n,p\}\\
     \end{align*}
+    \cgraphic{1}{img/bjtcurrent.png}
 
     \subsubsection{Short diode}
     For a short diode $L_p,L_n$ become $W_d, W_a$ respecively if $W_{a,d} \ll L_{n,p}$.
     \begin{align*}
       J_s &= \left[ \frac{qD_pp_{n0}}{W_d} + \frac{qD_nn_{p0}}{W_a} \right] \\
     \end{align*}
-
+    \cgraphic{1}{img/bjtcurrentshort.png}
 
     \subsection{One sided junction}
     If one side of a junction is much more doped than the other:
@@ -873,7 +881,7 @@
     \[\beta_R = \frac{I_E}{I_B} = \frac{D_BN_CW_C}{D_CN_BW_B}\frac{A_E}{A_C}\]
     
     Common base current gain:
-    \[\alpha = \frac{\beta}{\beta + 1}
+    \[\alpha = \frac{\beta}{\beta + 1} \]
 
 
     \subsection{Doping}
@@ -997,9 +1005,23 @@
     \end{align*}
     
     \subsection{C-V Characteristics}
+    \subsubsection{Low gate voltage}
+    Accumulation: Only oxide thickness contributes to gate capacitance.
+    \subsubsection{Medium gate voltage}
+    Depletion: Attracted minority carriers widen the capacitor plates in a sense that the conducting bulk is further away - capacitance decreases.
+    \subsubsection{High gate voltage}
+    Inversion: At low $f$ a conducting channel is formed and the capacitor plates are closer together meaning higher capacitance.
+    At high $f$ the charges in bulk have no time to recombine and the capacitor plates do not move closer resulting in lower capacitance.
+
+    \cgraphic{0.9}{img/moscv.png}
     \[\frac{C}{C_0} = \frac{1}{\sqrt{1+\frac{2\epsilon_{Ox}^2V}{qN_a\epslion_s d^2}}} \quad C_0 = C_{Ox}\]
     
     \subsection{Flatband}
+    Flatband condition is met if fermi level through device is constant, this is the case at equilibrium.
+    The applied voltage is composed of the oxide portential $V_{Ox}$, the silicon surface potential $\Psi_s$ and 
+    the metal-silicon work function difference $\phi_{ms}$.
+    \cgraphic{0.9}{img/mosflatband.png}
+    
     
     % ---------------------------------------------------------------------------
     % \section{}
