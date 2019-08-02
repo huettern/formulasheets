@@ -19,7 +19,7 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 [comnet-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v2.0.1/ComNet_summary.pdf.svg
 
 [semi]: https://github.com/noah95/formulasheets/releases/download/v2.1.1/semiconductordevices.pdf
-[semi-ex]: https://github.com/noah95/formulasheets/releases/download/v2.1.1/semiconductordevices-extended.pdf
+[semi-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v2.1.1/semiconductordevices.pdf.svg
 
 ### Working
 | Name          | Status | Download      | Statistics |
