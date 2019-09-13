@@ -10,6 +10,9 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 | Analysis III - PDE | Finished | [link][an3] | ![][an3-badge] |
 | Communication Networks | Finished | [link][comnet] | ![][comnet-badge] |
 | Semiconductor Devices | Finished | [link][semi] | ![][semi-badge] |
+| Electrodynamics (handwritten) | Finished | [link][em] | ![][em-badge] |
+| Numerische Methoden (handwritten) | Finished | [link][num] | ![][num-badge] |
+| Wahrscheinlichkeitstheorie und Statistik (handwritten) | Finished | [link][wus] | ![][wus-badge] |
 
 [le]: https://github.com/noah95/formulasheets/releases/download/v1.0/leistungselektronik.pdf
 [le-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/leistungselektronik.pdf.svg
@@ -20,6 +23,15 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 
 [semi]: https://github.com/noah95/formulasheets/releases/download/v2.1.1/semiconductordevices.pdf
 [semi-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v2.1.1/semiconductordevices.pdf.svg
+
+[em]: https://github.com/noah95/formulasheets/releases/download/v2.1.2/em_fosa_huetter.pdf
+[em-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v2.1.2/em_fosa_huetter.pdf.svg
+
+[num]: https://github.com/noah95/formulasheets/releases/download/v2.1.2/num_fosa_huetter.pdf
+[num-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v2.1.2/num_fosa_huetter.pdf.svg
+
+[wus]: https://github.com/noah95/formulasheets/releases/download/v2.1.2/wus_fosa_huetter.pdf
+[wus-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v2.1.2/wus_fosa_huetter.pdf.svg
 
 ### Working
 | Name          | Status | Download      | Statistics |
