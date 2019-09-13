@@ -24,9 +24,6 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 ### Working
 | Name          | Status | Download      | Statistics |
 | ------------- |--------|---------------|------------|
-| Electrodynamics | stall | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/electrodynamics.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/electrodynamics.pdf.svg) |
-| Introduction to Machine Learning | stall | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/IntroToML_summary.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/IntroToML_summary.pdf.svg) |
-| Numerische Methoden | stall | [link](https://github.com/noah95/formulasheets/releases/download/v0.0/Numerik_summary.pdf) | ![](https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/Numerik_summary.pdf.svg) |
 
 ## Build documentation
 
