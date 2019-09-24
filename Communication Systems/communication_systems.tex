@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-09-24 15:05:30
+% @Last Modified time: 2019-09-24 17:19:12
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -194,7 +194,7 @@
   Stationary random process $X(t)$ is input to a linear timeinvariant (LTI) filter with impulse response $h(t)$.
   \begin{empheq}[box=\eqbox]{equation*}
     \begin{gathered}
-      Y(t) = \intinf h(\tau_1)X(t-\tau_1)\dtau_1
+      Y(t) = \intinf h(\tau_1)X(t-\tau_1)\dtau_1 \\ S_Y(f) = \abs{H(f)}^2S_X(f)
     \end{gathered}
   \end{empheq}
 
@@ -206,7 +206,7 @@
 
   Can interchange expectation and integration if stable $\intinf\abs{h(t)}\dt<\infty$ and finite mean $\mu_X<\infty$
   \begin{empheq}[box=\eqbox]{gather*}
-      \mu_Y = \intinf h(\tau_1)\E[X(t-\tau_1)]\dtau_1 \\ = \mu_X \intinf h(\tau_1) \dtau_1
+      \mu_Y = \intinf h(\tau_1)\E[X(t-\tau_1)]\dtau_1 = \mu_X \intinf h(\tau_1) \dtau_1
   \end{empheq}
 
   Autocorrelation:
@@ -223,8 +223,46 @@
   (WS) stationary input process $X(t)$ to a stable LTI filter $\implies$ (WS) stationary output process $Y(t)$.
 
   \subsection{Power spectral density}
+  \begin{empheq}[box=\eqbox]{equation*}
+    S_{X}(f) = \mathscr{F}[R_{X}(\tau)](f) = \intinf R_{X}(\tau)e^{-j2\pi f\tau}\dtau 
+        \end{empheq}
+  \setlength{\leftmargini}{0.5cm} 
+  \begin{itemize}
+    \item $S_{X}(0) = \int_{-\infty}^{\infty} R_{X}(\tau)d\tau $
+    \item $E[X^{2}(t)] = R_{X}(0) =  \int_{-\infty}^{\infty} S_{X}(f)df $
+    \item $S_{X}(f) \ge 0$ $\forall f$
+    \item $S_{X}(f)  = S_{X}(-f)$ $\forall f$, iff $X(t) \in \mathbb{R}$
+  \end{itemize}
+  \setlength{\leftmargini}{0pt} 
+
   \subsection{Gaussian process}
+  Consider the r.v. $Y=\int_0^Tg(t)X(t)\dt$ where $g(t)$ is in an arbitraty function. If $Y$ is gaussian distributed, then the process $X(t)$  is a \textit{Gaussian process}
+  \begin{itemize}
+    \item A filtered Gaussian process remains a Gaussian process
+    \item If $X(t)$ is a GP, the arbitrary set of r.v. $\vec{X} = [X(t_1),\dots,
+    X(t_n)]^T$ is jointly gaussian distributed for any $n$
+    \item The joint cdf is of these r.v. is completely determined by the \textbf{means} $\mu_X(t_i) = \E[X(t_i)]$ and \textbf{covariances} $C_X(t_k,t_i)=\E[(X(t_k)-\mu_X(t_k))(X(t_i)-\mu_X(t_i))]$
+  \end{itemize}
+
+  Multivariative Guass distribution:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      f(x) = \frac{\exp\left(-\frac{1}{2} (\vec{x}-\vec{m}_{x})^{T}\underline{\Sigma}^{-1} (\vec{x}-\vec{m}_{x}) \right)}{(2\pi)^{\frac{n}{2}}\det(\underline{\Sigma})^{\frac{1}{2}}}\\
+      \underline{\Sigma} := 
+      \begin{bmatrix} 
+        \Cov(X_{1},X_{1})&...&\Cov(X_{1},X_{n})\\
+        \vdotswithin{\ldots} & \vdotswithin{\ldots} & \vdotswithin{\ldots}\\
+        \Cov(X_{n},X_{1})&...&\Cov(X_{n},X_{n})
+      \end{bmatrix}
+          \end{gathered}
+  \end{empheq}
+
   \subsection{Noise}
+  White noise is defined by its autocorrelation.
+  \begin{empheq}[box=\eqbox]{align*}
+      R_W(\tau) &= \frac{N_0}{2}\delta(t) & S_W(f) =  \frac{N_0}{2}
+  \end{empheq}
+
 
 \end{multicols*}
 
