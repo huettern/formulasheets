@@ -1,0 +1,87 @@
+
+
+% Communication Systems D-ITET
+% ===========================================================================
+% @Author: Noah Huetter
+% @Date:   2019-09-24 17:26:28
+% @Last Modified by:   noah
+% @Last Modified time: 2019-09-24 10:30:03
+% ---------------------------------------------------------------------------
+
+\documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
+\usepackage{lastpage}
+\usepackage{hyperref}
+% Include general settings and customized commands
+\input{settings/general}
+\input{settings/commands}
+
+% \bibliography{semiconductordevices}
+% \bibliographystyle{ieeetr}
+
+%change page style for header
+\pagestyle{fancy}
+\footskip 20pt
+
+% Uncomment this line to make formulasheet ultra compact
+% This removes
+% - list of variables
+% \newcommand{\makeultracompact}{irrelevant}
+\let\makeultracompact\undefined
+
+% Make stuff ultra compact if so desired
+\ifdefined\makeultracompact
+  \setlength{\parskip}{0pt}
+  \setlength{\abovedisplayskip}{0pt}
+  \setlength{\belowdisplayskip}{0pt}
+  \setlength{\abovedisplayshortskip}{0pt}
+  \setlength{\belowdisplayshortskip}{0pt}
+\else
+\fi
+ 
+% -----------------------------------------------------------------------
+\IfFileExists{../build/revision.tex}{
+  \input{../build/revision.tex}
+  \rhead{Compiled: \compiledate \hspace{1em} on: \hostname \hspace{1em} git-sha: \revision \hspace{1em} Noah Huetter}
+}{\rhead{Noah Huetter}}
+
+\ifdefined\makeultracompact
+  \lhead{ETH Communication Systems 2019 \hspace{1em}compact version}
+\else
+  \lhead{ETH Communication Systems 2019}
+\fi
+\chead{\thepage}
+\cfoot{}
+\headheight 17pt \headsep 10pt
+\title{ETH Communication Systems 2019}
+\author{Noah Huetter}
+
+\date{\today}
+\begin{document}
+
+\setcounter{page}{0}
+\setcounter{secnumdepth}{2} %no enumeration of sections
+\begin{multicols*}{4}
+	\section*{Disclaimer}
+	This summary is part of the lecture ``ETH Communication Systems'' (227-0121-00) by Prof. Dr. Armin Wittneben (FS19). It is based on the lecture. \\[6pt]
+	Please report errors to \href{mailto:huettern@student.ethz.ch}{huettern@student.ethz.ch} such that others can benefit as well.\\[6pt]	
+  The upstream repository can be found at \href{https://github.com/noah95/formulasheets}{https://github.com/noah95/formulasheets}
+	\vfill\null
+  \columnbreak
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \tableofcontents
+  \vfill\null
+  %\columnbreak
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\pagebreak
+  \maketitle 
+  \setcounter{page}{1}
+  \thispagestyle{fancy}
+
+  % ---------------------------------------------------------------------------
+  \section{Introduction}
+  % ---------------------------------------------------------------------------
+
+\end{multicols*}
+
+\setcounter{secnumdepth}{2}
+\end{document}
