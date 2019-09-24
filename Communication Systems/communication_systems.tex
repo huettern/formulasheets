@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-09-24 10:30:03
+% @Last Modified time: 2019-09-24 11:52:01
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -78,8 +78,145 @@
   \thispagestyle{fancy}
 
   % ---------------------------------------------------------------------------
-  \section{Introduction}
+  \section{Random Processes}
   % ---------------------------------------------------------------------------
+  % What is
+  \cgraphic{0.8}{img/rp.png}
+  A random process $X(t)$:
+  \begin{itemize}
+    \item is a sample space composed of (real valued) time functions: 
+      $\{x_1(t), x_2(t), \dots, x_n(t)\}$
+    \item observed at a fixed $t_k$ is a random variable 
+      $X(t_k) = \{x_1(t_k), x_2(t_k), \dots, x_n(t_k)\}$
+    \item The time function $x_s(t)$ is a \textbf{realization} (sample function)
+    \item $x_s(t_k)$ observed at $t_k$ is a real number
+    \item A stochastic process consists of infinitely many random variables, 
+      one for each $t_k$, with the CDF $F_{\{X(t_k)\}}(x) = P(X(t_k)\leq x)$
+  \end{itemize}
+
+
+  \subsection{Stationary processes}
+  A process is \textbf{Strict Sense Stationary (SSS)} if:
+  \begin{itemize}
+    \item $X(t)$ and $X(t+\tau)$ have same satistics $\forall \tau$
+    \item The joint distribution function of a set of r.v. observed at times
+      $t_1,\dots,t_n$ is invariant to a time-shift.
+  \end{itemize}
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \forall n,\tau,t_1,\dots,t_n: \\
+      F_{\{X(t_1+\tau),X(t_2+\tau),\dots,X(t_n+\tau)\}}(x_1,x_2,\dots,x_n) = \\
+        F_{\{X(t_1),X(t_2),\dots,X(t_n)\}}(x_1,x_2,\dots,x_n)
+    \end{gathered}
+  \end{empheq}
+
+  Properties:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \forall t_k : \mu_X(t_k) = \mu_X \\
+      \forall t_1, t_2 : R_X(t_1, t_2) = R_X(t_2-t_1) = R_X(\tau) \\
+      C_X(t_1, t_2) = \E[(X(t_1)-\mu_X)(X(t_2)-\mu_X)] \\ = R_X(t_2-t_1) - \mu_X^2 \\
+    \end{gathered}
+  \end{empheq}
+  
+  A process is \textbf{Wide Sense Stationary (WSS)} if a r.p. has a \textit{constant} mean and the autocorrelation depends only on the \textit{time difference}.
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \forall t : \mu_X(t) = \mu_X \\
+      \forall t_1, t_2 : R_X(t_1, t_2) = R_X(t_2-t_1) = R_X(\tau)
+    \end{gathered}
+  \end{empheq}
+
+  Strict sense stationary $\implies$ wide sense stationary.
+
+
+  \subsection{Mean and correlation}
+  Defined as expectation of r.v. $X(t_k)$ by observing process at time $t_k$.
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \mu_X(t_k) = \E[X(t_k)] = \intinf x f_{\{X(t_k)\}}(x) \dx \\
+    \end{gathered}
+  \end{empheq}
+
+  Autocorrelation function $R_X$ and autovariance function $C_X$ of a random process:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      R_{X}(t_{1},t_{2}) = \E[X(t_{1})X(t_{2})] \triangleq \\
+      \intinf\intinf x_{1}x_{2}f_{X_{1},X_{2}}(x_{1}, x_{2})\dx_{1}\dx_{2}\\
+      R_{XY}(x,y) = \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}xyf_{X,Y}(x, y)dxdy\\
+      C_{X}(t_{1},t_{2}) = R_{X}(t_{2}-t_{1}) - m_{X}^{2}
+    \end{gathered}
+  \end{empheq}
+
+  \begin{itemize}
+    \item The mean and autocorrelation function determine the autocovariance function
+    \item The mean and autocorrelation function only describe the first two moments of the process
+  \end{itemize}
+
+  Properties of the autocorrelation function:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{align*}
+      \E[X^2(t)] &= R_X(0) & R_X(\tau) &= R_X(-\tau) \\
+      \abs{R_X(\tau)} &\leq R_X(0)
+    \end{align*}
+  \end{empheq}
+  \cgraphic{0.8}{img/autocorrelation.png}
+  
+  The Cross-correlation function $R_{XY}(t,u)$ of two random processes:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      R_{XY}(t,u) = \E[X(t)Y(u)] = \\
+      \intinf xy\cdot f_{X,Y}(x, y) \dx \dy\\
+    \end{gathered}
+  \end{empheq}
+  \begin{itemize}
+    \item Stationariy menas $R_{XY}(t,u) = R_{XY}(\tau)$ for $\tau=t-u$
+    \item Not generally an even function of $t$
+    \item Not necessarily a maximum at $\tau=0$
+    \item Symmetry: $R_{XY}(\tau) = R_{XY}(-\tau)$
+  \end{itemize}
+
+  \subsection{Ergodicity}
+  Definition: A random process is \textit{ergodic} in the mean if
+  \begin{itemize}
+    \item Time average approaches ensemble averages for increasing $T$
+    \item The variance of the time average approaches zero for incr. $T$
+  \end{itemize}
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{align*}
+      \lim_{T\to\infty} \mu_X(T) &= \mu_X & \lim_{T\to\infty} \Var[\mu_X(T)] &= 0
+    \end{align*}
+  \end{empheq}
+
+  Or in other words: The same behavior averaged over time as averaged over the space of all the system's states.
+
+  \subsection{Filtered processes}
+  Stationary random process $X(t)$ is input to a linear timeinvariant (LTI) filter with impulse response $h(t)$.
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      Y(t) = \intinf h(\tau_1)X(t-\tau_1)\dtau_1
+    \end{gathered}
+  \end{empheq}
+
+  Find mean and autocorrelation of $Y(t)$:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \mu_X = \E[X(t)] \quad R_X(\tau) = \E[X(t)X(t-\tau)] \\
+      \mu_Y = \E[Y(t)] = \E[\intinf h(\tau_1)X(t-\tau_1)\dtau_1]
+    \end{gathered}
+  \end{empheq}
+
+  Can interchange expectation and integration if stable $\intinf\abs{h(t)}\dt<\infty$ and finite mean $\mu_X<\infty$
+
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \mu_Y = \intinf h(\tau_1)\E[X(t-\tau_1)]\dtau_1 \\ = \mu_X \intinf h(\tau_1) \dtau_1
+    \end{gathered}
+  \end{empheq}
+
+  \subsection{Power spectral density}
+  \subsection{Gaussian process}
+  \subsection{Noise}
 
 \end{multicols*}
 

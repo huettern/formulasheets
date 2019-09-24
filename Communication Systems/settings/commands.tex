@@ -83,30 +83,30 @@
 	\newcommand{\dintab}{\displaystyle{\int^b_a}}
 	\newcommand{\dintpi}{\displaystyle{\int^{\pi}_{-\pi}}}
 	\newcommand{\dintzpi}{\displaystyle{\int^{2\pi}_{\mbox{-}2\pi}}}
-	\newcommand{\dA}{\hspace{4pt}\mathrm{d}A}
-	\newcommand{\dx}{\hspace{4pt}\mathrm{d}x}
-	\newcommand{\dy}{\hspace{4pt}\mathrm{d}y}
-	\newcommand{\dz}{\hspace{4pt}\mathrm{d}z}
-	\newcommand{\dr}{\hspace{4pt}\mathrm{d}r}
-	\newcommand{\ds}{\hspace{4pt}\mathrm{d}s}
-	\newcommand{\dS}{\hspace{4pt}\mathrm{d}S}
-	\newcommand{\dt}{\hspace{4pt}\mathrm{d}t}
-	\newcommand{\dm}{\hspace{4pt}\mathrm{d}m}
-	\newcommand{\dk}{\hspace{4pt}\mathrm{d}k}
-	\newcommand{\dl}{\hspace{4pt}\mathrm{d}l}
-	\newcommand{\du}{\hspace{4pt}\mathrm{d}u}
-	\newcommand{\dv}{\hspace{4pt}\mathrm{d}v}
-	\newcommand{\dV}{\hspace{4pt}\mathrm{d}V}
-	\newcommand{\dphi}{\hspace{4pt}\mathrm{d}\varphi}
-	\newcommand{\domega}{\hspace{4pt}\mathrm{d}\omega}
-	\newcommand{\dvarsigma}{\hspace{4pt}\mathrm{d}\varsigma}
-	\newcommand{\dtau}{\hspace{4pt}\mathrm{d}\tau}
-	\newcommand{\dtheta}{\hspace{4pt}\mathrm{d}\vartheta}
-	\newcommand{\dmu}{\hspace{4pt}\mathrm{d}\mu}
-	\newcommand{\dxi}{\hspace{4pt}\mathrm{d}\xi}
-	\newcommand{\deta}{\hspace{4pt}\mathrm{d}\eta}
-	\newcommand{\dvecl}{\hspace{4pt}\mathrm{d}\vec{l}}
-	\newcommand{\dvecS}{\hspace{4pt}\mathrm{d}\vec{S}}
+	\newcommand{\dA}{\hspace{1pt}\mathrm{d}A}
+	\newcommand{\dx}{\hspace{1pt}\mathrm{d}x}
+	\newcommand{\dy}{\hspace{1pt}\mathrm{d}y}
+	\newcommand{\dz}{\hspace{1pt}\mathrm{d}z}
+	\newcommand{\dr}{\hspace{1pt}\mathrm{d}r}
+	\newcommand{\ds}{\hspace{1pt}\mathrm{d}s}
+	\newcommand{\dS}{\hspace{1pt}\mathrm{d}S}
+	\newcommand{\dt}{\hspace{1pt}\mathrm{d}t}
+	\newcommand{\dm}{\hspace{1pt}\mathrm{d}m}
+	\newcommand{\dk}{\hspace{1pt}\mathrm{d}k}
+	\newcommand{\dl}{\hspace{1pt}\mathrm{d}l}
+	\newcommand{\du}{\hspace{1pt}\mathrm{d}u}
+	\newcommand{\dv}{\hspace{1pt}\mathrm{d}v}
+	\newcommand{\dV}{\hspace{1pt}\mathrm{d}V}
+	\newcommand{\dphi}{\hspace{1pt}\mathrm{d}\varphi}
+	\newcommand{\domega}{\hspace{1pt}\mathrm{d}\omega}
+	\newcommand{\dvarsigma}{\hspace{1pt}\mathrm{d}\varsigma}
+	\newcommand{\dtau}{\hspace{1pt}\mathrm{d}\tau}
+	\newcommand{\dtheta}{\hspace{1pt}\mathrm{d}\vartheta}
+	\newcommand{\dmu}{\hspace{1pt}\mathrm{d}\mu}
+	\newcommand{\dxi}{\hspace{1pt}\mathrm{d}\xi}
+	\newcommand{\deta}{\hspace{1pt}\mathrm{d}\eta}
+	\newcommand{\dvecl}{\hspace{1pt}\mathrm{d}\vec{l}}
+	\newcommand{\dvecS}{\hspace{1pt}\mathrm{d}\vec{S}}
 
 %..BEAUTY
 \newcommand{\altchi}{\raisebox{2pt}{$\chi$}}
@@ -149,6 +149,9 @@
     \newcommand{\attention}{\raisebox{-1pt}{{\makebox[1.6em][c]{\makebox[0pt][c]{\raisebox{.13em}{\small!}}\makebox[0pt][c]{\color{red}\Large$\bigtriangleup$}}}}}
     \DeclareMathOperator{\meq}{\stackrel{!}{=}}
     
+% Variance and expected value
+  \def\Var{{\textrm{Var}}\,}
+  \def\E{{\textrm{E}}\,}
     
 % section color box
 \setkomafont{section}{\mysection}
@@ -188,7 +191,9 @@
    \colorbox{green!100}{$\displaystyle #1$}}  
 
 % equation box        
-\newcommand{\eqbox}[1]{\setlength{\fboxrule}{1mm}\fcolorbox{\StyleColor}{white}{\hspace{0.5em}$\displaystyle#1$\hspace{0.5em}}}
+% \newcommand{\eqbox}[1]{\setlength{\fboxrule}{1mm}\fcolorbox{\StyleColor}{white}{\hspace{0.5em}$\displaystyle#1$\hspace{0.5em}}}
+\definecolor{orange1}{RGB}{252,234,212}
+\newcommand{\eqbox}[1]{\fcolorbox{black}{orange1}{\parbox{190pt}{\begin{center}\hspace{0.2em}#1\hspace{1em}\end{center}}}}
 
 %center equationbox
 \newcommand{\ceqbox}[1]{\vspace*{4pt} \begin{center}\eqbox{#1}\end{center}\vspace*{4pt}}
