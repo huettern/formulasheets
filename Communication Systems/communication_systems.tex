@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-09-24 11:52:01
+% @Last Modified time: 2019-09-24 15:05:30
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -199,20 +199,28 @@
   \end{empheq}
 
   Find mean and autocorrelation of $Y(t)$:
-  \begin{empheq}[box=\eqbox]{equation*}
-    \begin{gathered}
+  \begin{empheq}{gather*}
       \mu_X = \E[X(t)] \quad R_X(\tau) = \E[X(t)X(t-\tau)] \\
-      \mu_Y = \E[Y(t)] = \E[\intinf h(\tau_1)X(t-\tau_1)\dtau_1]
-    \end{gathered}
+      \mu_Y = \E[Y(t)] = \E\left[\intinf h(\tau_1)X(t-\tau_1)\dtau_1\right]
   \end{empheq}
 
   Can interchange expectation and integration if stable $\intinf\abs{h(t)}\dt<\infty$ and finite mean $\mu_X<\infty$
-
-  \begin{empheq}[box=\eqbox]{equation*}
-    \begin{gathered}
+  \begin{empheq}[box=\eqbox]{gather*}
       \mu_Y = \intinf h(\tau_1)\E[X(t-\tau_1)]\dtau_1 \\ = \mu_X \intinf h(\tau_1) \dtau_1
-    \end{gathered}
   \end{empheq}
+
+  Autocorrelation:
+  \begin{empheq}{gather*}
+      R_Y(t,u) = \E[Y(t)Y(u)] = \\ \E\left[\intinf h(\tau_1)X(t-\tau_1)\dtau_1
+      \intinf h(\tau_2)X(u-\tau_2)\dtau_2\right] \\
+  \end{empheq}
+
+  Additional condition for interchange is finite mean-square value: $R_X(0) = \E[X^2(t)]<\infty$
+  \begin{empheq}[box=\eqbox]{gather*}
+      R_Y(\tau) = \intinf\intinf h(\tau_1)h(\tau_2)R_X(\tau-\tau_1+\tau_2)\dtau_1\dtau_2
+  \end{empheq}
+
+  (WS) stationary input process $X(t)$ to a stable LTI filter $\implies$ (WS) stationary output process $Y(t)$.
 
   \subsection{Power spectral density}
   \subsection{Gaussian process}
