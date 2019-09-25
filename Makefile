@@ -7,9 +7,6 @@ all: revision */*.tex
 	cd Analysis\ III\ \-\ PDE && make && cd ..
 	cd Semiconductor\ Devices && make && cd ..
 	cd Communication\ Networks && make && cd ..
-	cd Electrodynamics && make && cd ..
-	cd Introduction\ to\ Machine\ Learning && make && cd ..
-	cd Numerische\ Methoden && make && cd ..
 	cd Communication\ Systems && make && cd
 
 
@@ -31,7 +28,4 @@ clean:
 	cd Analysis\ III\ \-\ PDE && make clean && cd ..
 	cd Semiconductor\ Devices && make clean && cd ..
 	cd Communication\ Networks && make clean && cd ..
-	cd Electrodynamics && make clean && cd ..
-	cd Introduction\ to\ Machine\ Learning && make clean && cd ..
-	cd Numerische\ Methoden && make clean && cd ..
 	cd Communication\ Systems && make clean && cd
