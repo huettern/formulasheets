@@ -36,6 +36,10 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 ### Working
 | Name          | Status | Download      | Statistics |
 | ------------- |--------|---------------|------------|
+| Communication Systems | WIP | [link][comsys] | ![][comsys-badge] |
+
+[comsys]: https://github.com/noah95/formulasheets/releases/download/v0.0/communication_systems.pdf
+[comsys-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/communication_systems.pdf.svg
 
 ## Build documentation
 
