@@ -13,7 +13,7 @@
 %..ZAHLENMENGEN
 	\newcommand{\N}{\mathbb{N}}
 	\newcommand{\Z}{\mathbb{Z}}
-	\newcommand{\Q}{\mathbb{Q}}
+	% \newcommand{\Q}{\mathbb{Q}}
 	\newcommand{\R}{\mathbb{R}}
 	\newcommand{\real}{\R}
 	\newcommand{\C}{\mathbb{C}}
@@ -98,7 +98,8 @@
 	\newcommand{\dv}{\hspace{1pt}\mathrm{d}v}
 	\newcommand{\dV}{\hspace{1pt}\mathrm{d}V}
 	\newcommand{\dphi}{\hspace{1pt}\mathrm{d}\varphi}
-	\newcommand{\domega}{\hspace{1pt}\mathrm{d}\omega}
+  \newcommand{\domega}{\hspace{1pt}\mathrm{d}\omega}
+  \newcommand{\df}{\hspace{1pt}\mathrm{d}f}
 	\newcommand{\dvarsigma}{\hspace{1pt}\mathrm{d}\varsigma}
 	\newcommand{\dtau}{\hspace{1pt}\mathrm{d}\tau}
 	\newcommand{\dtheta}{\hspace{1pt}\mathrm{d}\vartheta}
@@ -107,6 +108,10 @@
 	\newcommand{\deta}{\hspace{1pt}\mathrm{d}\eta}
 	\newcommand{\dvecl}{\hspace{1pt}\mathrm{d}\vec{l}}
 	\newcommand{\dvecS}{\hspace{1pt}\mathrm{d}\vec{S}}
+  \DeclareMathOperator\erf{erf}
+  \DeclareMathOperator\erfc{erfc}
+  \DeclareMathOperator\Q{Q}
+  % \newcommand{\Q}{\mathrm{Q}}
 
 %..BEAUTY
 \newcommand{\altchi}{\raisebox{2pt}{$\chi$}}
@@ -138,6 +143,8 @@
 
 %..FUNCTIONS
     \DeclareMathOperator{\arsinh}{arsinh}
+    \DeclareMathOperator{\sinc}{sinc}
+    \DeclareMathOperator{\rect}{rect}
     \DeclareMathOperator{\arcosh}{arcosh}
     \DeclareMathOperator{\artanh}{artanh}
     \DeclareMathOperator{\arcoth}{arcoth}
@@ -154,6 +161,13 @@
   \def\E{{\textrm{E}}\,}
   \def\det{{\textrm{det}}\,}
   \def\Cov{{\textrm{Cov}}\,}
+
+% Probability
+  \def\P(#1){\Phelper#1|\relax\Pchoice(#1)}
+  \def\Phelper#1|#2\relax{\ifx\relax#2\relax\def\Pchoice{\Pone}\else\def\Pchoice{\Ptwo}\fi}
+  \def\Pone(#1){\Pr\left( #1 \right)}
+  \def\Ptwo(#1|#2){\Pr\left( #1 \mid #2 \right)}
+  \def\Pr{\mathbf{P}}
     
 % section color box
 \setkomafont{section}{\mysection}
@@ -174,11 +188,7 @@
     \normalsize \sffamily\bfseries%
     \setlength{\fboxsep}{0cm}%already boxed
     \colorbox{\StyleColor!20}{%
-        \begin{minipage}{\linewidth}%
-            \vspace*{2pt}%Space before
-             #1
-            \vspace*{-1pt}%Space after
-        \end{minipage}%
+        \parbox{\columnwidth}{#1}%
     }}
 
 % highlighter
@@ -195,7 +205,7 @@
 % equation box        
 % \newcommand{\eqbox}[1]{\setlength{\fboxrule}{1mm}\fcolorbox{\StyleColor}{white}{\hspace{0.5em}$\displaystyle#1$\hspace{0.5em}}}
 \definecolor{orange1}{RGB}{252,234,212}
-\newcommand{\eqbox}[1]{\fcolorbox{black}{orange1}{\parbox{190pt}{\begin{center}\hspace{0.2em}#1\hspace{1em}\end{center}}}}
+\newcommand{\eqbox}[1]{\fcolorbox{black}{orange1}{\parbox{\columnwidth}{\begin{center}#1\end{center}}}}
 
 %center equationbox
 \newcommand{\ceqbox}[1]{\vspace*{4pt} \begin{center}\eqbox{#1}\end{center}\vspace*{4pt}}

@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-09-24 17:19:12
+% @Last Modified time: 2019-09-26 12:18:45
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -15,8 +15,13 @@
 \input{settings/general}
 \input{settings/commands}
 
+% This package makes formulas a bit more compact but less beautiful
+% \usepackage{newtxtext,newtxmath}
+
+
 % \bibliography{semiconductordevices}
 % \bibliographystyle{ieeetr}
+\medmuskip=1mu
 
 %change page style for header
 \pagestyle{fancy}
@@ -261,6 +266,174 @@
   White noise is defined by its autocorrelation.
   \begin{empheq}[box=\eqbox]{align*}
       R_W(\tau) &= \frac{N_0}{2}\delta(t) & S_W(f) =  \frac{N_0}{2}
+  \end{empheq}
+
+  % ---------------------------------------------------------------------------
+  % Week 2
+  \section{Baseband Pulse Transmission}
+  % ---------------------------------------------------------------------------
+  Digital Baseband Pulse Transmission System: Based on the sample $y(t_i)$ 
+  the receiver generates an estimate $\hat{a}_i$ of the amplitude $a_i$ of the
+  transmitted pulse $g(t-iT_b)$.
+  \cgraphic{1}{img/transmissionsystem.png}
+  
+  \subsection{Matched Filter}
+  \cgraphic{0.9}{img/matchedfilter.png}
+  \begin{empheq}{gather*}
+      y(t) = g_0(t) + n(t) = h(t)*g(t) + h(t)*w(t)
+  \end{empheq}
+
+  Maximize \textit{pulse signal-to-noise ratio} $\eta$ at sampling time $t=T$:
+  \begin{empheq}{gather*}
+      \eta = \frac{\abs{g_0(T)}^2}{\E[n^2(t)]} = 
+        \frac{\abs{\intinf H(f)G(f)e^{j2\pi fT}\df}^2}{\frac{N_0}{2}\intinf\abs{H(f)}^2\df}
+  \end{empheq}
+
+  Using Schwarz's inequality:
+  \begin{empheq}[box=\eqbox]{gather*}
+      \eta \leq \frac{2}{N_0}\intinf\abs{G(f)}^2\df
+  \end{empheq}
+
+  The quality sign (optimum) holds if $a(x)\propto b^*(x)$, i.e.
+  \begin{empheq}[box=\eqbox]{gather*}
+      H_{\text{opt}}(f) = k G^*(f)e^{-j2\pi fT} \Rightarrow h_{\text{opt}}(t) = k g(T-t)
+  \end{empheq}
+
+  The impulse response of the optimum filter, except for the scaling factor $k$, 
+  is a time-reversed and delayed version of the input signal $g(t)$.
+
+  The pulse SNR of a machted filter depends only on the ratio of the signal 
+  energy $E$ to the PSD of the white noise at the input filter.
+  \begin{empheq}{gather*}
+      \eta_\text{max} = \frac{2}{N_0}\intinf \abs{G(f)}^2 \df = \frac{2E}{N_0} \\
+      E = \intinf \abs{g(t)}^2\dt = \intinf \abs{G(f)}^2\df
+  \end{empheq}
+
+  \subsection{Error Rate}
+  Discussed for a binary bipolar non-return-to-zero (NRZ) signal with amplitude $A$,
+  bit duration $T_b$.
+  \begin{empheq}{align*}
+      x(t) &= \begin{cases}
+              +A + w(t),& \text{Symbol 1 transmitted} \\
+              -A + w(t),& \text{Symbol 0 transmitted}
+              \end{cases} \\
+      p_{\text{10}} &= \frac{1}{2}\erfc\left(\frac{A+\lambda}{\sqrt{N_0/T_b}}\right) =
+       \Q\left(\sqrt{2}\frac{A+\lambda}{\sqrt{N_0/T_b}}\right) \\
+      % {} &= \text{P}(y>\lambda | \text{symbol 0 was sent})
+      {} &= \P(y>\lambda | \text{symbol 0 was sent})
+  \end{empheq}
+
+  The avg. prob. of symbol error $P_e$:
+  \begin{empheq}[box=\eqbox]{gather*}
+      P_e = \frac{p_0}{2} \erfc\left(\frac{A+\lambda}{\sqrt{N_0/T_b}}\right) + 
+        \frac{p_1}{2} \erfc\left(\frac{A-\lambda}{\sqrt{N_0/T_b}}\right)
+  \end{empheq}
+
+  The error function:
+  \begin{empheq}{align*}
+      \P(n>a) \equiv \Q\left(\frac{a}{\sigma_n}\right) = \frac{1}{2}\erfc\left(\frac{1}{\sqrt{2}}\frac{a}{\sigma_n}\right)
+  \end{empheq}
+
+  Optimum decision threshold $\lambda$ that maximizes $P_e$:
+  \begin{empheq}[box=\eqbox]{gather*}
+      \lambda_\text{opt} = \frac{N_0}{4AT_b}\log\left(\frac{p_0}{p_1}\right)
+  \end{empheq}
+
+  \subsection{Intersymbol Interference}
+  % \cgraphic{0.9}{img/isi.png}
+  Arises when the channel is \textit{dispersive}, the magn. freq. resp. is not constant over the
+  range of interest.
+  \begin{empheq}{align*}
+      s(t) &= \sum_k a_k \cdot g(t-kT_b) \\
+      y(t) &= \mu\sum_k a_k\cdot p(t-kT_b) + n(t) \\
+      t(t_i) &= \underbrace{\mu a_i}_\text{$i$-th bit} + \underbrace{\sum_{\substack{k=-\infty\\ k\neq i}}^{\infty} a_kp(i-k)T_b}_\text{ISI} + n(t_i)
+  \end{empheq}
+
+  \subsection{Nyquist's Criterion}
+  In order to avoid ISI, we require $p(mT_b)=0$ for $m\neq0$ and obtain
+  \begin{empheq}{gather*}
+      \sum_{m=-\infty}^\infty p(mT_b)\delta(t-mT_b) = \delta(t) \laplace P_\delta(f)=1
+  \end{empheq}
+
+  An the nyquist criterion ($R_b = 1/T_b$ symbol rate):
+  \begin{empheq}[box=\eqbox]{gather*}
+      \sum_{n=-\infty}^\infty P(f-nR_b) = T_b
+  \end{empheq}
+
+  In words: The pulse function $P$ in freq. domain copied with spacing $R_b$ must be constant.
+
+  \textbf{Ideal nyquist channel:} The simplest function $P(f)$ that satisfies this is the rectangular function (ideal LPF) with $W=R_b/2$, $R_b$ the nyquist rate.
+  \begin{empheq}{align*}
+      P(f) &= \frac{1}{2W}\rect\left(\frac{f}{2W}\right) = \begin{cases}
+        \frac{1}{2W},&-W\leq f\leq W \\
+        0,& \abs{f} > W
+      \end{cases} \\
+      p(t) &= \sinc(2Wt)
+  \end{empheq}
+
+  \textbf{Raised Cosine Spectrum:} consists of flat portion and sinusodial rolloff.
+  \cgraphic{0.8}{img/raisedcosine.png}
+  \begin{empheq}{align*}
+      P(f) &= \begin{cases}
+        \frac{1}{2W} &  0\leq \abs{f} \leq f_1 \\
+        \frac{1}{4W}\left(1-\sin\left[\frac{\pi(\abs{f}-W)}{2W-2f_1}\right]\right) 
+          & \abs{f}\in[f_1, 2W-f_1]\\
+        0 & \abs{f} > 2W-f_1
+      \end{cases} \\
+      p(t) &= \sinc(2Wt)\left(\frac{\cos(2\pi\alpha Wt)}{1-16\alpha^2W^2t^2}\right)\\
+      \alpha &= 1-\frac{f_1}{W}  \in [0,1] \quad \text{Rollof factor}
+  \end{empheq}
+
+  Bandwidth is larger: $B_T = 2W-f_1 = W(1+\alpha$).
+
+  \subsection{Correlative-Level Coding}
+  Use basepulses which introduce controlled ISI. Same BW but higher $P_e$
+  \cgraphic{1.0}{img/clc.png}
+  \begin{empheq}{align*}
+      H_I(f) &= \begin{cases}
+        2T_b\cos(\pi fT_b)e^{-i\pi fT_b}, & \abs{f}<1/2T_b \\
+        0, \text{else}
+      \end{cases} \\
+      h_I(t) &= \frac{T_b^2\sin(\pi t/T_n)}{\pi t(T_b-t)}
+  \end{empheq}
+
+  Decoding
+  \cgraphic{0.6}{img/clc_dec.png}
+
+  \textbf{Precoding} The decision feedback receiver is prone to propagating error. Using modulo-2 
+  precoding, this can be omitted.
+  \cgraphic{1}{img/precoding_oneline.png}
+  \begin{empheq}[box=\eqbox]{gather*}
+      d_k = b_k \oplus d_{k-1} \Rightarrow b_k = d_k \oplus d_{k-1} \\
+      c_k = \begin{cases}
+        0,&  b_k = 1\\
+        \pm2,&  b_k = 0\\
+      \end{cases}
+  \end{empheq}
+
+  \subsection{Baseband M-ary PAM Transmission}
+  In a M-ary PAM system: M possible amplitude levels. One symbol encodes $\log_2M$ bits. 
+  Thus the signal rate $T$ is related to the bit duration $T_b$ of a binary PAM as:
+  \begin{empheq}{gather*}
+      T = T_b\log_2M
+  \end{empheq}
+  \begin{itemize}
+    \item For same avg. $P_e$, an M-ary PAM requires more Tx power
+    \item If $M \gg 2$ the Tx energy per bit must be increased by $M^2/(3\log_2M)$ 
+      for same $P_e$
+  \end{itemize}
+
+
+  % ---------------------------------------------------------------------------
+  % Basics
+  \vfill\null
+  \pagebreak
+  \section{Math}
+  % ---------------------------------------------------------------------------
+  \begin{empheq}{align*}
+      &\cos(a)\cos(b) + \sin(a)\sin(b) = \cos(a-b) \\
+      &\sinc(x) = \frac{\sin(\pi x)}{\pi x} \\
+      &\sin(x) = \frac{e^{ix}-e^{-ix}}{2i} \quad \cos(x) = \frac{e^{ix}+e^{-ix}}{2}
   \end{empheq}
 
 
