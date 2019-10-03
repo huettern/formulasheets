@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-03 09:26:18
+% @Last Modified time: 2019-10-03 14:59:32
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -462,12 +462,152 @@
       \langle s_i(t), s_k(t) \rangle = \int_0^T s_i(t)s_k(d)\dt = \vect{s}_i^\top \cdot \vect{s}_k \\
       \norm{\vect{s}_i}^2 = \langle s_i(t), s_i(t) \rangle = \int_0^T s_i(t)^2 \\
       \norm{\vect{s}_i-\vect{s}_k}^2 = \sum_{j=1}^N(s_{ij}-s_{kj})^2 = \int_0^T (s_i(t)-s_k(t))^2 \dt \\
-      \cos\theta_{jk} = \frac{\vect{s}_i^\top \cdot\vect{s}_k}{\norm{\vect{s}_i}\cdot\norm{\vect{s}_k}}
+      \cos\theta_{jk} = \frac{\vect{s}_i^\top \cdot\vect{s}_k}{\norm{\vect{s}_i}\cdot\norm{\vect{s}_k}} \quad
+      E_i = \sum_{j=1}^Ns_{ij}^2 = \norm{\vect{s}_i}^2
   \end{empheq}
 
+  \textbf{Gram-Schmidt orthogonalization procedure}: Start with a complete system $s_1(t),\dots,s_M(t)$
+  that generates the signal space. At each step generate a new basis function $\phi_i$.
+  The basis has only $N\leq M$ functions.
+
+  \begin{enumerate}
+    \item Build basis function $\phi_1$ from $s_1$
+    \begin{align*}  
+      \phi_1(t) = \frac{s_1(t)}{\sqrt{\int_0^Ts_1(t)\dt}}
+    \end{align*} 
+    
+    \item Search for a basis function from $s_2(t)$
+    \begin{align*}  
+      s_{21} &= \langle s_2(t), \phi_1(t) \rangle = \int_0^Ts_2(t)\phi_1(t)\dt \\
+      g_2(t) &= s_2(t) - s_{21}\phi_1(t)
+    \end{align*} 
+    If $g_2=0$, $s_2$ is lin. dep. on $\phi_1$ and does not lead to a new basis function.
+    Otherwise:
+    \begin{align*}  
+      \phi_2(t) = \frac{g_2(t)}{\sqrt{\int_0^Tg_2(t)\dt}}
+    \end{align*} 
+    
+    \item Search for a basis function from $s_3(t)$
+    \begin{align*}  
+      s_{31} &= \langle s_3(t), \phi_1(t) \rangle \quad
+      s_{32} = \langle s_3(t), \phi_2(t) \rangle\\
+      g_3(t) &= s_3(t) - s_{31}\phi_1(t) - s_{32}\phi_2(t)
+    \end{align*} 
+    If $g_3=0$, $s_3$ is lin. dep. on $\phi_1$ and $\phi_2$ and does not lead to a new basis function.
+    Otherwise:
+    \begin{align*}  
+      \phi_3(t) = \frac{g_3(t)}{\sqrt{\int_0^Tg_3(t)\dt}}
+    \end{align*} 
+
+    \item Search for a basis function from $s_M(t)$. Project $s_M$ on the already determined
+    basis functions, decompose $S_M$ into its projection and a difference term $g_M$. 
+    If $g_M\neq 0$:
+    \begin{align*}  
+      \phi_N(t) = \frac{g_M(t)}{\sqrt{\int_0^Tg_M(t)\dt}}
+    \end{align*} 
+
+  \end{enumerate}
+
   \subsection{Discrete System Model}
+  The signal vector $\vect{s}$, noise vector $\vect{w}$ and the received signal $\vect{x}$.
+  \begin{empheq}{gather*}
+      \vect{s}_i = \begin{bmatrix} s_{i1} & \hdots & s_{iN} \end{bmatrix}^\top \quad
+      \vect{w}   = \begin{bmatrix} w_{1} & \hdots & w_{N} \end{bmatrix}^\top \\
+      \vect{x}   = \begin{bmatrix} x_{1} & \hdots & x_{N} \end{bmatrix}^\top = \vect{s}_i + \vect{w} \\
+      \E[w_j] = 0 \quad \E[w_j\cdot w_k] = \delta_{jk} \quad \Var(w_j) = \frac{N_0}{2}
+  \end{empheq}
+
+  % \cgraphic{0.4}{img/awgnvectorchannel.png}
+  \textbf{Theorem of Irrelevance} For signal detection with AWGN, only the projection of the noise
+  onto the basis functions of the signal set $\{s_i(t)\}_{i=1}^M$ affect the sufficient statistics
+  of the detection problem. The remainder of the noise is irrelevant.
+  \begin{empheq}[box=\eqbox]{gather*}
+      \mu_{X_j} = \E[X_j] = \E[s_{ij} + W_j] = s_{ij} + \E[W_j] = s_{ij} \\
+      \sigma_{X_j}^2 = \Var(X_j) = \E[(X_j-s_{ij)^2}] = \E[W_j^2] = \frac{N_0}{2} \\
+      W_j = \int_0^TW(t)\phi_j(t)\dt
+  \end{empheq}
+
+  The elements $X_j$ and $X_k$ of the received signal vector have the covariance
+  \begin{empheq}{gather*}
+      \Cov(x_j,x_k) = \E[(x_j-\mu_{x_j})(x_k-\mu_{x_k})] = 0, \quad j\neq k
+  \end{empheq}
+  Thus the $x_j$ are mutually uncorrelated. $\implies$ statistical independence.
+
+  \textbf{Likelihood Function} As the $x_j$ are statistically indep. the conditional PDF of $\vect{x}$
+  given $\vect{s}$ (i.e. symbol $m_i$ sent usign signal $s_i$) follows:
+  \begin{empheq}[box=\eqbox]{gather*}
+      L(\vect{s}_i) \coloneqq f_x(\vect{x}|\vect{s}_i) = f_W(\vect{w} = \vect{x}-\vect{s}_i) = 
+      %= \prod_{j=1}^Nf_W(w_j=x_j-s_{ij})
+      \\
+       = \frac{1}{(\pi N_0)^{N/2}}\exp\left[-\frac{1}{N_0}\sum_{j=1}^N(x_j-s_{ij})^2\right] \\
+       l(\vect{s}_i) = \log L(\vect{s}_i) = -\frac{1}{N_0}\sum_{j=1}^N(x_j-s_{ij})^2 + c
+  \end{empheq}
+  \begin{empheq}{gather*}
+      c = -\frac{N}{2}\log(\pi N_0) \quad i\in \{1,\dots,M\}
+  \end{empheq}
+
+  $L$ likelihood function, $l$ log-likelihood function can be used because the pdf is always nonnegative
+  and monot. incr.
+  The constant $c$ is indep. of hyp. $\vect{s}_i$ and can be discarded for the decision.
+
   \subsection{Detection and Decoding}
-  \subsection{Reobability of Error}
+  Detection problem: Given the observation $\vect{x}$, determine an estimate $\hat{m}$ of the transmitted
+  symbol $m_i$, s.t. the probability of error is minimized.
+  \cgraphic{0.5}{img/nosiecloud.png}
+
+  \begin{empheq}[box=\eqbox]{gather*}
+      P_e(m_i | \vect{x}) = \P(m_i \text{not sent} | \vect{x}) = 1-\P(m_i\text{sent} | \vect{x}) \\
+  \end{empheq}
+  
+  The MAP (Maximum-A-Posteriori) decision rule is optimum in the minimum prob. of error sense. Set $\hat{m}=m_i$ if:
+  \begin{empheq}[box=\eqbox]{gather*}
+    \P(m_i\text{sent}|\vect{x}) \geq \P(m_k\text{sent}|\vect{x}) \quad \forall k\neq i
+  \end{empheq}
+
+  Rephrased using Baye's rule, set $\hat{m}=m_i$ if ($p_k$ a priori prob. of transmitting $m_k$, 
+  $f_x(\vect{x}|m_k)$ cond. pdf of $\vect{x}$ given $m_k$):
+  \begin{empheq}[box=\eqbox]{gather*}
+    \hat{m} = \argmax_{m_k} \frac{p_k\cdot f_x(\vect{x}|m_k)}{f_x(\vect{x})} \quad \forall k\neq i
+  \end{empheq}
+
+  We can drop $f_x(\vect{x})$ as it is indep. of the symbol decision. For equiprobable source symbols,
+  we obtain the ML decision rule: Set $\hat{m}=m_i$ if $l(m_k)$ max. for $k=i$.
+
+  \textbf{Simplfied ML Rule}: $\vect{x}$ lies in region $Z_i$ if
+  \begin{empheq}{gather*}
+      \sum_{j=1}^Nx_js_{kj}-\frac{1}{2}E_k
+  \end{empheq}
+  is maximum for $k=i$.
+
+  \textbf{Correlation receiver}
+  \cgraphic{1.0}{img/crrelationrx.png}
+
+  \subsection{Probability of Error}
+  $\P(A_{ik})=P_2(\vect{s}_i,\vect{s}_k)$ is the pairwise error prob. that observation $\vect{x}$ is closer
+  to $\vect{s}_k$ than to $\vect{s}_i$:
+  \begin{empheq}{gather*}
+    P_2(\vect{s}_i,\vect{s}_k) = \P(\norm{\vect{x}-\vect{s}_k}^2 < \norm{\vect{x}-\vect{s}_i}^2)
+  \end{empheq}
+  
+  With the eucledian distance $d_{14}\coloneqq\norm{\vect{s}_1-\vect{s}_4}$:
+  \begin{empheq}[box=\eqbox]{gather*}
+    P_2(\vect{s}_1,\vect{s}_2) = \P(z<\frac{1}{2}d_{14}) = Q\left(\frac{d_{14}}{\sqrt{2M_0}}\right) \\
+    = \frac{1}{2}\erfc\left(\frac{d_{14}}{2\sqrt{N_0}}\right)
+  \end{empheq}
+
+  \textit{The pairwise probability of error only depends on the Euclidean distance and is e.g. invariant 
+  to rotation and translation of the signal constellation}
+
+  From the union bound we have
+  \begin{empheq}{gather*}
+    P_e(m_i) \leq \sum_{\substack{k=1\\k\neq i}}^MP_2(\vect{s}_i,\vect{s}_k)
+  \end{empheq}
+
+  $P_e$ is the error prob. averaged over all symbols. An upper bound follows as
+  \begin{empheq}{gather*}
+    P_e = \sum_{i=1}^Mp_iP_e(m_i)\leq\frac{1}{2}\sum_{i=1}^M\sum_{\substack{k=1\\k\neq i}}^Mp_i\erfc\left(\frac{d_{ik}}{2\sqrt{N_0}}\right)
+  \end{empheq}
+
 
   % ---------------------------------------------------------------------------
   % Basics
