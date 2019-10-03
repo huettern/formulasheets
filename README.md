@@ -34,12 +34,11 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 [wus-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v2.1.2/wus_fosa_huetter.pdf.svg
 
 ### Working
-| Name          | Status | Download      | Statistics |
-| ------------- |--------|---------------|------------|
-| Communication Systems | WIP | [link][comsys] | ![][comsys-badge] |
+| Name          | Status | Download      |
+| ------------- |--------|---------------|
+| Communication Systems | WIP | [link][comsys] |
 
-[comsys]: https://github.com/noah95/formulasheets/releases/download/v0.0/communication_systems.pdf
-[comsys-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v0.0/communication_systems.pdf.svg
+[comsys]: https://github.com/noah95/formulasheets/raw/build/Communication%20Systems/communication_systems.pdf
 
 ## Build documentation
 
