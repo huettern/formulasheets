@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-03 14:59:32
+% @Last Modified time: 2019-10-03 15:04:03
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -615,11 +615,19 @@
   \pagebreak
   \section{Math}
   % ---------------------------------------------------------------------------
+  \subsection{General}
   \begin{empheq}{align*}
       &\cos(a)\cos(b) + \sin(a)\sin(b) = \cos(a-b) \\
       &\sinc(x) = \frac{\sin(\pi x)}{\pi x} \\
       &\sin(x) = \frac{e^{ix}-e^{-ix}}{2i} \quad \cos(x) = \frac{e^{ix}+e^{-ix}}{2}
   \end{empheq}
+
+  \subsection{Fourier Transform}
+  \begin{empheq}{align*}
+    \rect\left(\frac{t}{T}\right) &\laplace T\sinc(fT) \\
+    \sinc\left(\frac{t}{T}\right) &\laplace T\rect(fT) \\
+  \end{empheq}
+
 
 
 \end{multicols*}
