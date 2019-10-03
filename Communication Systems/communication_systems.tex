@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-03 15:12:55
+% @Last Modified time: 2019-10-03 16:58:45
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -473,7 +473,7 @@
   \begin{enumerate}
     \item Build basis function $\phi_1$ from $s_1$
     \begin{align*}  
-      \phi_1(t) = \frac{s_1(t)}{\sqrt{\int_0^Ts_1(t)\dt}}
+      \phi_1(t) = \frac{s_1(t)}{\sqrt{\int_0^Ts_1^2(t)\dt}}
     \end{align*} 
     
     \item Search for a basis function from $s_2(t)$
@@ -484,7 +484,7 @@
     If $g_2=0$, $s_2$ is lin. dep. on $\phi_1$ and does not lead to a new basis function.
     Otherwise:
     \begin{align*}  
-      \phi_2(t) = \frac{g_2(t)}{\sqrt{\int_0^Tg_2(t)\dt}}
+      \phi_2(t) = \frac{g_2(t)}{\sqrt{\int_0^Tg_2^2(t)\dt}}
     \end{align*} 
     
     \item Search for a basis function from $s_3(t)$
@@ -496,14 +496,14 @@
     If $g_3=0$, $s_3$ is lin. dep. on $\phi_1$ and $\phi_2$ and does not lead to a new basis function.
     Otherwise:
     \begin{align*}  
-      \phi_3(t) = \frac{g_3(t)}{\sqrt{\int_0^Tg_3(t)\dt}}
+      \phi_3(t) = \frac{g_3(t)}{\sqrt{\int_0^Tg_3^2(t)\dt}}
     \end{align*} 
 
     \item Search for a basis function from $s_M(t)$. Project $s_M$ on the already determined
     basis functions, decompose $S_M$ into its projection and a difference term $g_M$. 
     If $g_M\neq 0$:
     \begin{align*}  
-      \phi_N(t) = \frac{g_M(t)}{\sqrt{\int_0^Tg_M(t)\dt}}
+      \phi_N(t) = \frac{g_M(t)}{\sqrt{\int_0^Tg_M^2(t)\dt}}
     \end{align*} 
 
   \end{enumerate}
