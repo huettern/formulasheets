@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-09-26 12:18:45
+% @Last Modified time: 2019-10-03 09:26:18
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -423,6 +423,51 @@
       for same $P_e$
   \end{itemize}
 
+
+  % ---------------------------------------------------------------------------
+  % Week 3
+  \section{Signal Space Analysis}
+  % ---------------------------------------------------------------------------
+  Continuous AWGN (Additive white gaussian noise) channel.
+  \begin{itemize}
+    \item All symbols $m_i$ from source are eually likely $p_i=p(m_i)=\frac{1}{M}$
+    \item Transmitter codes each $m_i$ into a signal $s_i(t)\in \{s_k(t) | 1\leq k \leq M\}$
+    \item Cahnnel adds AWGN $x(t) = s_i(t) + w(t)$ for $0\leq t\leq T$
+    \item The optimal receiver minimizes the avg. pob. of symbol error $P_e$
+  \end{itemize}
+  \begin{empheq}{gather*}
+    P_e = \sum_{i=1}^M p_i \P(\hat{m}\neq m_i | m_i)
+  \end{empheq}
+
+
+  \subsection{Geometric Signal Representation}
+  Let $\{\phi_i(t)\}_{i=1\dots N}$ be a set of othonormal basis fuctions of the signal set
+  $\{s_i(t)\}_{i=1\dots M}$. All signals can be expressed as a finite sum.
+  The coeff. $s_{ij}$ are given by the projection onto $\{\phi_i(t)\}_{i=1\dots N}$.
+
+  The orthonormal functions deine a $N$-dimensional Eucledian space - the signal space.
+  \begin{empheq}[box=\eqbox]{gather*}
+      \int\limits_0^T \phi_i(t)\phi_j(t)\dt = \delta_{ij} = \begin{cases}
+        1,&  i=j\\
+        0,&  -\neq j\\
+      \end{cases} \\
+      s_i(t) = \sum_{j=1}^N s_{ij}\phi_j(t)  \quad
+      s_{ij} = \int_0^T s_i(t)\phi_j(t)\dt\\
+      0\leq t \leq T,\quad i=1\dots M,\quad j=1\dots N
+  \end{empheq}
+
+  \cgraphic{0.8}{img/sssynth.png}
+
+  \begin{empheq}{gather*}
+      \langle s_i(t), s_k(t) \rangle = \int_0^T s_i(t)s_k(d)\dt = \vect{s}_i^\top \cdot \vect{s}_k \\
+      \norm{\vect{s}_i}^2 = \langle s_i(t), s_i(t) \rangle = \int_0^T s_i(t)^2 \\
+      \norm{\vect{s}_i-\vect{s}_k}^2 = \sum_{j=1}^N(s_{ij}-s_{kj})^2 = \int_0^T (s_i(t)-s_k(t))^2 \dt \\
+      \cos\theta_{jk} = \frac{\vect{s}_i^\top \cdot\vect{s}_k}{\norm{\vect{s}_i}\cdot\norm{\vect{s}_k}}
+  \end{empheq}
+
+  \subsection{Discrete System Model}
+  \subsection{Detection and Decoding}
+  \subsection{Reobability of Error}
 
   % ---------------------------------------------------------------------------
   % Basics
