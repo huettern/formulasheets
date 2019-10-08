@@ -1,0 +1,330 @@
+
+
+% Advanced Topics in Communication Networks D-ITET
+% ===========================================================================
+% @Author: Noah Huetter
+% @Date:   2019-09-24 17:26:28
+% @Last Modified by:   noah
+% @Last Modified time: 2019-10-08 10:59:46
+% ---------------------------------------------------------------------------
+
+\documentclass[a4paper, fontsize=8pt, DIV=1]{scrartcl}
+\usepackage{lastpage}
+\usepackage{hyperref}
+% Include general settings and customized commands
+\input{settings/general}
+\input{settings/commands}
+
+% This package makes formulas a bit more compact but less beautiful
+% \usepackage{newtxtext,newtxmath}
+
+% scala language description
+\lstdefinelanguage{BNF}{%
+    alsoletter={-},%
+    sensitive,%
+}[keywords,comments]%
+
+
+% scala language description
+\lstdefinelanguage{P4}{%
+    sensitive,%
+    backgroundcolor=\color{codeblue},%
+%    morecomment=[l]//,%
+%    morecomment=[s]{/*}{*/},%
+}[keywords,comments]%
+
+\definecolor{codeblue}{HTML}{DEF0FE}
+\lstdefinestyle{P4style}{
+    language=P4,%
+    frame=none,%
+    backgroundcolor=\color{codeblue},%
+    keywords={action, action_function_declaration, action_profile, action_selector, algorithm, and, apply, attribute, attributes, bit, bytes, bytes_and_packets, calculated_field, control, counter, direct, dynamic_action_selection, else, extern, extern_type, extract, false, field_list, field_list_calculation, fields, header, header_type, hit, if, in, inout, input, instance_count, int, last, layout, mask, max, metadata, meter, method, min, min_width, miss, next, not, optional, or, output_width, packets, parse_error, parser, parser_drop, parser_exception, parser_value_set, primitive_action_declaration, range, register, result, return, saturating, select, selection_key, set_metadata, signed, static, table, true, update, valid, varbit, verify, width},%
+    basicstyle=\ttfamily,%
+    aboveskip=3mm,%
+    belowskip=3mm,%
+    fontadjust=true,%
+    keepspaces=true,%
+    keywordstyle=\bfseries,%
+    captionpos=b,%
+    framerule=0.3pt,%
+    firstnumber=0,%
+    numbersep=1.5mm,%
+    numberstyle=\tiny,%
+}
+\lstset{%
+    basicstyle=\ttfamily,%
+%    language=P4,%
+    aboveskip=3mm,%
+    belowskip=3mm,%
+    fontadjust=true,%
+%    columns=[c]fixed,%
+    keepspaces=true,%
+%    commentstyle=\itshape,%
+    keywordstyle=\bfseries,%
+    captionpos=b,%
+    framerule=0.3pt,%
+    firstnumber=0,%
+    numbersep=1.5mm,%
+    numberstyle=\tiny,%
+}
+
+% \bibliography{semiconductordevices}
+% \bibliographystyle{ieeetr}
+\medmuskip=1mu
+
+%change page style for header
+\pagestyle{fancy}
+\footskip 20pt
+
+% Uncomment this line to make formulasheet ultra compact
+% This removes
+% - list of variables
+% \newcommand{\makeultracompact}{irrelevant}
+\let\makeultracompact\undefined
+
+% Make stuff ultra compact if so desired
+\ifdefined\makeultracompact
+  \setlength{\parskip}{0pt}
+  \setlength{\abovedisplayskip}{0pt}
+  \setlength{\belowdisplayskip}{0pt}
+  \setlength{\abovedisplayshortskip}{0pt}
+  \setlength{\belowdisplayshortskip}{0pt}
+\else
+\fi
+ 
+% -----------------------------------------------------------------------
+\IfFileExists{../build/revision.tex}{
+  \input{../build/revision.tex}
+  \rhead{Compiled: \compiledate \hspace{1em} on: \hostname \hspace{1em} git-sha: \revision \hspace{1em} Noah Huetter}
+}{\rhead{Noah Huetter}}
+
+\ifdefined\makeultracompact
+  \lhead{ETH Advanced Topics in Communication Networks 2019 \hspace{1em}compact version}
+\else
+  \lhead{ETH Advanced Topics in Communication Networks 2019}
+\fi
+\chead{\thepage}
+\cfoot{}
+\headheight 17pt \headsep 10pt
+\title{ETH Advanced Topics in Communication Networks 2019}
+\author{Noah Huetter}
+
+\date{\today}
+\begin{document}
+
+\setcounter{page}{0}
+\setcounter{secnumdepth}{2} %no enumeration of sections
+\begin{multicols*}{2}
+	\section*{Disclaimer}
+	This summary is part of the lecture ``ETH Advanced Topics in Communication Networks'' (227-0575-00L) by Prof. Dr. Laurent Vanbever (FS19). It is based on the lecture. \\[6pt]
+	Please report errors to \href{mailto:huettern@student.ethz.ch}{huettern@student.ethz.ch} such that others can benefit as well.\\[6pt]	
+  The upstream repository can be found at \href{https://github.com/noah95/formulasheets}{https://github.com/noah95/formulasheets}
+	\vfill\null
+  \columnbreak
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \tableofcontents
+  \vfill\null
+  %\columnbreak
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	\pagebreak
+  \maketitle 
+  \setcounter{page}{1}
+  \thispagestyle{fancy}
+
+  % ---------------------------------------------------------------------------
+  \section{P4 language}
+  % ---------------------------------------------------------------------------
+  \subsection{Data types}
+
+  \subsubsection{Base types}
+
+  \begin{tabularx}{\linewidth}{ l X}
+    \lstinline[style=P4style]!bool! &
+    Boolean value\\
+    \lstinline[style=P4style]!bit<W>! &
+    Bit-string of width \texttt{W}\\
+    \lstinline[style=P4style]!int<W>! &
+    Signed integer of width \texttt{W}\\
+    \lstinline[style=P4style]!varbit<W>! &
+    Bit-string of dynamiv length \texttt{<=W}\\
+    \lstinline[style=P4style]!match_kind! &
+    describes ways to match table keys\\
+    \lstinline[style=P4style]!error! &
+    used to signal errors\\
+    \lstinline[style=P4style]!void! &
+    no values, used in few restricted circumstances\\
+  \end{tabularx}
+
+  \subsubsection{Header}
+  Parsing a packet using \texttt{extract()} fills in the fields of the header.
+  A successful \texttt{extract()} sets to true the validity bit of the extraced header.
+
+  \begin{lstlisting}[style=P4style]
+action:
+header Ethernet_h {
+  bit<48> dstAddr;
+  bit<48> srcAddr;
+  bit<16> etherType;
+}
+Ethernet_h ethernetHeader;
+\end{lstlisting}
+
+  \subsubsection{Header Stack}
+  Array of up to \texttt{N} headers of type \texttt{Mpls\_h}.
+
+\begin{lstlisting}[style=P4style]
+header Mpls_h {
+  bit<20> label;
+  bit<3>  tc;
+  bit     bos;
+  bit<8>  ttl;
+}
+Mpls_h[10] mpls;
+\end{lstlisting}
+
+  \subsubsection{Header union}
+Either \texttt{IPv4} or \texttt{IPv6} header is present.
+
+\begin{lstlisting}[style=P4style]
+header_union IP_h {
+ IPv4_h v4;
+ IPv6_h v6;
+}
+\end{lstlisting}
+
+
+  \subsubsection{Struct}
+  Unordered collection of named members.
+
+\begin{lstlisting}[style=P4style]
+struct standard_metadata_t {
+ bit<9> ingress_port;
+ bit<9> egress_spec;
+ bit<9> egress_port;
+ ...
+}
+\end{lstlisting}
+
+  \subsubsection{Tuple}
+  Unordered collection of unnamed members.
+
+\begin{lstlisting}[style=P4style]
+tuple<bit<32>, bool> x;
+x = { 10, false }
+\end{lstlisting}
+
+  \subsubsection{Other}
+  \begin{tabularx}{\linewidth}{ l X}
+  \lstinline[style=P4style]!enum Prio \{High, Low\}! &
+  Enumeration \\
+  \lstinline[style=P4style]!typedef bit<48> macAddr_t! &
+  Create subtypes \\
+  \lstinline[style=P4style]!extern! &
+  {}  \\
+  \lstinline[style=P4style]!parser! &
+  {}  \\
+  \lstinline[style=P4style]!control! &
+  {}  \\
+  \lstinline[style=P4style]!package! &
+  {}  \\
+  \end{tabularx}
+
+  \subsection{Data structures}
+
+  \begin{lstlisting}[style=P4style]
+struct standard_metadata_t {
+  bit<9>  ingress_port;
+  bit<9>  egress_spec;
+  bit<9>  egress_port;
+  bit<32> instance_type;
+  bit<32> packet_length;
+  bit<32> enq_timestamp;
+  bit<19> enq_qdepth;
+  bit<32> deq_timedelta;
+  bit<19> deq_qdepth;
+
+  // intrinsic to metadata v1model
+  bit<48> ingress_global_timestamp;
+  bit<48> egress_global_timestamp;
+  bit<16> mcast_grp;
+  bit<16> egress_rid;
+  bit<1>  checksum_error;
+  error parser_error;
+  bit<3> priority;
+}\end{lstlisting}
+
+\begin{tabularx}{\linewidth}{ l X }
+  \lstinline[style=P4style]!ingress_port! &
+  Port the packet was received \\
+  \lstinline[style=P4style]!egress_spec! &
+  Port where the packet will be transmitted \\
+\end{tabularx}
+
+  \subsection{Examples}
+
+  \subsubsection{Multicast group ID}
+  For a L2-switch to work, it has to multicast packets. Simple switch has a multicast features that
+  allows setting a metadata field so that packets are sent to multiple ports.
+
+  First, on the switch, create a multicast group, node and assign these.
+  \begin{lstlisting}[language=bash]
+mc_mgrp_create <mcast_grp_id>
+mc_node_create <replication_id> <port_number> [port_number]
+mc_node_associate <mcast_grp_id> <node_handle_id>\end{lstlisting}
+  \texttt{mc\_node\_create} returns the \texttt{node\_handle\_id}. For every \texttt{replication\_id} the \texttt{mc\_node\_create} is incremented.
+
+  Example: Mulcicast \texttt{mcast\_grp\_id=1} with \texttt{replication\_id=0} on ports \texttt{1,2,3,4} 
+  \begin{lstlisting}[language=bash]
+mc_mgrp_create 1
+mc_node_create 0 1 2 3 4
+mc_node_associate 1 0\end{lstlisting}
+
+  To send a packet to this group, in P4 set the \texttt{standard\_metadata.mcast\_grp} to \texttt{mcast\_grp\_id} during the ingress pipeline.
+
+  \subsubsection{Cloning Packets}
+  Is a feature of simple switch.
+
+  Configure the switch with a mirroring session \texttt{session} mapped to an \texttt{output\_port}.
+  \begin{lstlisting}[style=P4style]
+mirroring_add <session> <output_port>\end{lstlisting}
+
+  During ingress pipeline, a packet can be cloned using \texttt{clone}. The packet will be cloned to the egress pipeline and port configured by \texttt{mirroring\_add}. When using \texttt{clone3} you can add as a third parameter a metadata \texttt{struct}.
+  \begin{lstlisting}[style=P4style]
+clone(CloneType.I2E, <session>)
+// Generally
+clone(in CloneType type, in bit<32> session)
+clone3<T>(in CloneType type, in bit<32> session, in T data)\end{lstlisting}
+
+  To identify a cloned packet in the egress pipeline, check the \texttt{standard\_metadata.instance\_type==1} field.
+
+  When a packet is cloned all its metadata fields
+  are reset to the default value (usually 0).
+
+
+  \subsubsection{Digest packets}
+  A feature of simple switch to send packets to the controller without having to clone it.
+
+  \begin{lstlisting}[style=P4style]
+// Define a struct that is sent to the controller
+struct learn_t {
+    macAddr_t srcAddr;
+    inPort_t  inPort;
+}
+// Add the struct to the metadata
+struct metadata {
+    /* empty */
+    //TODO 3: delcare one learn_t variable
+    learn_t learn;
+}
+// fill in the meatdata fields
+meta.learn.srcAddr = hdr.ethernet.srcAddr;
+meta.learn.inPort = (inPort_t)standard_metadata.ingress_port;
+// send to the controller
+// nothing else has to be done
+digest(1, meta.learn); // first argument is always 1\end{lstlisting}
+
+  
+\end{multicols*}
+
+\setcounter{secnumdepth}{2}
+\end{document}
