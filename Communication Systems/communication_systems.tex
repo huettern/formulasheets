@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-03 16:58:45
+% @Last Modified time: 2019-10-09 15:12:54
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -608,6 +608,117 @@
     P_e = \sum_{i=1}^Mp_iP_e(m_i)\leq\frac{1}{2}\sum_{i=1}^M\sum_{\substack{k=1\\k\neq i}}^Mp_i\erfc\left(\frac{d_{ik}}{2\sqrt{N_0}}\right)
   \end{empheq}
 
+  % ---------------------------------------------------------------------------
+  % Week 4
+  \section{Passband Data Transmission}
+  % ---------------------------------------------------------------------------
+  In bandpass data transmission, information modulates a carrier and occupies
+  a restricted bandwidth in frequency. The carrier can be modulated by changing:
+  \begin{itemize}
+    \item Amplitude (ASK)
+    \item Phase (PSK)
+    \item Frequency (FSK)
+  \end{itemize}
+
+  \textbf{Cherent} modulation is when the receiver's local oscillator is 
+  phase-synchronous to the transmitter's local oscillator.
+
+  $M=s^n$ levels for signalling information ($M$-ary xSK). Using $M$ levels,
+  symbol duration $T=nT_b$ is changed whilek eeping the same datarate. Bandwidth
+  shrinks accordingly ny $1/nT_b$.
+
+  Figures of merit: Symbol error probability at given SNR, power spectral density,
+  bandwidth efficiency $\rho=R_b/B\quad [\text{bit/s/Hz}]$.
+
+  \subsection{PSK: Coherent Phase Shift Keying}
+  \textbf{BPSK: Binary PSK}
+  % \cgraphic{0.8}{img/psk.png}
+
+  \begin{empheq}{gather*}
+    \phi_1(t) = \sqrt{\frac{2}{T_b}}\cos(2\pi f_ct) \\
+    s_1(t) = \sqrt{E_b}\phi_1(t) \quad s_2(t) = - \sqrt{E_b}\phi_1(t) 
+  \end{empheq}
+
+  \cgraphic{0.8}{img/psktxrx.png}
+
+  \begin{empheq}[box=\eqbox]{gather*}
+    p_{10} = p_{01} = P_e = \frac{1}{2}\erfc\left(\sqrt{\frac{E_b}{N_0}}\right) \\
+    S(f-f_c) \approx 2E_b\sinc^2(T_bf)
+  \end{empheq}
+
+  \textbf{QPSK: Quadriphase SK}, use more than just two phase levels.
+  
+  \begin{empheq}{gather*}
+    \phi_1(t) = \sqrt{\frac{2}{T_b}}\cos(2\pi f_ct) \quad \phi_2(t) = \sqrt{\frac{2}{T_b}}\sin(2\pi f_ct) \\
+    \vect{s}_{10} = \begin{bmatrix}  +c \\ +c \end{bmatrix} \smallskip
+    \vect{s}_{00} = \begin{bmatrix}  -c \\ +c \end{bmatrix} \smallskip
+    \vect{s}_{01} = \begin{bmatrix}  -c \\ -c \end{bmatrix} \smallskip
+    \vect{s}_{11} = \begin{bmatrix}  +c \\ -c \end{bmatrix} \smallskip \\
+    c = \sqrt{E/2}
+  \end{empheq}
+
+  \cgraphic{0.8}{img/qpsk.png}
+
+  Every QPSK symbol carries 2 bits, hence the symbol energy is twice the energy per information bit: $E=2E_b$.
+  A QPSK system achieves same BER as a BPSK at same $E_b/N_0$ but at \textit{twice the bit rate}.
+
+  \begin{empheq}[box=\eqbox]{gather*}
+    \text{BER} = \frac{1}{2}\erfc\left(\sqrt{\frac{E_b}{N_0}}\right) \\
+    S_B(f) = 4E_b\sinc^2(2T_bf)
+  \end{empheq}
+
+  \subsection{QAM: Hybrind Amplitude/Phase Modulation}
+  \textbf{QAM: M-ary quadrature amplitude modulation}, change phase and amplitude.
+
+  $d_\text{min}$ is the distance between adjacent messages in the signal space.
+  \begin{empheq}{gather*}
+    \phi_1(t) = \sqrt{\frac{2}{T_b}}\cos(2\pi f_ct) \quad \phi_2(t) = \sqrt{\frac{2}{T_b}}\sin(2\pi f_ct) \\
+    \vect{s}_{i} = \frac{d_{\text{min}}}{2}\begin{bmatrix} a_i \\ b_i \end{bmatrix} \smallskip a_i,b_i \smallskip \text{odd integers}, \smallskip i=1,\dots,M
+  \end{empheq}
+
+  Mapping an even number f bits per symbol (e.g. 4bits $\to$ 16 symbolds),
+  results in a quadratic $L\times L$ square constellation with $L=\sqrt{M}$.
+  Gray coding is often used for mapipng the bits to the QAM symbols.
+
+  \cgraphic{0.7}{img/16qam.png}
+
+  \begin{empheq}[box=\eqbox]{gather*}
+    P_c = (1-P_e^\prime)^2 \to P_e = 1-P_c=1-(1-P_e^\prime)^2\approx2P_e^\prime\\
+    P_e^\prime=\left(1-\frac{1}{\sqrt{M}}\right)\erfc\left(\sqrt{\frac{d_{\text{min}}^2}{4N_0}}\right) \\
+    E_\text{av} = \frac{(M-1)d_{\text{min}}^2}{6} \\
+    P_e\approx2P_e^\prime = 2 \left(1-\frac{1}{\sqrt{M}}\right)\erfc\left(\sqrt{\frac{3E_\text{av}}{2(M-1)N_0}}\right)
+  \end{empheq}
+  $E_\text{av}$ average symbol energy.
+
+  \subsection{FSK: Coherent Frequency-Shoft Keying}
+
+  \begin{empheq}{gather*}
+    \phi_i(t) = \begin{cases}
+      \sqrt{\frac{2}{T_b}}\cos(2\pi f_it), & 0\leq t \leq T_b \\
+      0, & \text{else}.
+    \end{cases} \\
+    f_i = \frac{n_c+i}{T_b} \quad i=1,2, \quad n_c \in \N \\
+    \vect{s}_1 = \sqrt{E_b} \begin{bmatrix} 1 \\ 0 \end{bmatrix} \quad
+    \vect{s}_2 = \sqrt{E_b} \begin{bmatrix} 0 \\ 1 \end{bmatrix}
+  \end{empheq}
+  $f_i$ chosen by rule to avoid phase discontinuities. The two frequencies $f_1$
+  and $f_2$ are $1/T_b$ Hz appart. The $\phi_i$ are orthogonal for $f_i=(n_c+i)/T_b$.
+
+  \cgraphic{0.7}{img/bfsktxrx.png}
+
+  Distance between message points in signal space is $1/\sqrt{2}$ smaller compared
+  to binary PSK.
+
+  \begin{empheq}[box=\eqbox]{gather*}
+    d_\text{min} = \sqrt{2E_b} \\
+     P_e = \frac{1}{2}\erfc\left(\sqrt{\frac{(d_\text{min}/2)^2}{N_0}}\right) = \frac{1}{2}\erfc\left(\sqrt{\frac{E_b}{2N_0}}\right) \\
+     S_B(f) = \frac{E_b}{2T_b}\left[\delta\left(f-\frac{1}{2T_b}\right) + \delta\left(f+\frac{1}{2T_b}\right)\right] + \dots \\ 
+      \frac{8E_b\cos^2(\pi T_b f)}{\pi^2(4T_b^2f^2-1)^2}
+  \end{empheq}
+
+  PSD contains two delta pulses and decays much faster than BPSK due to continuous phase operation.
+
+  \cgraphic{0.7}{img/fskpsd.png}
 
   % ---------------------------------------------------------------------------
   % Basics
