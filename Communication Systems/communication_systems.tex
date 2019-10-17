@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-17 11:09:21
+% @Last Modified time: 2019-10-17 12:19:30
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -867,9 +867,37 @@
   \end{empheq}
 
   \subsection{Fourier Transform}
+  Source: Haykin, Communication systems, 4th ed.
   \begin{empheq}{align*}
-    \rect\left(\frac{t}{T}\right) &\laplace T\sinc(fT) \\
-    \sinc\left(\frac{t}{T}\right) &\laplace T\rect(fT) \\
+    &\rect\left(\frac{t}{T}\right) &&\laplace&& T\sinc(fT) \\
+    &\sinc(2Wt) &&\laplace&& \frac{1}{2W}\rect\left(\frac{f}{2W}\right) \\
+    &\exp(-at)u(t),a>0 &&\laplace&& \frac{1}{a+j2\pi f}\\
+    &\exp(-a\abs{t}),a>0 &&\laplace&& \frac{2a}{a^2+(2\pi f)^2}\\
+    &\exp(-\pi t^2) &&\laplace&& \exp(\pi f^2)\\
+    &\begin{cases}1-\frac{\abs{t}}{T},&\abs{t}<T\\0,&\abs{t}\geq T\end{cases} &&\laplace&& T\sinc^2(fT)\\
+    &\delta(t) &&\laplace&& 1 \\
+    &1 &&\laplace&& \delta(f) \\
+    &\delta(t-t_0) &&\laplace&& \exp(-j2\pi ft_0)\\
+    &\exp(j2\pi f_c t) &&\laplace&& \delta(f-f_c)\\
+    &\cos(2\pi f_ct) &&\laplace&& \frac{1}{2}[\delta(f-f_c) + \delta(f+f_c)] \\
+    &\sin(2\pi f_ct) &&\laplace&& \frac{1}{2i}[\delta(f-f_c) + \delta(f+f_c)] \\
+    &\sgn(t) &&\laplace&& \frac{1}{j\pi f}\\
+    &\frac{1}{\pi t} &&\laplace&& -j\sgn(f)\\
+    &u(t) &&\laplace&& \frac{1}{2}\delta(f) + \frac{1}{j2\pi f} \\
+    &\sum_{i=-\infty}^\infty \delta(t-iT_0) &&\laplace&& \frac{1}{T_0}\sum_{n=-\infty}^\infty \delta\left(f-\frac{n}{T_0}\right)
+  \end{empheq}
+  $u(t)$ unit step function \\
+  $\delta(t)$ delta function \\
+  $\rect(t)$ rectangular function of unit amplitude and unit duration centered on the origin \\
+  $\sgn(t)$ signum function \\
+  $\sinc(t)$ sinc function \\
+
+
+  \subsection{Probability}
+  \begin{empheq}{align*}
+    &\P(X > x) = \frac{1}{2}\erfc\left(\frac{x}{\sqrt{2}\sigma_X}\right) \\
+    &\erf(x) = \frac{1}{\sqrt{\pi}}\int_{-x}^x \e^{-t^2}\dt = \frac{2}{\sqrt{\pi}}\int_{0}^x \e^{-t^2}\dt \\
+    &\erfc(x) = 1 - \erf{x} = \frac{2}{\sqrt{\pi}}\int_{x}^\infty \e^{-t^2}\dt \\
   \end{empheq}
 
 
