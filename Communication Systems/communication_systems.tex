@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-09 15:12:54
+% @Last Modified time: 2019-10-17 11:09:21
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -719,6 +719,139 @@
   PSD contains two delta pulses and decays much faster than BPSK due to continuous phase operation.
 
   \cgraphic{0.7}{img/fskpsd.png}
+
+  % Start of week 5
+  \subsection{CPFSK Continuous Phase FSK}
+  \begin{empheq}{gather*}
+    s(t) = \sqrt{\frac{2E_b}{T_b}}\cos(2\pi f_ct + \theta(t)) \\
+    \theta(t) = \theta(0) \pm \frac{\pi h}{T_b}t,\quad 0\leq t \leq T_b \\
+    h = T_b(f_1-f_2), \quad f_c = \frac{1}{2}(f_1+f_2)
+  \end{empheq}
+
+  $h$ modulation index.
+  
+  \cgraphic{0.7}{img/cpfsk.png}
+
+  \subsection{MSK Minimum Shift Keying}
+  For integer valued $h$, the accumulated phase at end of symbol is independent
+  of the previous and current symbol. $\leadsto$ no phase memory, each symbol can be
+  decoded independently.
+  \begin{empheq}{gather*}
+    f_1 - f_2 = 0.5 / T_b
+  \end{empheq}
+  The minimum difference, for which $s_1(t), s_2(t)$ orthogonal.
+
+
+  \begin{empheq}{align*}
+    &\theta(0) = 0 & &\theta(T_b) = \pi/2 & & \text{symbol 1 transmitted} \\
+    &\theta(0) = \pi & &\theta(T_b) = \pi/2 & & \text{symbol 0 transmitted} \\
+    &\theta(0) = -\pi & &\theta(T_b) = -\pi/2 & & \text{symbol 1 transmitted} \\
+    &\theta(0) = 0 & &\theta(T_b) = -\pi/2 & & \text{symbol 0 transmitted} \\
+  \end{empheq}
+
+  \textbf{Estimation of $\theta(0)$}: Expanding $s(t)$ into two terms we get:
+  \cgraphic{0.7}{img/thetaesti.png}
+
+  We can estimte $\theta(0)$ by observing
+  \begin{empheq}{gather*}
+    \sqrt{\frac{2E_b}{T_b}}\cos(\theta(t))\cos(2\pi f_c t)
+  \end{empheq}
+
+  \textbf{MSK Signal-Space representation}
+  \begin{empheq}{gather*}
+    \phi_1(t) = \sqrt{\frac{2}{T_b}} \cos\left(\frac{\pi}{2T_b}t\right)\cos(2\pi f_ct), \quad -T_b\leq t \leq T_b \\
+    \phi_2(t) = \sqrt{\frac{2}{T_b}} \sin\left(\frac{\pi}{2T_b}t\right)\sin(2\pi f_ct), \quad 0\leq t \leq 2T_b
+  \end{empheq}
+
+  A coherent receiver has to integrate over two bit periods:
+  \begin{empheq}{gather*}
+    x_1 = \int_{-T_b}^{T_b} x(t)\phi_1(t)\dt = \sqrt{E_b}\cos(\theta(0)) + w_1 \\
+    x_2 = \int_{0}^{2T_b} x(t)\phi_2(t)\dt = -\sqrt{E_b}\sin(\theta(T_b)) + w_2 \\
+  \end{empheq}
+
+  \textbf{Bit error rate}
+  The four points in the signal-space diagram correspond to two symbol, hence the 
+  BER is the same as with QPSK.
+  \begin{empheq}{gather*}
+    \text{BER} = \frac{1}{2}\erfc\left(\frac{d_\text{min}/2}{\sqrt{N_0}}\right) = \frac{1}{2}\erfc\left(\sqrt{\frac{E_b}{N_0}}\right)
+  \end{empheq}
+  
+  \cgraphic{0.7}{img/mskpsd.png}
+
+  \subsection{GMSK}
+  To make sidelobes of MSK smaller, filter the NRZ signal with pulse shaping function.
+
+  \begin{empheq}[box=\eqbox]{gather*}
+    H(f) = \exp\left[{-\frac{\log2}{2}\left(\frac{f}{W}\right)^2}\right]
+  \end{empheq}
+
+  \cgraphic{0.7}{img/gmsk.png}
+
+  The parameter $\alpha$ depends on the time bandwidth product $WT_b$. The quantity
+  $10\log(\alpha/2)$ expresses the degradation in dB of GMSK compared to MSK.
+  MSK: $WT_b=\infty,\alpha=0$
+  \begin{empheq}{gather*}
+    P_e = \frac{1}{2}\erfc\left(\sqrt{\frac{\alpha E_b}{2N_0}}\right)
+  \end{empheq}
+
+  \subsection{Equivalent baseband representation}
+  \textbf{QAM}: Two branches: inphase (I) and quadrature (Q)
+
+  \cgraphic{1.0}{img/qam.png}
+
+  By using complex valued signals, the transmission system can be written as an LTI system.
+
+  \cgraphic{1.0}{img/qamltidetail.png}
+
+  Important names and notation:
+
+  \begin{tabularx}{\textwidth}{l X}
+    $\tilde{s}_\text{TX}(t)$ & compex envelope of $s_\text{TX}$ \\
+    $s_\text{TX+}(t)$ & analytic signal (pre-envelope of $s_\text{TX}$) \\
+    $s_\text{TX}(t)$ & physical passband signal \\
+  \end{tabularx}
+
+  \begin{empheq}{gather*}
+    S_{TX+}(f) = \begin{cases}
+        2S_\text{TX}(f) & f>0 \\ 0 & \text{else}
+      \end{cases} \\
+    H_{BP+}(f) = \begin{cases}
+        H_\text{BP}(f) & f>0 \\ 0 & \text{else}
+      \end{cases} \\
+    H_\text{TX}(f) = 0\forall \abs{f}\geq f_0 \quad  H_\text{RX}(f) = 0\forall \abs{f}\geq B \\
+    B = \max(0, f_0 - \abs{f_0-f_1})
+  \end{empheq}
+
+  \textbf{Complex Envelope}: Inphase and quadrature components.
+  \begin{empheq}{gather*}
+    \tilde{s}_\text{TX}(t) = \tilde{s}_\text{TX,I}(t) + j\tilde{s}_\text{TX,Q}(t)
+    \quad
+    \tilde{S}_\text{TX}(f) = 0 \forall \abs{f} > f_0
+  \end{empheq}
+
+  \textbf{Analytic signal}: Pre-envelope. Has one-sided spectrum, scaling factor to
+  preserve power values in passband and qeuivalent baseband.
+  \begin{empheq}{gather*}
+    s_\text{TX+}(t) = \tilde{s}_\text{TX}(t)\sqrt{2}\exp(j\omega_0t)\exp(j\phi_0)\\
+    S_\text{TX+}(f) = \sqrt{2}\exp(j\phi_0)\tilde{S}_\text{TX}(f-f_0) \\
+    S_\text{TX+}(f) = 0 \forall f < 0 \\
+    \tilde{S}_\text{TX}(f) = \frac{1}{\sqrt{2}}\exp(-j\phi_90)S_\text{TX+}(f+f_0)
+  \end{empheq}
+
+
+  \textbf{Physical passband signal}: 
+  \begin{empheq}{gather*}
+    s_\text{TX}(t) = \Re\{s_\text{TX+}(t)\} \\
+    S_\text{TX}(f) = \frac{1}{2}\left(S_\text{TX+}(f)+S_\text{TX+}^*(-f)\right) \\
+    s_\text{TX}(t) = \sqrt{2}\tilde{s}_\text{TX,I}(t)\cos(\omega_0t+\phi_0)- \\
+      \quad \sqrt{2}\tilde{s}_\text{TX,Q}(t)\sin(\omega_0t+\phi_0) \\
+    s_\text{TX}(t) = \left\{ \sqrt{2}\sqrt{\tilde{s}_\text{TX,I}^2(t) + \tilde{s}_\text{TX,Q}^2(t)} \right\} \cos(\omega_0t+\phi_0+\phi(t)) \\
+    \phi(t) = \atan2(\tilde{s}_\text{TX,Q}(t), \tilde{s}_\text{TX,I}(t))
+  \end{empheq}
+
+
+
+
 
   % ---------------------------------------------------------------------------
   % Basics
