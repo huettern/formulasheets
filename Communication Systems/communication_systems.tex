@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-17 15:21:21
+% @Last Modified time: 2019-10-23 09:51:26
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -822,14 +822,14 @@
     B = \max(0, f_0 - \abs{f_0-f_1})
   \end{empheq}
 
-  \textbf{Complex Envelope}: Inphase and quadrature components.
+  \textbf{Complex Envelope} Inphase and quadrature components.
   \begin{empheq}{gather*}
     \tilde{s}_\text{TX}(t) = \tilde{s}_\text{TX,I}(t) + j\tilde{s}_\text{TX,Q}(t)
     \quad
     \tilde{S}_\text{TX}(f) = 0 \forall \abs{f} > f_0
   \end{empheq}
 
-  \textbf{Analytic signal}: Pre-envelope. Has one-sided spectrum, scaling factor to
+  \textbf{Analytic signal} Pre-envelope. Has one-sided spectrum, scaling factor to
   preserve power values in passband and qeuivalent baseband.
   \begin{empheq}{gather*}
     s_\text{TX+}(t) = \tilde{s}_\text{TX}(t)\sqrt{2}\exp(j\omega_0t)\exp(j\phi_0)\\
@@ -839,7 +839,7 @@
   \end{empheq}
 
 
-  \textbf{Physical passband signal}: 
+  \textbf{Physical passband signal} 
   \begin{empheq}{gather*}
     s_\text{TX}(t) = \Re\{s_\text{TX+}(t)\} \\
     S_\text{TX}(f) = \frac{1}{2}\left(S_\text{TX+}(f)+S_\text{TX+}^*(-f)\right) \\
@@ -848,7 +848,16 @@
     s_\text{TX}(t) = \left\{ \sqrt{2}\sqrt{\tilde{s}_\text{TX,I}^2(t) + \tilde{s}_\text{TX,Q}^2(t)} \right\} \cos(\omega_0t+\phi_0+\phi(t)) \\
     \phi(t) = \atan2(\tilde{s}_\text{TX,Q}(t), \tilde{s}_\text{TX,I}(t))
   \end{empheq}
-
+  
+  \textbf{Summary}
+  \begin{empheq}[box=\eqbox]{gather*}
+    x(t) = \Re\{x_\text{+}(t)\} \quad x_\text{+}(t) = \tilde{x}(t)\sqrt{2}\e^{j2\pi ft}
+  \end{empheq}
+  \begin{tabularx}{\textwidth}{l X}
+    $x(t)$ & physical passband signal \\
+    $x_\text{+}(t)$ & analytic signal (pre-envelope of $x(t)$) \\
+    $\tilde{x}(t)$ & compex envelope of $x(t)$ \\
+  \end{tabularx}
 
 
 
