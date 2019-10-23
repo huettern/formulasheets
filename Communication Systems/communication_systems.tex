@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-23 09:51:26
+% @Last Modified time: 2019-10-23 10:05:55
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -902,6 +902,22 @@
   $\sgn(t)$ signum function \\
   $\sinc(t)$ sinc function \\
 
+  Relations
+  \begin{empheq}{align*}
+    &\alpha f(t) + \beta g(t) &&\laplace&& \alpha F(f) + \beta G(f) \\
+    &f^*(t) &&\laplace&& F^*(-f) \\
+    &f(at) &&\laplace&& \frac{1}{\abs{a}}F\left(\frac{f}{a}\right) \\
+    &f(t-a) &&\laplace&& \e^{-j2\pi fa} F(f) \\
+    &e^{j2\pi f_0 f} &&\laplace&& F(f-f_0) \\
+    &f^{(n)} &&\laplace&& (j2\pi f)^n F(f) \\
+    &t^n f(t) &&\laplace&& j^n F^{(n)}(f) \\
+    &\int_{-\infty}^t x(\tau) \dtau &&\laplace&& \frac{1}{j2\pi f} F(f) + \pi F(0)\delta(f) \\
+    &\frac{1}{t} x(t) + \pi x(0)\delta(t) &&\laplace&& \int_{-\infty}^{f} X(s) \ds \\
+    &(f*g)(t) &&\laplace&& F(f)\cdot G(f) \\
+    &f(t)\cdot g(t) &&\laplace&& \frac{1}{2\pi} F(f) * G(f) \\
+  \end{empheq}
+  $f^{(n)}$ $n^\text{th}$ derivation \\
+  $f^*$ complex conjugate
 
   \subsection{Probability}
   \begin{empheq}{align*}
