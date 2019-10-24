@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-23 10:05:55
+% @Last Modified time: 2019-10-24 10:08:28
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -859,6 +859,121 @@
     $\tilde{x}(t)$ & compex envelope of $x(t)$ \\
   \end{tabularx}
 
+  \subsection{Noncoherent Detection}
+  Carrier phase $\theta$ at the receiver becomes a random variable.
+
+  \subsection{ML detection with unknown phase shift}
+  \begin{empheq}{gather*}
+    L(\vect{s}_i) \triangleq f_{X}(\vect{x} | \vect{s}_i) = \\
+      \frac{1}{(\pi N_0)^{N/2}}\exp\left[-\frac{1}{N_0}\sum_{j=0}^N(x_j-s_{ij})^2\right]
+  \end{empheq}
+  
+  The ML receiver selects the hypothesis, which maximizes the likelihood function
+  \begin{empheq}{gather*}
+    \hat{i} = \argmax_i \left(L(\vect{s}_i)\right)
+  \end{empheq}
+
+  Expanding the sum in the exponent, the likelihood functino can be calculated from the output
+  of a correlator bank.
+  \begin{empheq}[box=\eqbox]{gather*}
+    L(\vect{s}_i) = c\exp\left[ \frac{2}{N_0}\int x(t)s_i(t)\dt - \frac{1}{N_0}E_{s_i} \right]
+  \end{empheq}
+  With $E_{s_i}=\sum_j s_{ij}^2=\int s_i^2\dt$
+
+  For a known phase offset, the modified receiver correlates with a rotate versino of each hypothesis.
+  \cgraphic{0.8}{img/uncoherent_ml.png}
+
+  \textbf{Two-branch correlator}
+  \begin{empheq}{gather*}
+    s_i(t,\theta) = s_i(t,\theta=0)\cos\theta - s_i(t,\theta=-\pi/2)\sin\theta
+  \end{empheq}
+
+  \cgraphic{0.8}{img/two_branch_correlator.png}
+
+  \textbf{Equi-Energy Signals with unknown phase offset}
+  Shifting the integrator to each branch and obtain equi-energy signals with known phase offset:
+  \begin{empheq}{align*}
+    L(\vect{s}_i | \theta) &= \exp\left(\frac{1}{N_0}\left(a_c\cos\theta - a_s\sin\theta\right)\right) \\
+     &= \exp\left(\frac{1}{N_0}\sqrt{a_c^2+a_s^2}\cos(\theta+\phi)\right) \\
+     \phi &= \angle(a_c+ja_s)
+  \end{empheq}
+
+  With unknoen phase offset, we have to average the likelihood functino across all phase offsets $\theta$. 
+  \begin{empheq}[box=\eqbox]{align*}
+    \overline{L(\vect{s}_i)} &= \frac{1}{2\pi}\int_{\pi}^{\pi}\exp\left(\frac{1}{N_0}\sqrt{a_c^2+a_s^2}\cos(\theta+\phi)\right)\dtheta \\
+    &= I_0\left(\frac{1}{N_0}\sqrt{a_c^2 + a_s^2}\right)
+  \end{empheq}
+
+  $I_0$ is the modified Bessel function of order zero.
+  \cgraphic{0.8}{img/besselcorrelator.png}
+
+  As $I_0$ is monotonously increasing, a simplified decision rule follows as
+  \begin{empheq}[box=\eqbox]{align*}
+    \hat{i} = \argmax_i d_i^2
+  \end{empheq}
+
+  Note that we need a two-branch correlator for each hypothesis $s_i(t)$.
+
+  Instead of the two-branch correlator we can use two matched filter - sampler pairs to 
+  calculate the decision variable.
+
+  We can determine the decision variable woth one matched filter an a Hilbert tranformer.
+  The matched filter - envelope detector pair is called a noncoherent matched filter.
+  \begin{empheq}{align*}
+    s_i(t,\theta=-\pi/2)\laplace S_i&(f,\theta=-\pi/2) \\&= -j\sgn(f)S_i(f,\theta=0)
+  \end{empheq}
+
+  \cgraphic{0.999}{img/noncoherenthilbert.png}
+
+  \subsection{Noncoherent FSK}
+  Signal $x(t)$ at the receiver with unknown carrier phase offset $\theta$:
+  \begin{empheq}{gather*}
+    x(t)=\frac{2E_b}{T_b}\cos(2\pi f_it+\theta)+w(t),\quad i=1,2,0\leq t\leq T_b
+  \end{empheq}
+
+  The signals $s_1$ and $S_2$ each require such a branch. A comparator subsequently compares the
+  two outputs $I_i$ to devide between the hypothesis $s_1$ and $s_2$.
+
+  We have
+  \begin{empheq}{gather*}
+    P_e = \frac{1}{2}\exp\left(-\frac{E_b}{2N_0}\right)
+  \end{empheq}
+  This corresponds to a degradatino of at least 3dB compared to coherent MSK. Less
+  degradation compared to BFSK.
+
+  Another implementation is with matched bandpass filters to $f_1$ and $f_2$ followed
+  by envelope detectors, samplers and a comparison device.
+
+  \cgraphic{1}{img/noncoherent_fsk.png}
+
+  \subsection{DPSK Differential PSK}
+  Differential precoding at transmitter: Symbol 0 $\leadsto$ $\pi$ phasejump, Symbol 1 $\leadsto$ no phase-jump.
+  Assumption: $\theta$ does not change significantly between two adjecent sampling instances.
+
+  Noncoherent detector for DPSK:
+  \cgraphic{1}{img/noncohdpsk.png}
+
+  Quadrature implementation of simplified detector:
+  \cgraphic{1}{img/quadraturenoncoherent.png}
+
+  DPSK is a special case of noncoherent, orthogonal modulation with $T=2T_b$ and $E=2E_b$. Th 
+  bit error rate is given by:
+  \begin{empheq}{gather*}
+    P_e = \frac{1}{2}\exp\left(-\frac{E_b}{N_0}\right)
+  \end{empheq}
+
+
+  \subsection{Performance comparison}
+  \begin{tabular}{l | l}
+    Modulation & $P_e$ \\ \hline \hline
+    Coherent BPSK & \multirow{3}{*}{$\frac{1}{2}\erfc\left(\sqrt{\frac{E_b}{N_0}}\right)$} \\
+    Coherent QPSK & \\
+    Coherent MSK& \\ \hline
+    Coherent binary FSK & $\frac{1}{2}\erfc\left(\sqrt{\frac{E_b}{2N_0}}\right)$ \\ \hline
+    DPSK & $\frac{1}{2}\exp\left(-\frac{E_b}{N_0}\right)$ \\ \hline
+    Noncoherent binary FSK & $\frac{1}{2}\exp\left(-\frac{E_b}{2N_0}\right)$ \\ \hline
+  \end{tabular}
+  \cgraphic{1}{img/bercompare.png}
 
 
 
