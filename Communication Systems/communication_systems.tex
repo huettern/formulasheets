@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-24 10:08:28
+% @Last Modified time: 2019-10-24 13:44:54
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -928,11 +928,13 @@
   \subsection{Noncoherent FSK}
   Signal $x(t)$ at the receiver with unknown carrier phase offset $\theta$:
   \begin{empheq}{gather*}
-    x(t)=\frac{2E_b}{T_b}\cos(2\pi f_it+\theta)+w(t),\quad i=1,2,0\leq t\leq T_b
+    x(t)=sqrt{\frac{2E_b}{T_b}}\cos(2\pi f_it+\theta)+w(t),\quad i=1,2,0\leq t\leq T_b
   \end{empheq}
 
-  The signals $s_1$ and $S_2$ each require such a branch. A comparator subsequently compares the
+  The signals $s_1$ and $s_2$ each require such a branch. A comparator subsequently compares the
   two outputs $I_i$ to devide between the hypothesis $s_1$ and $s_2$.
+
+  \cgraphic{1}{img/noncoherent_fsk.png}
 
   We have
   \begin{empheq}{gather*}
@@ -943,18 +945,28 @@
 
   Another implementation is with matched bandpass filters to $f_1$ and $f_2$ followed
   by envelope detectors, samplers and a comparison device.
-
-  \cgraphic{1}{img/noncoherent_fsk.png}
+  \cgraphic{0.8}{img/noncoherent_matchedfilt_fsk.png}
 
   \subsection{DPSK Differential PSK}
   Differential precoding at transmitter: Symbol 0 $\leadsto$ $\pi$ phasejump, Symbol 1 $\leadsto$ no phase-jump.
   Assumption: $\theta$ does not change significantly between two adjecent sampling instances.
 
+  \begin{empheq}{align*}
+    s_1(t,\theta) &= \begin{cases}
+      \sqrt{\frac{2E_b}{T_b}}\cos(2\pi f_ct+\theta),&0\leq t\leq T_b \\
+      \sqrt{\frac{2E_b}{T_b}}\cos(2\pi f_ct+\theta),&T_b\leq t\leq 2T_b \\
+    \end{cases} \\
+    s_2(t,\theta) &= \begin{cases}
+      \sqrt{\frac{2E_b}{T_b}}\cos(2\pi f_ct+\theta),&0\leq t\leq T_b \\
+      \sqrt{\frac{2E_b}{T_b}}\cos(2\pi f_ct+\pi+\theta),&T_b\leq t\leq 2T_b \\
+    \end{cases} \\
+  \end{empheq}
+
   Noncoherent detector for DPSK:
-  \cgraphic{1}{img/noncohdpsk.png}
+  \cgraphic{0.8}{img/noncohdpsk.png}
 
   Quadrature implementation of simplified detector:
-  \cgraphic{1}{img/quadraturenoncoherent.png}
+  \cgraphic{0.8}{img/quadraturenoncoherent.png}
 
   DPSK is a special case of noncoherent, orthogonal modulation with $T=2T_b$ and $E=2E_b$. Th 
   bit error rate is given by:
@@ -987,6 +999,9 @@
   \begin{empheq}{align*}
       &\cos(a)\cos(b) + \sin(a)\sin(b) = \cos(a-b) \\
       &\cos(a+b)\cos(a-b) = \frac{1}{2}\left[\cos(2a) + \cos(2b)\right] \\
+      &\cos(a)\cos(b) = \frac{1}{2}( \cos(a-b) + \cos(a+b) ) \\
+      &\sin(a)\sin(b) = \frac{1}{2}( \cos(a-b) - \cos(a+b) ) \\
+      &\cos(a)\sin(b) = \frac{1}{2}( \sin(a+b) - \sin(a-b) ) \\
       &\sinc(x) = \frac{\sin(\pi x)}{\pi x} \\
       &\sin(x) = \frac{e^{ix}-e^{-ix}}{2i} \quad \cos(x) = \frac{e^{ix}+e^{-ix}}{2}
   \end{empheq}
