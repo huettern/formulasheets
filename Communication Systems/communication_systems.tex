@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-31 11:32:46
+% @Last Modified time: 2019-10-31 16:26:05
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1052,12 +1052,12 @@
     [P]=\text{W} \quad [P_{av}]=\frac{\text{W}}{\text{steradian}}
   \end{empheq}
 
-  \textbf{Directivity gain} $g(\theta,\phi)$ Ratio of datiation intensity in a specific direction to the
+  \textbf{Directivity gain} $g(\theta,\phi)$ Ratio of radiation intensity in a specific direction to the
   avg. radiated power.
 
   \textbf{Directivity} $D$, maximal directivity gain over all directions
 
-  \textbf{Power gain} $G$ with $\eta_\text{radiation}\in[0,1]$ the datiation efficiency factor.
+  \textbf{Power gain} $G$ with $\eta_\text{radiation}\in[0,1]$ the radiation efficiency factor.
   
   \textbf{EIRP} Effective isotropically radiated power referenced to an isotropic source.
 
@@ -1070,7 +1070,7 @@
 
   \begin{empheq}{gather*}
     g(\theta,\phi) = \frac{\Phi(\theta,\phi)}{P_{av}} = \frac{\Phi(\theta,\phi)}{P/(4\pi)} \quad D=\max_{\theta,\phi} g(\theta, \phi) \\
-    G=\eta_\text{radiation}D \quad \EIRP=P_tG_theta \\
+    G=\eta_\text{radiation}D \quad \EIRP=P_tG_t \\
     \quad A=(\lambda^2/4\pi)G \quad \eta_{ap}=A/A_{ph}
   \end{empheq}
 
