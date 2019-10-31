@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-24 13:44:54
+% @Last Modified time: 2019-10-31 11:32:46
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -43,6 +43,10 @@
 \else
 \fi
  
+
+\newcommand{\EIRP}{\text{EIRP}}
+\newcommand{\SNR}{\text{SNR}}
+
 % -----------------------------------------------------------------------
 \IfFileExists{../build/revision.tex}{
   \input{../build/revision.tex}
@@ -873,14 +877,14 @@
     \hat{i} = \argmax_i \left(L(\vect{s}_i)\right)
   \end{empheq}
 
-  Expanding the sum in the exponent, the likelihood functino can be calculated from the output
+  Expanding the sum in the exponent, the likelihood function can be calculated from the output
   of a correlator bank.
   \begin{empheq}[box=\eqbox]{gather*}
     L(\vect{s}_i) = c\exp\left[ \frac{2}{N_0}\int x(t)s_i(t)\dt - \frac{1}{N_0}E_{s_i} \right]
   \end{empheq}
   With $E_{s_i}=\sum_j s_{ij}^2=\int s_i^2\dt$
 
-  For a known phase offset, the modified receiver correlates with a rotate versino of each hypothesis.
+  For a known phase offset, the modified receiver correlates with a rotate version of each hypothesis.
   \cgraphic{0.8}{img/uncoherent_ml.png}
 
   \textbf{Two-branch correlator}
@@ -898,7 +902,7 @@
      \phi &= \angle(a_c+ja_s)
   \end{empheq}
 
-  With unknoen phase offset, we have to average the likelihood functino across all phase offsets $\theta$. 
+  With unknoen phase offset, we have to average the likelihood function across all phase offsets $\theta$. 
   \begin{empheq}[box=\eqbox]{align*}
     \overline{L(\vect{s}_i)} &= \frac{1}{2\pi}\int_{\pi}^{\pi}\exp\left(\frac{1}{N_0}\sqrt{a_c^2+a_s^2}\cos(\theta+\phi)\right)\dtheta \\
     &= I_0\left(\frac{1}{N_0}\sqrt{a_c^2 + a_s^2}\right)
@@ -940,7 +944,7 @@
   \begin{empheq}{gather*}
     P_e = \frac{1}{2}\exp\left(-\frac{E_b}{2N_0}\right)
   \end{empheq}
-  This corresponds to a degradatino of at least 3dB compared to coherent MSK. Less
+  This corresponds to a degradation of at least 3dB compared to coherent MSK. Less
   degradation compared to BFSK.
 
   Another implementation is with matched bandpass filters to $f_1$ and $f_2$ followed
@@ -986,6 +990,175 @@
     Noncoherent binary FSK & $\frac{1}{2}\exp\left(-\frac{E_b}{2N_0}\right)$ \\ \hline
   \end{tabular}
   \cgraphic{1}{img/bercompare.png}
+
+  % ---------------------------------------------------------------------------
+  \section{Multi User Radio Communications}
+  % Week 7
+  % ---------------------------------------------------------------------------
+  \subsection{Multiple Access techniques}
+  \cgraphic{0.8}{img/muxtech.png}
+  Accomodation of several users in the same wireless environment.
+
+  \begin{itemize}
+    \item FDMA Frequency domain multiple access
+    \item TDMA Time domain multiple access
+    \item CDMA Code division multiple access
+    \item SDMA Spatial division multiple access
+  \end{itemize}
+
+  \subsection{Radio Communication over line-of-sight (LOS)}
+  Free-space (line of sight) communication on up- and down-link.
+  AWGN model appropriate. Used MA techniques:
+  \begin{itemize}
+    \item \textbf{FDMA} 
+    Non linearity of transponder causes interference between frequency subband.
+    Transponder is operated in lin. regime below max output power. Reduced power efficiency.
+    \item \textbf{TDMA}
+    Can operate at close to full power efficiency. Commonly used.
+    \item \textbf{SDMA}
+    Multiple antennas allow beam forming to different lcoations.
+  \end{itemize}
+
+  \textbf{Link budget}
+  Link (power) budget: Budgeting of all gains and losses. Accounting of resources available to transmitter
+  and receiver, sources of loss of power, sources of noise. Allows performance estimation of LOS links.
+
+  \textbf{Link Margin}
+  Curve relates $P_e$ to $E_b/N_0$. Max accepted $P_e$ leads to Op1 and minimal required $(E_b/N_0)_\text{req}$.
+  Actually received $(E_b/N_0)_\text{rec}$ define Op2.
+  \cgraphic{0.8}{img/linkmargin.png}
+
+  Link margin: Difference. Provides Protection agains unexpected changes. Large margin, high reliability but low efficiency.
+  \begin{empheq}[box=\eqbox]{gather*}
+    M = 10\log\left(\frac{E_b}{N_0}\right)_\text{rec} - 10\log\left(\frac{E_b}{N_0}\right)_\text{req} \quad [M] = \text{dB}
+  \end{empheq}
+  \cgraphic{1.0}{img/linkbudget.png}
+
+  \subsection{Antenna characterization}
+  Receiver is located in the farfield of the transmitter. $D$ largest dimenstion of antenna.
+  \begin{empheq}{gather*}
+    d_f \gg \frac{2D^2}{\lambda}
+  \end{empheq}
+
+  Idealized reference antenna radiates uniformly in all directions. Power density as a function of distance
+  scales according to \text{free-space propagation}. $\Phi$ Radiation intensity in watts per unit solid angle.
+  \begin{empheq}{gather*}
+    \rho(d) = \frac{P_t}{4\pi d^2} \quad [\rho]=\frac{\text{W}}{\text{m}^2} \quad \Phi = d^2\rho(d)
+  \end{empheq}
+
+  Total radiated power $P$ and average power per unit solid angle $P_{av}$:
+  \begin{empheq}{gather*}
+    P=\int\Phi(\theta,\phi)\dOmega \quad P_{av} = \frac{1}{4\pi}\int\Phi(\theta,\phi)\dOmega=\frac{P}{4\pi}\\
+    [P]=\text{W} \quad [P_{av}]=\frac{\text{W}}{\text{steradian}}
+  \end{empheq}
+
+  \textbf{Directivity gain} $g(\theta,\phi)$ Ratio of datiation intensity in a specific direction to the
+  avg. radiated power.
+
+  \textbf{Directivity} $D$, maximal directivity gain over all directions
+
+  \textbf{Power gain} $G$ with $\eta_\text{radiation}\in[0,1]$ the datiation efficiency factor.
+  
+  \textbf{EIRP} Effective isotropically radiated power referenced to an isotropic source.
+
+  \textbf{Beamwidth} Angle between the two directions in which the radiation intensity is one-half the maximum.
+  Higher power gain leads to narrower beamwidth.
+
+  \textbf{Effective Apperture} $A$ Ratio of power available at the antenna terminals to the power per unit area of the appropriately polarized incident electromagnetic wave.
+
+  \textbf{Apperture efficiency} $\eta_{ap}$ whith $A_{ph}$ physical area.
+
+  \begin{empheq}{gather*}
+    g(\theta,\phi) = \frac{\Phi(\theta,\phi)}{P_{av}} = \frac{\Phi(\theta,\phi)}{P/(4\pi)} \quad D=\max_{\theta,\phi} g(\theta, \phi) \\
+    G=\eta_\text{radiation}D \quad \EIRP=P_tG_theta \\
+    \quad A=(\lambda^2/4\pi)G \quad \eta_{ap}=A/A_{ph}
+  \end{empheq}
+
+  \textbf{Free-Space Equation}
+  Power captured by receiver at distance $d$ in LoS:
+  \begin{empheq}[box=\eqbox]{gather*}
+    P_r = \left(\frac{\EIRP}{4\pi d^2}\right)A_r = \frac{P_tG_tA_r}{4\pi d^2} = P_tG_tG_r\left(\frac{\lambda}{4\pi d}\right)^2
+  \end{empheq}
+
+  \textbf{Path loss}
+  $\text{PL}$ is the difference between transmit signal power and receive signal power.
+  \begin{empheq}[box=\eqbox]{gather*}
+    \text{PL} = 10\log\frac{P_t}{P_r}=-10\log(G_tG_r)+10\log\left(\frac{4\pi d}{\lambda}\right)^2
+  \end{empheq}
+
+  \subsection{Noise figure}
+  Spot noise figure $F(f)$ ratio of total available output noise power per unit bandwidth to portion thereof due to 
+  source alone. $G$ power gain.
+  \begin{empheq}[box=\eqbox]{gather*}
+    F(f) = \frac{S_{NO}(f)}{G(f)S_{NS}(f)} = \frac{P_S S_{NO}}{P_O S_{NS}} = \frac{\SNR_{\text{Source}}(f)}{\SNR_\text{Output}(f)}
+  \end{empheq}
+
+  If two-port is noise free:
+  \begin{empheq}{gather*}
+    S_{NO}(f) = G(f)S_{NS}(f)
+  \end{empheq}
+
+  For physical systems
+  \begin{empheq}{gather*}
+    S_{NO}(f) > G(f)S_{NS}(f)
+  \end{empheq}
+
+  \textbf{Equivalent Noise Temperature} $T_e$. For low noise devices $T_e$ is a better measure bcs $F$ is close to unity.
+  Two-port device matched to source impedance is considered. $N_1$ available input noise power:
+  \begin{empheq}{gather*}
+    N_1 = \left(\frac{\sqrt{4kTR_sB}}{2R_s}\right)^2R_s=kTB.
+  \end{empheq}
+
+  Total output noise power $N_2$ and noise figure:
+  \begin{empheq}{gather*}
+    N_2 = GN_1+N_d = Gk(T+T_e)B\quad \\ F=\frac{N_2}{N_2-N_d}=\frac{T+T_e}{T}
+  \end{empheq}
+
+  Equivalent noise temperature $T_e$
+  \begin{empheq}[box=\eqbox]{gather*}
+    T_e = T(F-1)
+  \end{empheq}
+
+  \textbf{Cascade of Two-Port Networks}
+  \begin{empheq}[box=\eqbox]{gather*}
+    F = F_1 + \frac{F_2-1}{G_1} + \frac{F_3-1}{G_1G_2} + \frac{F_4-1}{G_1G_2G_3}+\cdots\\
+    T_e=T_{e1}+\frac{T_{e2}}{G_1}+\frac{T_{e3}}{G_1G_2}+\frac{T_{e4}}{G_1G_2G_3}+\cdots
+  \end{empheq}
+
+  \subsection{Radio Communication over multipath channnels}
+  In mobile radio systems the transmitters and receivers are mobile. 
+  This leads to a stocahstic channel. Multipath phenomenenon leads to \textbf{Fading}.
+
+  \textbf{Narrowband fading} 
+  Complex envelopes ot $\tilde{s}$ Tx, $\tilde{s_o}$ Rx signal and $\tilde{h}$ timevarying impulse response of channel.
+  The Rayleigh fading model for NLOS conditions is modeled as zero-mean complex Gaussian random process.
+  Characterized by autocorrelation function $R_{\tilde{h}}$ and Doppler spectrum $S_{\tilde{H}}$.
+  \begin{empheq}[box=\eqbox]{gather*}
+    \tilde{S}_o(t) = \intinf\tilde{s}(t-\tau)\tilde{h}(\tau;t)\dtau \\
+    \tilde{h}(\tau;t)=\tilde{h}(t)\delta(\tau)\leadsto \tilde{s}_o(t)=\tilde{h}(t)\tilde{s}(t) \\
+    R_{\tilde{h}} (\Delta t) = \E[\tilde{h}^*(t)\tilde{h}(t+\Delta t)] \laplace S_{\tilde{H}}(\nu)
+  \end{empheq}
+
+  \textbf{Coherent BPSK over slow rayleigh fading channel} 
+  Input-output relation is $\tilde{s}_o(t)=\alpha\exp(-j\phi)\tilde{s}(t)+\tilde{w}(t)$
+  with $\alpha$ and $\phi$ Rayleigh and uniformly distributed r.v.
+  \begin{empheq}{gather*}
+    P_{e|\tilde{h}}(\gamma)=\frac{1}{2}\erfc\sqrt{\gamma}\quad\gamma=\frac{\alpha^2E_b}{N_0}
+  \end{empheq}
+
+  Averaging over all channel realizations:
+  \begin{empheq}{gather*}
+    P_e(\gamma_0)=\int\limits_0^\infty P_{e|\tilde{h}}(\gamma)f(\gamma)\dgamma = \frac{1}{2}\left(1-\sqrt{\frac{\gamma_0}{1-\gamma_0}}\right)\\
+    \gamma_0=\E[\gamma]=\frac{E_b}{N_0}\E[\alpha^2]
+  \end{empheq}
+
+  \cgraphic{1.0}{img/fadinggraph.png}
+
+  At high SNR deep fades dominate performance $P_e\propto 1/SNR$.
+
+  \textbf{Diversity} Availability of independently faded copies of the transmit signal at the receiver.
+  Diversity order $L$ number of available indep. faded versions of the same signal.
+  At high SNR, $L$-th order diversity allows $P_e\propto 1/SNR^L$
 
 
 
