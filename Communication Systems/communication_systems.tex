@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-31 16:26:05
+% @Last Modified time: 2019-11-07 14:30:20
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1074,7 +1074,7 @@
     \quad A=(\lambda^2/4\pi)G \quad \eta_{ap}=A/A_{ph}
   \end{empheq}
 
-  \textbf{Free-Space Equation}
+  \textbf{Frii's Free-Space Equation}
   Power captured by receiver at distance $d$ in LoS:
   \begin{empheq}[box=\eqbox]{gather*}
     P_r = \left(\frac{\EIRP}{4\pi d^2}\right)A_r = \frac{P_tG_tA_r}{4\pi d^2} = P_tG_tG_r\left(\frac{\lambda}{4\pi d}\right)^2
@@ -1159,6 +1159,161 @@
   \textbf{Diversity} Availability of independently faded copies of the transmit signal at the receiver.
   Diversity order $L$ number of available indep. faded versions of the same signal.
   At high SNR, $L$-th order diversity allows $P_e\propto 1/SNR^L$
+
+  \subsection{Summary}
+  \begin{empheq}[box=\eqbox]{gather*}
+    N_0=kTF \quad P_n = N_0B \quad \SNR_{\text{dB}} = P_{r,\text{dB}} - P_{n,\text{dB}} \\
+    P_r = P_tG_tG_r\left(\frac{\lambda}{4\pi d}\right)^2 \\
+    P_r = RE_{b,min}M \quad A= G_r\frac{\lambda^2}{4\pi}=\eta_{ap}A_{ph}
+  \end{empheq}
+  $N_0$ Noise power spectral density [W/Hz] \\
+  $F$ Noise Figure \\
+  $B$ Bandwidth [Hz] \\
+  $P_n$ Noise power [W] \\
+  $P_r/P_t$ Receiver/Transmitter power [W] \\
+  $G_r/G_t$ Receiver/Transmitter antenna gain \\
+  $d$ Distance between receiver/transmitter \\
+  $R$ Datarate \\
+  $E_{b,min}$ Minimum energy per bit \\
+  $M$ Link margin \\
+  $A$ Effective apperture \\
+  $\eta_{ap}$ Apperture efficiency \\
+  $A_{ph}$ Physical area of antenna \\
+  
+  % ---------------------------------------------------------------------------
+  % Information Theory
+  \section{Information Theory}
+  % ---------------------------------------------------------------------------
+
+  \subsection{Uncertainty, Information and Entropy}
+  A source emits a message $S$. $S$ is a r.v. taking values in a finite alphabet $S=\{s_0,\dots,s_{K-1}\}$.
+  \begin{empheq}{gather*}
+    \P(S=s_k) = p_k \quad \sum_{k=0}^{K-1} p_k = 1
+  \end{empheq}
+
+  The definition of information $l$ is:
+  \begin{empheq}[box=\eqbox]{gather*}
+    l(s_k) \triangleq -\log p_k
+  \end{empheq}
+  \begin{empheq}{align*}
+    &l(s_k) = 0 &&\text{for} \quad p_k=1 \\
+    &l(s_k) \geq 0 &&\text{for} \quad 0\leq p_k \leq 1 \\
+    &l(s_k) > l(s_i) &&\text{for} \quad p_k < p_i \\
+    &l(s_ks_i)= l(s_k) + l(s_i) &&\text{if stat. indep.} \quad p_{ki}=p_kp_i
+  \end{empheq}
+
+  When $l$ is specified in bits, logarithms are to base 2.
+
+  The definition of entropy $H$ is:
+  \begin{empheq}[box=\eqbox]{gather*}
+    H(\mathcal{S}) \triangleq E[l(\mathcal{S})] = \sum_{k=0}^{K-1}p_kl(s_k) = -\sum_{k=0}^{K-1}p_k\log p_k
+  \end{empheq}
+  \begin{empheq}{align*}
+    &0 \leq H(\mathcal{S}) \leq \log_2K \\
+    &H(\mathcal{S})=0 &&\text{iff} \quad p_k=1 \quad\text{for one $k$} \\
+    &H(\mathcal{S})=\log_2K &&\text{iff} \quad p_k=\frac{1}{K}\forall k \\
+  \end{empheq}
+
+  \textbf{Extended source} Divide a seq. of $n\cdot M$ successive source symbols into $M$ blocks.
+  Consider each block of $n$ symbols as a single "super symbol" taking on values in $\mathcal{S}^n$. The entropy 
+  of the extended source is:
+  \begin{empheq}[box=\eqbox]{gather*}
+    H(\mathcal{S}^n) = n\cdot H(\mathcal{S})
+  \end{empheq}
+
+  \subsection{Source Coding Theorem}
+  \textit{How is the information of a source efficiently represented?}
+  Requirements: Code words must be binary, unique decodability.
+  \cgraphic{0.8}{img/sourcecoding.png}
+
+  The average code word length of a  code whose $k$th code-word is of length $L_k$:
+  \begin{empheq}{gather*}
+    \bar{L}=\sum_{k=0}^{K-1}p_kL_k
+  \end{empheq}
+
+  The average code workd length is lower bounded by the entropy of the source.
+  \begin{empheq}[box=\eqbox]{gather*}
+    \bar{L}\geq H(\mathcal{S}) \triangleq L_{min}
+  \end{empheq}
+
+  Coding efficiency is a meausre of code quality:
+  \begin{empheq}{gather*}
+    \eta=\frac{L_{min}}{\bar{L}}\leq 1
+  \end{empheq}
+
+  \subsection{Data Compation}
+  Goal: Elmininate redundancy. Seek for codes that approach Shannon's lower bound on the avg code-word length.
+
+  \textbf{Prefix Codes}: No code-word is a prefix of another code-word. Leads to implicit
+  recognition of end of code word. For each discrete, memoryless source there exists a prefix code s.t.:
+  \begin{empheq}{gather*}
+    H(\mathcal{S}) \leq \bar{L} < H(\mathcal{S})+1
+  \end{empheq}
+  \begin{empheq}{gather*}
+    H(\mathcal{S}^n) \leq \bar{L}_n < H(\mathcal{S}^n)+1 \\
+    \Leftrightarrow nH(\mathcal{S})\leq \bar{L}_n < nH(\mathcal{S})+1 \\
+     \Leftrightarrow H(\mathcal{S}) \leq \frac{\bar{L}_n}{n}<H(\mathcal{S})+\frac{1}{n}
+  \end{empheq}
+  $\frac{\bar{L}_n}{n}$ effective nmber of bit per source symbol.
+
+  \textbf{Huffman Coding} yields a prefix code that minimizes the avg. code-word length when the
+  source is memoryless.
+  \begin{enumerate}
+    \item Assign a 0 and 1 to the symbols of lowest probability
+    \item Replace the two symbols by a new pseudo-symbol whose prob. is the sum of the two probs.
+    \item Repeat 1. and 2. until only a single pseudo-symbol left
+  \end{enumerate}
+  The code sequence for each symbol is found by backtracking from last symbol and tracing the 0s and 1s.
+  \cgraphic{0.8}{img/huffman.png}
+
+  Drawbacks:
+  \begin{itemize}
+    \item Need to know probabilities a priori
+    \item Redundancy due to memory in source can only be removed by using large extension codes, increasing
+    complexity
+  \end{itemize}
+
+  \textbf{Lempel-Ziv Coding} Adaptive algorithm of low complexity that captures the source statistic and memory
+  in the source intrinsically.
+  \cgraphic{1}{img/lempelziv.png}
+
+  \begin{itemize}
+    \item Constructed by parsingt he source data stream into segments other than 0 and 1 that
+    are shortest subsequences not encountered previously
+    \item Segment 0 and 1 are asigned indices 1 and 2
+    \item $N$ stored subsequences are indezed from $3$ to $N+2$
+    \item A new sequence can always be composed from an old seubsequence (root subsequence) and a 0
+    and a 1 (innovation symbol)
+  \end{itemize}
+
+
+  \subsection{Discrete Memoryless Channel}
+  \cgraphic{0.8}{img/dmchannel.png}
+
+  $X,Y$ are statistically dependant r.v.
+  Discrete if the input and output alphabet ($\mathcal{X}$, $\mathcal{Y}$) are of finite size
+  Memoryless if the current output depends on the current input only.
+  It is fully described by
+  \begin{itemize}
+    \item input alphabet $\mathcal{X}=\{x_0,\dots,x_{J-1}\}$
+    \item output alphabet $\mathcal{Y}=\{y_0,\dots,y_{K-1}\}$
+    \item transition probabilities $p(y_k|x_j) = \P(Y=y_k | X = x_j)$
+  \end{itemize}
+
+  \textbf{Transition Matrix}
+  \begin{empheq}{gather*}
+    \Pr=
+      \begin{bmatrix} 
+        p(y_0|x_0) & \cdots & p(y_{K-1} | x_0) \\
+        \vdots & \ddots & \vdots \\
+        p(y_0 | x_{J-1}) & \cdots & p(y_{K-1} | x_{J-1})
+      \end{bmatrix} \\
+      p(y_k) = \P(Y=y_k) = \sum_{j=0}^{J-1}p(y_k|x_j)p(x_j)
+  \end{empheq}
+
+  \textbf{Binary, Symmetric Channel}
+  \cgraphic{0.6}{img/bsc.png}
+  $J=K=2$, transition probability $p$. Error probability is $p$.
 
 
 
