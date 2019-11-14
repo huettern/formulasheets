@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-11-14 09:19:10
+% @Last Modified time: 2019-11-14 10:49:03
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1316,6 +1316,99 @@
   $J=K=2$, transition probability $p$. Error probability is $p$.
 
 
+  % ---------------------------------------------------------------------------
+  % Inf theory 2
+  % ---------------------------------------------------------------------------
+  \subsection{Mutual Information}
+  \textbf{Conditional entropy} of $X$ given $Y$ is a measure for the uncertainty about $X$ if $Y$ is known:
+  \begin{empheq}{gather*}
+    H(X|Y) = -\E_{X,Y}[\log_2 p(X|Y)]=\\-\sum_{k=0}^{K-1}\sum_{j=0}^{J-1}p(x_j,y_k)\log_2 p(x_j|y_k)
+  \end{empheq}
+
+  \textbf{Mutual information} is the reductino of the uncertainty about $X$ achieved by observing $Y$.
+  \begin{empheq}[box=\eqbox]{gather*}
+    I(X;Y) \triangleq H(X)-H(X|Y)
+  \end{empheq}
+  \begin{empheq}{gather*}
+    I(X;Y)=I(Y;X) \\
+    H(X)-H(X|Y)=H(Y)-H(Y|X) \\
+    I(X;Y) \geq 0 \\
+    H(X)\geq H(X|Y)
+  \end{empheq}
+
+  \textbf{Joint entropy} of $X$ and $Y$ is defined as:
+  \begin{empheq}{gather*}
+    H(X,Y) = -\E_{X,Y}[\log_2 p(X,Y)]=\\-\sum_{k=0}^{K-1}\sum_{j=0}^{J-1}p(x_j,y_k)\log_2 p(x_j,y_k) \\
+    I(X;Y) + H(X,Y) = H(X) + H(Y)
+  \end{empheq}
+  \cgraphic{0.6}{img/mutualinfo.png}
+
+  \subsection{Channel Capacity}
+  A channel is a statistical model with input $X$ and output $Y$. Mutual information depends also on
+  $p(x)$.
+  \begin{empheq}{gather*}
+    Y(X;Y) = H(Y)-H(Y|X) = \\\sum_{k=0}^{K-1}\sum_{j=0}^{J-1}p(x_j,y_k)\log\left(\frac{ p(y_k|x_j)}{p(y_k)}\right)=\\
+    \sum_{k=0}^{K-1}\sum_{j=0}^{J-1}p(y_k|x_j)p(x_j)\log\left(\frac{ p(y_k|x_j)}{\sum_{j=0}^{J-1}p(y_k|x_j)p(x_j)}\right)
+  \end{empheq}
+
+  \textbf{Channel capacity} is the maximum mutual information over all possible input distributions:
+  \begin{empheq}[box=\eqbox]{gather*}
+    C \triangleq \max_{\{p(x_j)\}} I(X;Y)
+  \end{empheq}
+  \cgraphic{0.9}{img/capacity-binarychannel.png}
+
+  \subsection{Channel Coding Theorem}
+  \textbf{Shannon's Channel Coding Theorem}
+  \begin{itemize}
+    \item Consider discrete, memoryless source emitting values in $\mathcal{S}$
+    \item One symbol emitted every $T_s$ seconds - information rate $H(\mathcal{S})/T_s$
+    \item One coded symbol transmitter every $T_c$ seconds
+  \end{itemize}
+  \begin{tcolorbox}[width=\columnwidth,colback=orange1,arc=0pt]
+   \underline{Theorem} If $H(\mathcal{S})/T_s < C/T_c$ there exists a channel code yielding an 
+   arbitratily small block (message) error probability as the channel code-word length
+   goes to infinity. For $H(\mathcal{S})/T_s \geq C/T_c$ such a code does not exist.
+  \end{tcolorbox}
+
+  \subsection{Differential Entropy}
+  Idea: Source and channels with cintinuous alphabets.
+
+  Differential entropy:
+  \begin{empheq}[box=\eqbox]{gather*}
+    h(X) = -\intinf f_X(x)\log f_X(x)\dx
+  \end{empheq}
+
+  The entropy $H(X)$ goes to $\infty$ in the limit of $\delta x\to 0$. But the mutual information
+  is well defined:
+  \begin{empheq}[box=\eqbox]{gather*}
+    I(X;Y) = h(X) - h(X|Y)
+  \end{empheq}
+
+  Let $X\sim \mathcal{N}(\mu,\sigma^2)$ be a Gaussian random variable with variance $\sigma^2$. Then
+  the diff. entropy is uniquely determined by its variance.
+  \begin{empheq}{gather*}
+    h(X) = \frac{1}{2}\log(2\pi e \sigma^2)
+  \end{empheq}
+
+  \subsection{Information Capacity Theorem}
+  \textbf{Information capacity} is the maximum of the mutual information between input $X_i$ 
+  and output $Y_i$ overa ll distributions of $X_i$ fulfilling the contraint:
+  \begin{empheq}[box=\eqbox]{gather*}
+    C_D = \max_{\{f_X(x)\}}\left\{I(X_i;Y_i):\E[X_i^2]=E_s\right\}
+  \end{empheq}
+  Where $E_s$ is interpreted as the average energy per symbol.
+  \begin{empheq}{gather*}
+    I(X_i;Y_i) = h(Yi)-h(Y_i|X_i) = h(X_i+N_i)-h(X_i+N_i | X_i) \\
+    h(X_i + N_i) = \frac{1}{2}\log(2\pi e(E_s+\sigma^2)) \\
+    h(N_i) = \frac{1}{2}\log(2\pi e \sigma^2) \\
+    C_D = \frac{1}{2}\log_2\left(1+\frac{E_s}{\sigma^2}\right)
+  \end{empheq}
+
+  \subsection{Implications of the Inf. Capacity Thm.}
+  \textbf{ToDo: } Not yet covered in lecture
+  
+  \subsection{Colored Noise Channel}
+  \textbf{ToDo: } Not yet covered in lecture
 
   % ---------------------------------------------------------------------------
   % Basics
