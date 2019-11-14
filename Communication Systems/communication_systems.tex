@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-11-14 10:49:03
+% @Last Modified time: 2019-11-14 13:56:16
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1325,7 +1325,7 @@
     H(X|Y) = -\E_{X,Y}[\log_2 p(X|Y)]=\\-\sum_{k=0}^{K-1}\sum_{j=0}^{J-1}p(x_j,y_k)\log_2 p(x_j|y_k)
   \end{empheq}
 
-  \textbf{Mutual information} is the reductino of the uncertainty about $X$ achieved by observing $Y$.
+  \textbf{Mutual information} is the reduction of the uncertainty about $X$ achieved by observing $Y$.
   \begin{empheq}[box=\eqbox]{gather*}
     I(X;Y) \triangleq H(X)-H(X|Y)
   \end{empheq}
@@ -1347,7 +1347,7 @@
   A channel is a statistical model with input $X$ and output $Y$. Mutual information depends also on
   $p(x)$.
   \begin{empheq}{gather*}
-    Y(X;Y) = H(Y)-H(Y|X) = \\\sum_{k=0}^{K-1}\sum_{j=0}^{J-1}p(x_j,y_k)\log\left(\frac{ p(y_k|x_j)}{p(y_k)}\right)=\\
+    I(X;Y) = H(Y)-H(Y|X) = \\\sum_{k=0}^{K-1}\sum_{j=0}^{J-1}p(x_j,y_k)\log\left(\frac{ p(y_k|x_j)}{p(y_k)}\right)=\\
     \sum_{k=0}^{K-1}\sum_{j=0}^{J-1}p(y_k|x_j)p(x_j)\log\left(\frac{ p(y_k|x_j)}{\sum_{j=0}^{J-1}p(y_k|x_j)p(x_j)}\right)
   \end{empheq}
 
@@ -1406,7 +1406,7 @@
 
   \subsection{Implications of the Inf. Capacity Thm.}
   \textbf{ToDo: } Not yet covered in lecture
-  
+
   \subsection{Colored Noise Channel}
   \textbf{ToDo: } Not yet covered in lecture
 
