@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-11-07 14:30:20
+% @Last Modified time: 2019-11-14 09:19:10
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1191,22 +1191,22 @@
     \P(S=s_k) = p_k \quad \sum_{k=0}^{K-1} p_k = 1
   \end{empheq}
 
-  The definition of information $l$ is:
+  The definition of information $I$ is:
   \begin{empheq}[box=\eqbox]{gather*}
-    l(s_k) \triangleq -\log p_k
+    I(s_k) \triangleq -\log p_k
   \end{empheq}
   \begin{empheq}{align*}
-    &l(s_k) = 0 &&\text{for} \quad p_k=1 \\
-    &l(s_k) \geq 0 &&\text{for} \quad 0\leq p_k \leq 1 \\
-    &l(s_k) > l(s_i) &&\text{for} \quad p_k < p_i \\
-    &l(s_ks_i)= l(s_k) + l(s_i) &&\text{if stat. indep.} \quad p_{ki}=p_kp_i
+    &I(s_k) = 0 &&\text{for} \quad p_k=1 \\
+    &I(s_k) \geq 0 &&\text{for} \quad 0\leq p_k \leq 1 \\
+    &I(s_k) > I(s_i) &&\text{for} \quad p_k < p_i \\
+    &I(s_ks_i)= I(s_k) + I(s_i) &&\text{if stat. indep.} \quad p_{ki}=p_kp_i
   \end{empheq}
 
-  When $l$ is specified in bits, logarithms are to base 2.
+  When $I$ is specified in bits, logarithms are to base 2.
 
   The definition of entropy $H$ is:
   \begin{empheq}[box=\eqbox]{gather*}
-    H(\mathcal{S}) \triangleq E[l(\mathcal{S})] = \sum_{k=0}^{K-1}p_kl(s_k) = -\sum_{k=0}^{K-1}p_k\log p_k
+    H(\mathcal{S}) \triangleq E[I(\mathcal{S})] = \sum_{k=0}^{K-1}p_kI(s_k) = -\sum_{k=0}^{K-1}p_k\log p_k
   \end{empheq}
   \begin{empheq}{align*}
     &0 \leq H(\mathcal{S}) \leq \log_2K \\
