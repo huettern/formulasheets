@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-11-14 13:56:16
+% @Last Modified time: 2019-11-21 11:40:19
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1324,6 +1324,7 @@
   \begin{empheq}{gather*}
     H(X|Y) = -\E_{X,Y}[\log_2 p(X|Y)]=\\-\sum_{k=0}^{K-1}\sum_{j=0}^{J-1}p(x_j,y_k)\log_2 p(x_j|y_k)
   \end{empheq}
+  Remember: $p(x_j,y_k)=p(x_j|y_k)\cdot p(y_k)$
 
   \textbf{Mutual information} is the reduction of the uncertainty about $X$ achieved by observing $Y$.
   \begin{empheq}[box=\eqbox]{gather*}
@@ -1409,6 +1410,247 @@
 
   \subsection{Colored Noise Channel}
   \textbf{ToDo: } Not yet covered in lecture
+
+  % ---------------------------------------------------------------------------
+  % Data Link Layer
+  \section{Data Link Layer}
+  % ---------------------------------------------------------------------------
+  \subsection{Channel Coding}
+  The channel encoder takes the information bit sequence $m_i$ as input and
+  outputs coded bits $c_j$. Received bits are denoted by $r_j$. We assume a 
+  discrete memoryless channel with noise. Purpose of encoding: Change BER
+  from problematic to acceptable for a fixed $E_b/N_0$ or reduce required 
+  $E_b/N_0$ for a fixed BER.
+
+  \textbf{FEC (Forward error correction)} Decoder exploits redundancy to correct
+  errors and decide on the message bits
+
+  \textbf{Error detection} Decoder exploits redundancy to detect
+  errors, doesn't correct them
+
+  \textbf{Block codes} have no memory in the encoder and 
+  \textbf{Concolutional codes} have memory in the encoder.
+
+  \subsection{Linear Block Codes}
+  $(n,k)$ linear block code takes $k$ information bits and produces $n$ coded bits.
+  \begin{itemize}
+    \item Any to code words added (mod 2) produce a third code word in the code
+    \item The all-zero code word is part of the code
+  \end{itemize}
+
+  \textbf{Systematic Linear Block Code} Unaltered Message bits are extended with
+  $n-k$ parity bits that are linear sums of the message bits.
+  \cgraphic{0.8}{img/syslbc.png}
+  \begin{empheq}{gather*}
+    b_i = p_{0,i}m_0 + p_{1,i}m_1 + \dots +  p_{k-1,i}m_{k-1} \\
+    p_{j,i} \in \{0,1\}
+  \end{empheq}
+
+  In matrix notation:
+  \begin{empheq}[box=\eqbox]{gather*}
+    \vect{b} = [b_0,b_1,\dots,b_{n-k-1}] \\
+    \vect{m} = [m_0,m_1,\dots,m_{k-1}] \\
+    \vect{P} = \begin{bmatrix}p_{00}&p_{01}&\cdots&p_{0,n-k-1} \\
+      p_{10}&p_{11}&\cdots&p_{1,n-k-1} \\
+      \vdots&\vdots&\ddots&\vdots \\
+      p_{k-1,0}&p_{k-1,1}&\cdots&p_{k-1,n-k-1}
+      \end{bmatrix} \\
+    \vect{b} = \vect{m}\vect{P}
+  \end{empheq}
+
+  With the generator matrix $\vect{G}$:
+  \begin{empheq}[box=\eqbox]{gather*}
+    \vect{c} = [c_0,c_1,\dots,c_{n-1}] = [\vect{b} | \vect{m}] 
+      = \vect{m} [\vect{P} | \vect{I}_k] \\
+    \vect{G} = [ \vect{P} | \vect{I}_k ] \quad \vect{c} = \vect{m}\vect{G} \\
+    \vect{c}_i+\vect{c}_j = \vect{m}_i\vect{G} + \vect{m}_j\vect{G} 
+      = (\vect{m}_i + \vect{m}_j)\vect{G}
+  \end{empheq}
+
+  The parity check matrix $\vect{H}$:
+  \begin{empheq}[box=\eqbox]{gather*}
+    \vect{H} = [\vect{I}_{n-k} | \vect{P}^\top] \\
+    \vect{H}\vect{G}^\top = 0 \quad 
+    \vect{c}\vect{H}^\top = \vect{m}\vect{G}\vect{H}^\top = 0
+  \end{empheq}
+
+  Multiplying a code word with the parity check matric results in the zero vector.
+
+  \subsection{Cyclic Codes}
+  Encodinga nd syndrome calculation with low complexity shift-registers. Practical 
+  decoding methods due to algebraic structure. \textbf{Cyclic property}: Any cyclic
+  shift of a code word is also a code word. Description of a code via code polynomial:
+  \begin{empheq}{gather*}
+    \vect{c} = [c_0,c_1,\dots,c_{n-1}] \\
+    c(X) = c_0 + c_1X + c_2X^2 + \dots + c_{n-1}X^{n-1}
+  \end{empheq}
+
+  A cyclic shift is done by multiplication with $X^j$ and modulo $X^n+1$.
+  Or take the remainder of $c(X)X^j : (X^n+1)$ with $\mod n$ arithmetic.
+  (E.g. with $n=7$, $X^3/X^7=X^{-4}=X^3 \mod 7$).
+  \cgraphic{0.9}{img/shift.png}
+    
+  Polynomials and their order:
+  \begin{empheq}{align*}
+    &m(X) & &\text{Message polynomial} & &\leq k-1 \\
+    &g(X) & &\text{Generator polynomial} & &\leq n-k \\
+    &c(X)=m\cdot g & &\text{Code polynomial} & &\leq n-1 \\
+  \end{empheq}
+
+  If $g(X)$ is a factor of $X^n+1$
+  \begin{empheq}{gather*}
+    g(X)h(X)=X^n+1
+  \end{empheq}
+  then the code is cyclic.
+
+  $h(X)$ is the parity check polynomial, as for all $c(X)$:
+  \begin{empheq}{gather*}
+    c(X)h(x)\mod(X^n+1) \\
+    = m(X)g(X)h(X)\mod(X^n+1)=0
+  \end{empheq}
+  
+  \textbf{Generator Polynomial} of degree $n-k$ that is a factor of $X^n+1$.
+  Further is expanded as
+  \begin{empheq}{gather*}
+    g(X) = 1 + \sum_{i=1}^{n-k-1}g_iX^i + X^{n-k} \quad g_i\in \{0,1\}
+  \end{empheq}
+
+  \textbf{Parity Check Polynomial} 
+  \begin{empheq}{gather*}
+    g(X)h(X) = X^n+1
+  \end{empheq}
+
+  \textbf{Systematic Cyclic Code} 
+  Idea: Complement the shifted message polynomial such, that the resulting code
+  word is a mutliple of $g(X)$.
+  \begin{empheq}[box=\eqbox]{gather*}
+    m(X) = m_0 + m_1X + \dots + m_{k-1}C^{k-1} \\
+    \frac{X^{n-k}m(X)}{g(X)} = \tilde{x}(X) + \frac{b(X)}{g(X)} \\
+    \tilde{c}(X) = \tilde m(X)g(X) = b(X) + X^{n-k}m(X)
+  \end{empheq}
+
+  \subsection{Minimum Distance Considerations}
+  \textbf{Hamming distance} $d(c_1,c_2)$ number of locations in which two code words
+  differ.
+
+  \textbf{Hamming weight} $w(c)$ number of non zero elements in code vector.
+  The following hold only if linear block code:
+  \begin{empheq}{gather*}
+    d(c_1,c_2) = d(c_1+c_2,0) = w(c_1+c_2)
+  \end{empheq}
+
+  \textbf{Minimum distance} $d_\text{min}$ the smalles Hamming distance between 
+  any pair of code vectors in the code.
+
+  Given an $(n,k,d_\text{min})$ block code and $t$ the number of locations where
+  a bit toggled after transmission. Error \textbf{detection}: All error patterns
+  with 
+  \begin{empheq}[box=\eqbox]{gather*}
+    t \leq d_\text{min}-1
+  \end{empheq}
+  can be detected. Error \textbf{correction} capability: Error patterns with weights
+  \begin{empheq}[box=\eqbox]{gather*}
+    t \leq \floor*{\frac{1}{2}(d_\text{min}-1)}
+  \end{empheq}
+  can be corrected surely.
+  \cgraphic{0.9}{img/distance.png}
+
+  \textbf{Hamming bound}: For given $d_\text{min}$ and code word length $n$, good 
+  codes have  large num. of possible code words $2^k$, i.e. large code rate $r=k/n$.
+  The number of code words for a binary code must satisfy:
+  \begin{empheq}[box=\eqbox]{gather*}
+    2^k\left(1+{n \choose 1} + \cdots + {n\choose t_0} \right)\leq 2^n \quad
+    t_0=\floor*{\frac{d_\text{min}-1}{2}}
+  \end{empheq}
+
+  \textbf{Perfect Code} is if a binary code $(n,k,d_\text{min})$ satisfies
+  the hamming bound with equality.
+
+  \subsection{Example: Hamming code}
+  Hamming code are $(n,k)$ lin. block codes with $m\geq3$ and:
+  \begin{empheq}{gather*}
+    n=2^m-1\quad k=2^m-m-1=n-m\quad m=n-k
+  \end{empheq}
+
+  With $m=3$ the $(7,4)$ linear block code is:
+  \begin{empheq}{gather*}
+    \vect{G} = \left [
+    \begin{array}{ccc|cccc}
+    1&1&0&1&0&0&0\\
+    0&1&1&0&1&0&0\\
+    1&1&1&0&0&1&0\\
+    \undermat{\vect{P}}{1&0&1} & \undermat{\vect{I}_k}{0&0&0&1} \\
+    \end{array}
+    \right ]
+  \end{empheq}
+
+  \textbf{Properties of Hamming codes}: $d_\text{min}=1$ and $t_0=1$. They satisfy
+  the Hamming bound with equality. They are \textul{Hamming codes are single-error
+  corercting binary perfect codes}.
+
+  \subsection{Decoding Principles}
+  Received bit vector $\vect{r}=\vect{c}+\vect{e}$ where $\vect{e}$ is the error
+  vector/pattern.
+
+  The \textbf{syndrome} is defined as the projection of $\vect{r}$ onto $\vect{H}$:
+  \begin{empheq}{gather*}
+    \vect{s} = \vect{r}\vect{H}^\top
+  \end{empheq}
+  \begin{itemize}
+    \item The syndrom of $\vect{r}$ depends only on the error pattern $\vect{e}$
+    \item All error patterns $\vect{e}_j^i$ that differ by a code word have
+    the same sybdrom $\vect{s}^i$. Thus $2^k$ distinct error patterns lead to the 
+    same syndrome $\vect{s}^i$.
+  \end{itemize}
+
+  \textbf{Syndrom of cyclic codes}
+  \begin{empheq}{gather*}
+    s(X)=r(X)\mod g(X)
+  \end{empheq}
+
+  \textbf{Standard array and coset leader}
+  Construct a table with $N=n-k-1$ and $e_i$ the most probable \vect{e} vectors
+  (i.e. these with the least weight):
+
+  \begin{tabular}{| c | c  c  c | c |}
+    \hline
+    $0$ & $c_1$ & $\cdots$ & $c_{n-1}$ \\\hline
+    $e_1$&$c_2+e_1$&$\cdots$&$c_{n-1}+e_1$\\
+    $e_2$&$c_2+e_2$&$\cdots$&$c_{n-1}+e_2$\\
+    $\vdots$&$\vdots$&$\ddots$&$\vdots$\\
+    $e_{N}$&$c_2+e_{N}$&$\cdots$&$c_{n-1}+e_{N}$\\ \hline
+  \end{tabular}
+
+  $e_i$ are called the coset leaders. The syndrom vector points to a table
+  entry. To obtain $\vect{c}$, XOR $\vect{r}$ with $e_i$.
+
+  \subsection{Maximum Likelihood Decoding}
+  ML decoding for discrete memoryless channel is minimum Hamming distance 
+  decoding:
+  \begin{empheq}[box=\eqbox]{gather*}
+    \hat{\vect{c}} = \argmax_{\vect{c}\in C} \P(\vect{r} | \vect{c} ) \to
+    \hat{\vect{c}} = \argmin_{\vect{c}\in C} wt(\vect{e}=\vect{r}+\vect{c})
+  \end{empheq}
+
+  Sybdrome decoding is equal to ML decoding, if each coset leader has the largest
+  probability of occurrence among all error patterns in a coset.
+
+  \subsection{Error Probabilities}
+  Given a BSC with transistion prob. $p$, an $(n,k,d)$ linear block code, $\alpha_j$
+  the number of coset leaders with weight $j$, the error probability is given by:
+  \begin{empheq}[box=\eqbox]{gather*}
+    P_e = 1 - \underbrace{\sum_{j=0}^n \alpha_jp^j(1-p)^{n-j}}_
+    {\P(\text{error pat=coset leader})} \quad \alpha_0=1
+  \end{empheq}
+
+  \textbf{Error Detection}: $2^n-2^k$ error patterns are detectable. $2^k-1$ undetectable error patterns (zero syndrome). Probability $P_u$ of an undetectable
+  error in BSC with $p$, $(n,k,d)$ lin. block code, $w_j$ number of code words
+  with weight $j$, $P_u$ is the prob. that an error pattern itself is a code word:
+  \begin{empheq}[box=\eqbox]{gather*}
+    P_u = \sum_{j=1}^nw_jp^j(1-p)^{n-j}
+  \end{empheq}
+
+
 
   % ---------------------------------------------------------------------------
   % Basics

@@ -36,12 +36,16 @@
 	\newcommand{\vEw} {\vec{e_2}}
 	\newcommand{\vEe} {\vec{e_3}}
 	\newcommand{\transpose} {^{\text{T}}}
-	\newcommand{\vect}[1]{\boldsymbol{#1}}
+	\usepackage{bm}
+  \newcommand{\vect}[1]{\boldsymbol{\mathbf{#1}}}
   \newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
 	
 %..MATRIX
     \newcommand{\MATR}[1]{ \displaystyle \left( \begin{matrix} #1 \end{matrix} \right)}
     \newcommand{\MATRABS}[1]{ \displaystyle \left| \begin{matrix} #1 \end{matrix} \right|}
+  \newcommand\undermat[2]{%
+    \makebox[0pt][l]{$\smash{\underbrace{\phantom{%
+      \begin{matrix}#2\end{matrix}}}_{\text{$#1$}}}$}#2}
 
 %..GRAPHICS
   \newcommand{\cgraphic}[2]{\begin{center}\includegraphics[width=#1\columnwidth,keepaspectratio]{#2}\end{center}}
@@ -118,7 +122,8 @@
 
 %..BEAUTY
 \newcommand{\altchi}{\raisebox{2pt}{$\chi$}}
-
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 
 %..LIMES
     \DeclareMathOperator{\limni}{\lim\limits_{n\to\infty}}
