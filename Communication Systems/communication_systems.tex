@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-11-28 10:38:14
+% @Last Modified time: 2019-11-28 14:06:48
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1666,15 +1666,15 @@
   $n$ Number of generators
   \cgraphic{1.0}{img/convenc.png}
 
-  Example $K=1,k=1,n=3$ $(3,1)$ conv. encoder. Rate $R_c=k/n=1/3$. Systenatic: 
+  \textbf{Example} $(n=3,k=1,K=3)$ $(3,1,3)$ conv. encoder. Rate $R_c=k/n=1/3$. Systenatic: 
   Coded bit $1$ is information bit. $g2=[1 0 1]=1+0\cdot D+1\cdot D^2$
   \cgraphic{0.7}{img/convexample.png}
 
-  Corresponding state diagram. Solid arrows represent new message bit $0$, 
+  Corresponding \textbf{state diagram}. Solid arrows represent new message bit $0$, 
   dashed $1$. Code word is denoted next to edges.
   \cgraphic{0.7}{img/convexamplestate.png}
 
-  The trellis diagram denotes the states vertically and the progression of
+  The \textbf{trellis diagram} denotes the states vertically and the progression of
   input message bits horizontally. Again solid (dashed) edges = message $0$ ($1$)
   and code word aside edge.
   \cgraphic{0.7}{img/convexampletrellis.png}
@@ -1682,7 +1682,7 @@
   Haming weight: Weight of concatenated codewords of path through trellis\\
   Free Hamming distance: Minimum weight of codewords.
 
-  Transfer function can be deriveed from state diagram. Transitions labeled with
+  \textbf{Transfer function} can be deriveed from state diagram. Transitions labeled with
   weight $D^m$ where $m$ is the Hamming weight of the associated coded bits. For
   each state there is an equilibrium condition:
   \begin{empheq}{align*}
@@ -1716,7 +1716,7 @@
 
   \cgraphic{0.9}{img/convexampletransfer.png}
 
-  Polynomial division results in distance distribution. $8D^{12}$: $8$ codewords
+  Polynomial division results in \textbf{distance distribution}. $8D^{12}$: $8$ codewords
   with distance $12$.
   \cgraphic{0.7}{img/convdistsidtr.png}  
   
@@ -1769,14 +1769,14 @@
   \textbf{Algorithm}
   \begin{enumerate}
     \item Begin at time $t=m$, compute partial metric for single path entering
-    each state. Store path (survivor) and its metrix for each state.
+    each state. Store path (survivor) and its metric for each state.
     \item Increase $t$ by 1\\
-      \textbf{Branch metric} Compute branch metric for all $2^k$ paths entering a state\\
-      \textbf{Add} Compute the partial path metrics by adding the branch metric entering
-      that state to the metric of the connecting surcicor at the precious time\\
+      \textbf{Branch metric}: Compute branch metric for all $2^k$ paths entering a state\\
+      \textbf{Add}: Compute the partial path metrics by adding the branch metric entering
+      that state to the metric of the connecting survivor at the previous time\\
       \textbf{Compare} the partial metrics for each state for all $2^k$ paths entering
       that state\\
-      \textbf{Select} the path with largest metric (survivor), store it with its metric and
+      \textbf{Select} the path with best metric (survivor), store it with its metric and
       eliminate all other paths
     \item Iterate until $t=h+m+1$
   \end{enumerate}

@@ -33,7 +33,7 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 [wus]: https://github.com/noah95/formulasheets/releases/download/v2.1.2/wus_fosa_huetter.pdf
 [wus-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v2.1.2/wus_fosa_huetter.pdf.svg
 
-### Working
+### Work in Progress
 | Name          | Status | Download      |
 | ------------- |--------|---------------|
 | Communication Systems | WIP | [link][comsys] |
