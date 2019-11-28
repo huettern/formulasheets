@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-11-21 11:40:19
+% @Last Modified time: 2019-11-28 10:38:14
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1539,8 +1539,8 @@
     d(c_1,c_2) = d(c_1+c_2,0) = w(c_1+c_2)
   \end{empheq}
 
-  \textbf{Minimum distance} $d_\text{min}$ the smalles Hamming distance between 
-  any pair of code vectors in the code.
+  \textbf{Minimum distance} $d_\text{min}$ the smallest Hamming distance between 
+  any pair of code vectors in the code. If lin. code $d_\text{min}=w_\text{min}$
 
   Given an $(n,k,d_\text{min})$ block code and $t$ the number of locations where
   a bit toggled after transmission. Error \textbf{detection}: All error patterns
@@ -1650,6 +1650,140 @@
     P_u = \sum_{j=1}^nw_jp^j(1-p)^{n-j}
   \end{empheq}
 
+  % ---------------------------------------------------------------------------
+  % Concolutional Codes
+  \section{Concolutional Codes}
+  % ---------------------------------------------------------------------------
+  \subsection{Convolutional Encoder}
+  Consists of a shift register that shifts $k$-bit words at a time. Is a linear
+  code. $n$ Generators used to generate encoded sequence. For $Nk$ input bits
+  with known header and trailer ensures defined SR content and defines a
+  $(n(N+K-1), Nk)$ lin. block code.
+  
+  $k$ stage length, mostly $k=1$ \\
+  $K$ Contraint length: Number of $k$-bit stages \\
+  $k/n$ Approximate code length \\
+  $n$ Number of generators
+  \cgraphic{1.0}{img/convenc.png}
+
+  Example $K=1,k=1,n=3$ $(3,1)$ conv. encoder. Rate $R_c=k/n=1/3$. Systenatic: 
+  Coded bit $1$ is information bit. $g2=[1 0 1]=1+0\cdot D+1\cdot D^2$
+  \cgraphic{0.7}{img/convexample.png}
+
+  Corresponding state diagram. Solid arrows represent new message bit $0$, 
+  dashed $1$. Code word is denoted next to edges.
+  \cgraphic{0.7}{img/convexamplestate.png}
+
+  The trellis diagram denotes the states vertically and the progression of
+  input message bits horizontally. Again solid (dashed) edges = message $0$ ($1$)
+  and code word aside edge.
+  \cgraphic{0.7}{img/convexampletrellis.png}
+
+  Haming weight: Weight of concatenated codewords of path through trellis\\
+  Free Hamming distance: Minimum weight of codewords.
+
+  Transfer function can be deriveed from state diagram. Transitions labeled with
+  weight $D^m$ where $m$ is the Hamming weight of the associated coded bits. For
+  each state there is an equilibrium condition:
+  \begin{empheq}{align*}
+    &b: &&DX_c+DX_d-X_b=0\\
+    &c: &&X_aD^3+X_bD-X_c=0\\
+    &d: &&D^2X_d+D^2X_c-X_d=0\\
+    &e: &&D^2X_b=X_e
+  \end{empheq}
+  In Matrix form:
+  \begin{empheq}{gather*}
+    \begin{bmatrix}
+      D & D & -1 & 0\\
+      D^2-1 & D^2 & 0 & 0\\
+      0 & -1 & D & D^3\\
+      0 & 0 & D^2 & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+      X_d\\X_c\\X_b\\X_a
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      0\\0\\0\\X_e
+    \end{bmatrix}
+  \end{empheq}
+
+  After gaussian elimination yields the transfer function
+  \begin{empheq}{align*}
+    T(D) &= \frac{X_e}{X_a} = \frac{D^6}{1-2D^2} \\
+    &= D^6 + 2D^8 + 4D^{10}+ 8D^{12} + L
+  \end{empheq}
+
+  \cgraphic{0.9}{img/convexampletransfer.png}
+
+  Polynomial division results in distance distribution. $8D^{12}$: $8$ codewords
+  with distance $12$.
+  \cgraphic{0.7}{img/convdistsidtr.png}  
+  
+  \textbf{Error Probability}: Pairwise prob. of error between two codewords with
+  Hamming distance $d_H$:
+  \begin{empheq}[box=\eqbox]{gather*}
+    P_2(d_H) = Q\left(\sqrt{\frac{2E_b}{N_0}R_cd_H}\right) \quad E_c=E_bR_c
+  \end{empheq}
+  $E_c$ Energy per coded bit\\
+
+  \textbf{Coding Gain} is asymptotic and determines performance in the high
+  SNR regime.
+  \begin{empheq}[box=\eqbox]{gather*}
+    G_a =10\log_{10}(R_cd_{H,\text{free}})
+  \end{empheq}
+  \cgraphic{0.8}{img/convcodinggain.png}
+
+  \subsection{Viterbi Decoder}
+  \textbf{Conventions}\\
+  $m=K-1$ memory depth\\
+  $(n,k,m)$ codes comprise $2^{mk}$ states \\
+  $u,v$ input/coded bits \\
+  $\vect{v^{(i)}}$ Encoded sequence \\
+  $\vect{r}$ Received sequence \\
+  $p(\vect{r} | \vect{v}^{(i)})$ ML metric of trial path
+  \begin{empheq}[box=\eqbox]{gather*}
+    \vect{v^{(i)}} = \begin{bmatrix}\vect{v}_0^{(i)} & \hdots & \vect{v}_{n+m-1}^{(i)}\end{bmatrix}\\
+    \vect{r} = \begin{bmatrix}\vect{r}_0 & \hdots & \vect{r}_{n+m-1}\end{bmatrix}\\
+    p(\vect{r} | \vect{v}^{(i)}) = \prod_k p(\vect{r}_k | \vect{v}_k^{(i)})
+  \end{empheq}
+  
+  $M(\vect{r} | \vect{v}^{(i)})$ branch metric
+  \begin{empheq}[box=\eqbox]{align*}
+    M(\vect{r} | \vect{v}^{(i)}) \triangleq \log p(\vect{r} | \vect{v}^{(i)})
+    &=\sum_k\log p(\vect{r}_k | \vect{v}^{(i)}_k) \\
+    &=\sum_kM(\vect{r}_k | \vect{v}^{(i)}_k)
+  \end{empheq}
+
+  \textbf{BSC}: Special case for binary sym. channel
+  \begin{empheq}[box=\eqbox]{align*}
+    &\P(r_{l,j}=1 | v_{l,j}=1) = \P(r_{l,j}=0 | v_{l,j}=0) = 1-p\\
+    &\P(r_{l,j}=0 | v_{l,j}=1) = \P(r_{l,j}=1 | v_{l,j}=0) = p\\
+  \end{empheq}
+  
+  \textbf{AWGN}: Special case for AWGN channel
+  \begin{empheq}[box=\eqbox]{gather*}
+    \log\P(r_{l,j}=a | v_{l,j}=b) = -\abs{a-b}^2
+  \end{empheq}
+  
+  \textbf{Algorithm}
+  \begin{enumerate}
+    \item Begin at time $t=m$, compute partial metric for single path entering
+    each state. Store path (survivor) and its metrix for each state.
+    \item Increase $t$ by 1\\
+      \textbf{Branch metric} Compute branch metric for all $2^k$ paths entering a state\\
+      \textbf{Add} Compute the partial path metrics by adding the branch metric entering
+      that state to the metric of the connecting surcicor at the precious time\\
+      \textbf{Compare} the partial metrics for each state for all $2^k$ paths entering
+      that state\\
+      \textbf{Select} the path with largest metric (survivor), store it with its metric and
+      eliminate all other paths
+    \item Iterate until $t=h+m+1$
+  \end{enumerate}
+
+  \textbf{Example}
+  \cgraphic{1.0}{img/viterbiexample2.png}
+
 
 
   % ---------------------------------------------------------------------------
@@ -1717,6 +1851,7 @@
     &\P(X > x) = \frac{1}{2}\erfc\left(\frac{x}{\sqrt{2}\sigma_X}\right) \\
     &\erf(x) = \frac{1}{\sqrt{\pi}}\int_{-x}^x \e^{-t^2}\dt = \frac{2}{\sqrt{\pi}}\int_{0}^x \e^{-t^2}\dt \\
     &\erfc(x) = 1 - \erf{x} = \frac{2}{\sqrt{\pi}}\int_{x}^\infty \e^{-t^2}\dt \\
+    &Q(x) = \frac{1}{\sqrt{2\pi}}\int_x^\infty\exp(-y^2/2)\dy\leq\exp(-x^2/2)
   \end{empheq}
 
 
