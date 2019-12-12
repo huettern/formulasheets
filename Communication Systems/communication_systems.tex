@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-11-28 14:06:48
+% @Last Modified time: 2019-12-12 09:41:30
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1652,7 +1652,7 @@
 
   % ---------------------------------------------------------------------------
   % Concolutional Codes
-  \section{Concolutional Codes}
+  \section{Convolutional Codes}
   % ---------------------------------------------------------------------------
   \subsection{Convolutional Encoder}
   Consists of a shift register that shifts $k$-bit words at a time. Is a linear
@@ -1783,6 +1783,91 @@
 
   \textbf{Example}
   \cgraphic{1.0}{img/viterbiexample2.png}
+
+  % ---------------------------------------------------------------------------
+  % Concolutional Codes
+  \section{Multiple Access Protocols}
+  % ---------------------------------------------------------------------------
+
+  \subsection{Basics of Channel Access}
+  In broadcast networks, one channel is shared by multiple users, therefore coordinatino is required.
+  The medium access control (MAC) subplayer controls access to the shared channel.
+  \cgraphic{0.2}{img/mac.png}
+
+  \textbf{Static channel allocation:} Frequency- (FDM), Time- (TDM), Code- (CDM),
+   Space-Division (SDM) multiplexing.
+
+  \textbf{Dynamic channel allocation:} Time variable traffic from different sources.
+  Collided frames will be retransmitted and can be avoided using suitable coordination 
+  among stations.
+
+  Assumptions:
+  \begin{itemize}
+    \item Station Model: $N$ independent stations generating traffic. 
+    \item A single channel is available for all transmissions
+    \item Collision: If two frames overlap in time the resulting signal is distorted. 
+    \item Cont. Time Alloc: Tx can be performed in any time instant
+    \item Slotted Time: Time is divided into discrete slots. Tx begins at start of slot.
+    \item Carrier Sense: Stations listen to channel before Tx
+  \end{itemize}
+
+  \subsection{MAC Protocol Classification}
+
+  \cgraphic{1.0}{img/macclassification.png}
+
+  \subsection{ALOHA Family Protocols}
+  Data can be sent at any time. If collision, a random waiting time is passed and the data is 
+  retransmitted.
+
+  $D$ transfer time / frame length $[s]$\\
+  $g$ offered load $[frames/s]$\\
+  $G$ offered load\\
+  $S$ throughput $[frames]$ per frame duration\\
+  $P_0$ prob. of successful transmission
+
+  \begin{empheq}[box=\eqbox]{gather*}
+    G=gD \quad S=GP_0
+  \end{empheq}
+
+  Slotted ALOHA
+  \begin{empheq}[box=\eqbox]{align*}
+    &P_0=\e^{-G} &&S=G\e^{-G}\leq\frac{1}{\e} && \text{eqty with} G=1
+  \end{empheq}
+  
+  Unslotted ALOHA  
+  \begin{empheq}[box=\eqbox]{align*}
+    &P_0=\e^{-2G} &&S=G\e^{-2G}\leq\frac{1}{2\e} && \text{eqty with} G=0.5
+  \end{empheq}
+
+  Prob. that $k$ frames are transmittied during time $T$ with large number of stations:
+  \begin{empheq}[box=\eqbox]{align*}
+    &P_0(k | T) = \frac{(gT)^k\e^{-gT}}{k!} &&T = \begin{cases}D, \text{slotted},\\2D, \text{unslotted}.\end{cases}\\
+    &P_0(k=0|T)=\e^{-gT} && P_0(k=1|T)=gT\e^{-gT}
+  \end{empheq}
+
+  \cgraphic{1.0}{img/aloha.png}
+
+  \textbf{Markov Chain Model}
+  For low number of stations $N<10$ a markov chain can be used for calculating probabilities.
+  A station is backlogged if it encountered a collision during Tx and has to retransmit.
+  The MC state represents the number of backlogged stations.
+
+  \cgraphic{1.0}{img/alohamc.png}
+  
+  \begin{empheq}[box=\eqbox]{align*}
+    &P=\begin{bmatrix}P_{0,0} & \dots & P_{0,m}\\\vdots&\ddots&\vdots\\P_{m,0}&\dots&P_{m,m}\end{bmatrix}
+    && \vect{p}_{j+1} = P^\top\vect{p}_j\\
+    &j\to\infty\quad \vect{p}_{j+1} = \vect{p}_{j} = P^\top\vect{p}_j
+  \end{empheq}
+  Where $j\to\infty$ denotes the steady state that can be calculated using a
+  eigenvalue problem.
+
+  \cgraphic{1.0}{img/mctable1.png}
+  \cgraphic{1.0}{img/mctable2.png}
+
+  \subsection{CSMA Carrier Sense Multiple Access}
+  \subsection{Collision-Free Protocols}
+  \subsection{Limited-Contention Protocols}
 
 
 
