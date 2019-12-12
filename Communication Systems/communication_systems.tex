@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-12-12 09:41:30
+% @Last Modified time: 2019-12-12 10:23:51
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1866,7 +1866,62 @@
   \cgraphic{1.0}{img/mctable2.png}
 
   \subsection{CSMA Carrier Sense Multiple Access}
+  Listen for a ongoing transmission and act accordingly.
+
+  \textbf{Nonpersistent} Wait random time after check channel again and loop. May not need
+  to continually sense the channel.
+  \cgraphic{0.8}{img/csmanonp.png}
+
+  \textbf{p-persistent} Wait for idle, Tx with probability $p$, repeat until Tx or other Tx then 
+  start again. 1-persistent has $p=1$ and sends immediately as soon as channel is free.
+  \cgraphic{0.8}{img/csmapp.png}
+
+  \textbf{Vulnerable Period}
+
+  \cgraphic{0.8}{img/csmavulnerable.png}
+
+  \textbf{Channel Utilization}
+
+  \cgraphic{0.8}{img/csmautil.png}  
+
+  \textbf{Throughput}
+  Many stations $m\to\infty$, transmission with fixed duration $d$, channel access
+  Poisson distributed with rate $g$. Normalized offered load $G=gD$. Possible channel 
+  states: Idle, successful Tx, collision.
+
+  $\tau_\text{max}=\alpha D$ Worst case vulnerable period\\
+  $\tau_\text{max}$ Max. propagation delay\\
+  $P(k|T)$ Prob. of $k$ frames in $T$\\
+  $D+\tau_\text{max}=(1+\alpha)D$ duration of channel access without collision
+
+  \cgraphic{1}{img/csmathroughput.png}  
+  \begin{empheq}[box=\eqbox]{align*}
+    &p_T(T_i)=g\exp(-gT_i) && E[T]=\int_0^\infty tp_T(t)\dt=1/g
+  \end{empheq}
+
+  Prob. that no other packet is Tx in vulnerable period:
+  \begin{empheq}[box=\eqbox]{align*}
+    P(\text{success}) = \e^{-\alpha G}
+  \end{empheq}
+
+  Mean duration of a Tx cycle: $T+(1+\alpha)D$
+  \begin{empheq}[box=\eqbox]{gather*}
+    s\approx \frac{P(\text{success})}{T+(1+\alpha)D}=\frac{\e^{-\alpha G}}{T+(1+\alpha)D}
+  \end{empheq}
+  
+  Normalized throughput per packet duration $D$
+  \begin{empheq}[box=\eqbox]{gather*}
+    S=sD=\frac{\e^{-\alpha G}}{\frac{1}{G}+1+\alpha}
+  \end{empheq}
+  \cgraphic{1}{img/csmathroughput2.png}  
+
+  \subsection{CSMA/CD collision detect}
+  Detect a collision and stop Tx.
+
   \subsection{Collision-Free Protocols}
+  \textbf{Bit-Map Protocol}: Contention slots and frames.
+  \cgraphic{1}{img/bitmapproto.png}  
+
   \subsection{Limited-Contention Protocols}
 
 
