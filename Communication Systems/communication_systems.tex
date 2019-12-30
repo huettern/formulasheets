@@ -153,7 +153,7 @@
       R_{X}(t_{1},t_{2}) = \E[X(t_{1})X(t_{2})] \triangleq \\
       \intinf\intinf x_{1}x_{2}f_{X_{1},X_{2}}(x_{1}, x_{2})\dx_{1}\dx_{2}\\
       R_{XY}(x,y) = \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}xyf_{X,Y}(x, y)dxdy\\
-      C_{X}(t_{1},t_{2}) = R_{X}(t_{2}-t_{1}) - m_{X}^{2}
+      C_{X}(t_{1},t_{2}) = R_{X}(t_{1},t_{2}) - m_{X}^{2} =(for WSS) R_{X}(t_{2}-t_{1}) - m_{X}^{2}
     \end{gathered}
   \end{empheq}
 
@@ -179,10 +179,10 @@
     \end{gathered}
   \end{empheq}
   \begin{itemize}
-    \item Stationariy menas $R_{XY}(t,u) = R_{XY}(\tau)$ for $\tau=t-u$
+    \item Stationariy means $R_{XY}(t,u) = R_{XY}(\tau)$ for $\tau=t-u$
     \item Not generally an even function of $t$
     \item Not necessarily a maximum at $\tau=0$
-    \item Symmetry: $R_{XY}(\tau) = R_{XY}(-\tau)$
+    \item Symmetry: $R_{XY}(\tau) = R_{YX}(-\tau)$
   \end{itemize}
 
   \subsection{Ergodicity}
@@ -253,7 +253,7 @@
     \item The joint cdf is of these r.v. is completely determined by the \textbf{means} $\mu_X(t_i) = \E[X(t_i)]$ and \textbf{covariances} $C_X(t_k,t_i)=\E[(X(t_k)-\mu_X(t_k))(X(t_i)-\mu_X(t_i))]$
   \end{itemize}
 
-  Multivariative Guass distribution:
+  Multivariative Gauss distribution:
   \begin{empheq}[box=\eqbox]{equation*}
     \begin{gathered}
       f(x) = \frac{\exp\left(-\frac{1}{2} (\vec{x}-\vec{m}_{x})^{T}\underline{\Sigma}^{-1} (\vec{x}-\vec{m}_{x}) \right)}{(2\pi)^{\frac{n}{2}}\det(\underline{\Sigma})^{\frac{1}{2}}}\\
@@ -359,7 +359,7 @@
       \sum_{m=-\infty}^\infty p(mT_b)\delta(t-mT_b) = \delta(t) \laplace P_\delta(f)=1
   \end{empheq}
 
-  An the nyquist criterion ($R_b = 1/T_b$ symbol rate):
+  And the nyquist criterion ($R_b = 1/T_b$ symbol rate):
   \begin{empheq}[box=\eqbox]{gather*}
       \sum_{n=-\infty}^\infty P(f-nR_b) = T_b
   \end{empheq}
@@ -385,7 +385,7 @@
         0 & \abs{f} > 2W-f_1
       \end{cases} \\
       p(t) &= \sinc(2Wt)\left(\frac{\cos(2\pi\alpha Wt)}{1-16\alpha^2W^2t^2}\right)\\
-      \alpha &= 1-\frac{f_1}{W}  \in [0,1] \quad \text{Rollof factor}
+      \alpha &= 1-\frac{f_1}{W}  \in [0,1] \quad \text{Rolloff factor}
   \end{empheq}
 
   Bandwidth is larger: $B_T = 2W-f_1 = W(1+\alpha$).
@@ -436,7 +436,7 @@
   \begin{itemize}
     \item All symbols $m_i$ from source are eually likely $p_i=p(m_i)=\frac{1}{M}$
     \item Transmitter codes each $m_i$ into a signal $s_i(t)\in \{s_k(t) | 1\leq k \leq M\}$
-    \item Cahnnel adds AWGN $x(t) = s_i(t) + w(t)$ for $0\leq t\leq T$
+    \item Channel adds AWGN $x(t) = s_i(t) + w(t)$ for $0\leq t\leq T$
     \item The optimal receiver minimizes the avg. pob. of symbol error $P_e$
   \end{itemize}
   \begin{empheq}{gather*}
@@ -449,7 +449,7 @@
   $\{s_i(t)\}_{i=1\dots M}$. All signals can be expressed as a finite sum.
   The coeff. $s_{ij}$ are given by the projection onto $\{\phi_i(t)\}_{i=1\dots N}$.
 
-  The orthonormal functions deine a $N$-dimensional Eucledian space - the signal space.
+  The orthonormal functions deine a $N$-dimensional Euclidean space - the signal space.
   \begin{empheq}[box=\eqbox]{gather*}
       \int\limits_0^T \phi_i(t)\phi_j(t)\dt = \delta_{ij} = \begin{cases}
         1,&  i=j\\
@@ -538,7 +538,7 @@
   Thus the $x_j$ are mutually uncorrelated. $\implies$ statistical independence.
 
   \textbf{Likelihood Function} As the $x_j$ are statistically indep. the conditional PDF of $\vect{x}$
-  given $\vect{s}$ (i.e. symbol $m_i$ sent usign signal $s_i$) follows:
+  given $\vect{s}$ (i.e. symbol $m_i$ sent using signal $s_i$) follows:
   \begin{empheq}[box=\eqbox]{gather*}
       L(\vect{s}_i) \coloneqq f_x(\vect{x}|\vect{s}_i) = f_W(\vect{w} = \vect{x}-\vect{s}_i) = 
       %= \prod_{j=1}^Nf_W(w_j=x_j-s_{ij})
@@ -593,9 +593,9 @@
     P_2(\vect{s}_i,\vect{s}_k) = \P(\norm{\vect{x}-\vect{s}_k}^2 < \norm{\vect{x}-\vect{s}_i}^2)
   \end{empheq}
   
-  With the eucledian distance $d_{14}\coloneqq\norm{\vect{s}_1-\vect{s}_4}$:
+  With the euclidean distance $d_{14}\coloneqq\norm{\vect{s}_1-\vect{s}_4}$:
   \begin{empheq}[box=\eqbox]{gather*}
-    P_2(\vect{s}_1,\vect{s}_2) = \P(z<\frac{1}{2}d_{14}) = Q\left(\frac{d_{14}}{\sqrt{2M_0}}\right) \\
+    P_2(\vect{s}_1,\vect{s}_4) = \P(z<-\frac{1}{2}d_{14}) = Q\left(\frac{d_{14}}{\sqrt{2N_0}}\right) \\
     = \frac{1}{2}\erfc\left(\frac{d_{14}}{2\sqrt{N_0}}\right)
   \end{empheq}
 
@@ -624,12 +624,12 @@
     \item Frequency (FSK)
   \end{itemize}
 
-  \textbf{Cherent} modulation is when the receiver's local oscillator is 
+  \textbf{Coherent} modulation is when the receiver's local oscillator is 
   phase-synchronous to the transmitter's local oscillator.
 
   $M=s^n$ levels for signalling information ($M$-ary xSK). Using $M$ levels,
-  symbol duration $T=nT_b$ is changed whilek eeping the same datarate. Bandwidth
-  shrinks accordingly ny $1/nT_b$.
+  symbol duration $T=nT_b$ is changed while keeping the same datarate. Bandwidth
+  shrinks accordingly by $1/nT_b$.
 
   Figures of merit: Symbol error probability at given SNR, power spectral density,
   bandwidth efficiency $\rho=R_b/B\quad [\text{bit/s/Hz}]$.
@@ -694,7 +694,7 @@
   \end{empheq}
   $E_\text{av}$ average symbol energy.
 
-  \subsection{FSK: Coherent Frequency-Shoft Keying}
+  \subsection{FSK: Coherent Frequency-Shift Keying}
 
   \begin{empheq}{gather*}
     \phi_i(t) = \begin{cases}
@@ -793,7 +793,7 @@
 
   The parameter $\alpha$ depends on the time bandwidth product $WT_b$. The quantity
   $10\log(\alpha/2)$ expresses the degradation in dB of GMSK compared to MSK.
-  MSK: $WT_b=\infty,\alpha=0$
+  MSK: $WT_b=\infty,\alpha=2$
   \begin{empheq}{gather*}
     P_e = \frac{1}{2}\erfc\left(\sqrt{\frac{\alpha E_b}{2N_0}}\right)
   \end{empheq}
@@ -810,7 +810,7 @@
   Important names and notation:
 
   \begin{tabularx}{\textwidth}{l X}
-    $\tilde{s}_\text{TX}(t)$ & compex envelope of $s_\text{TX}$ \\
+    $\tilde{s}_\text{TX}(t)$ & complex envelope of $s_\text{TX}$ \\
     $s_\text{TX+}(t)$ & analytic signal (pre-envelope of $s_\text{TX}$) \\
     $s_\text{TX}(t)$ & physical passband signal \\
   \end{tabularx}
@@ -834,12 +834,12 @@
   \end{empheq}
 
   \textbf{Analytic signal} Pre-envelope. Has one-sided spectrum, scaling factor to
-  preserve power values in passband and qeuivalent baseband.
+  preserve power values in passband and equivalent baseband.
   \begin{empheq}{gather*}
     s_\text{TX+}(t) = \tilde{s}_\text{TX}(t)\sqrt{2}\exp(j\omega_0t)\exp(j\phi_0)\\
     S_\text{TX+}(f) = \sqrt{2}\exp(j\phi_0)\tilde{S}_\text{TX}(f-f_0) \\
     S_\text{TX+}(f) = 0 \forall f < 0 \\
-    \tilde{S}_\text{TX}(f) = \frac{1}{\sqrt{2}}\exp(-j\phi_90)S_\text{TX+}(f+f_0)
+    \tilde{S}_\text{TX}(f) = \frac{1}{\sqrt{2}}\exp(-j\phi_0)S_\text{TX+}(f+f_0)
   \end{empheq}
 
 
@@ -902,9 +902,9 @@
      \phi &= \angle(a_c+ja_s)
   \end{empheq}
 
-  With unknoen phase offset, we have to average the likelihood function across all phase offsets $\theta$. 
+  With unknown phase offset, we have to average the likelihood function across all phase offsets $\theta$. 
   \begin{empheq}[box=\eqbox]{align*}
-    \overline{L(\vect{s}_i)} &= \frac{1}{2\pi}\int_{\pi}^{\pi}\exp\left(\frac{1}{N_0}\sqrt{a_c^2+a_s^2}\cos(\theta+\phi)\right)\dtheta \\
+    \overline{L(\vect{s}_i)} &= \frac{1}{2\pi}\int_{-\pi}^{\pi}\exp\left(\frac{1}{N_0}\sqrt{a_c^2+a_s^2}\cos(\theta+\phi)\right)\dtheta \\
     &= I_0\left(\frac{1}{N_0}\sqrt{a_c^2 + a_s^2}\right)
   \end{empheq}
 
@@ -921,7 +921,7 @@
   Instead of the two-branch correlator we can use two matched filter - sampler pairs to 
   calculate the decision variable.
 
-  We can determine the decision variable woth one matched filter an a Hilbert tranformer.
+  We can determine the decision variable with one matched filter and a Hilbert tranformer.
   The matched filter - envelope detector pair is called a noncoherent matched filter.
   \begin{empheq}{align*}
     s_i(t,\theta=-\pi/2)\laplace S_i&(f,\theta=-\pi/2) \\&= -j\sgn(f)S_i(f,\theta=0)
@@ -932,7 +932,7 @@
   \subsection{Noncoherent FSK}
   Signal $x(t)$ at the receiver with unknown carrier phase offset $\theta$:
   \begin{empheq}{gather*}
-    x(t)=sqrt{\frac{2E_b}{T_b}}\cos(2\pi f_it+\theta)+w(t),\quad i=1,2,0\leq t\leq T_b
+    x(t)=\sqrt{\frac{2E_b}{T_b}}\cos(2\pi f_it+\theta)+w(t),\quad i=1,2,0\leq t\leq T_b
   \end{empheq}
 
   The signals $s_1$ and $s_2$ each require such a branch. A comparator subsequently compares the
@@ -972,7 +972,7 @@
   Quadrature implementation of simplified detector:
   \cgraphic{0.8}{img/quadraturenoncoherent.png}
 
-  DPSK is a special case of noncoherent, orthogonal modulation with $T=2T_b$ and $E=2E_b$. Th 
+  DPSK is a special case of noncoherent, orthogonal modulation with $T=2T_b$ and $E=2E_b$. The 
   bit error rate is given by:
   \begin{empheq}{gather*}
     P_e = \frac{1}{2}\exp\left(-\frac{E_b}{N_0}\right)
@@ -1028,7 +1028,7 @@
   Actually received $(E_b/N_0)_\text{rec}$ define Op2.
   \cgraphic{0.8}{img/linkmargin.png}
 
-  Link margin: Difference. Provides Protection agains unexpected changes. Large margin, high reliability but low efficiency.
+  Link margin: Difference. Provides Protection agains unexpected changes. Large margin: high reliability but low efficiency.
   \begin{empheq}[box=\eqbox]{gather*}
     M = 10\log\left(\frac{E_b}{N_0}\right)_\text{rec} - 10\log\left(\frac{E_b}{N_0}\right)_\text{req} \quad [M] = \text{dB}
   \end{empheq}
@@ -1127,14 +1127,14 @@
 
   \subsection{Radio Communication over multipath channnels}
   In mobile radio systems the transmitters and receivers are mobile. 
-  This leads to a stocahstic channel. Multipath phenomenenon leads to \textbf{Fading}.
+  This leads to a stochastic channel. Multipath phenomenenon leads to \textbf{Fading}.
 
   \textbf{Narrowband fading} 
   Complex envelopes ot $\tilde{s}$ Tx, $\tilde{s_o}$ Rx signal and $\tilde{h}$ timevarying impulse response of channel.
   The Rayleigh fading model for NLOS conditions is modeled as zero-mean complex Gaussian random process.
   Characterized by autocorrelation function $R_{\tilde{h}}$ and Doppler spectrum $S_{\tilde{H}}$.
   \begin{empheq}[box=\eqbox]{gather*}
-    \tilde{S}_o(t) = \intinf\tilde{s}(t-\tau)\tilde{h}(\tau;t)\dtau \\
+    \tilde{s}_o(t) = \intinf\tilde{s}(t-\tau)\tilde{h}(\tau;t)\dtau \\
     \tilde{h}(\tau;t)=\tilde{h}(t)\delta(\tau)\leadsto \tilde{s}_o(t)=\tilde{h}(t)\tilde{s}(t) \\
     R_{\tilde{h}} (\Delta t) = \E[\tilde{h}^*(t)\tilde{h}(t+\Delta t)] \laplace S_{\tilde{H}}(\nu)
   \end{empheq}
@@ -1231,7 +1231,7 @@
     \bar{L}=\sum_{k=0}^{K-1}p_kL_k
   \end{empheq}
 
-  The average code workd length is lower bounded by the entropy of the source.
+  The average code word length is lower bounded by the entropy of the source.
   \begin{empheq}[box=\eqbox]{gather*}
     \bar{L}\geq H(\mathcal{S}) \triangleq L_{min}
   \end{empheq}
@@ -1278,10 +1278,10 @@
   \cgraphic{1}{img/lempelziv.png}
 
   \begin{itemize}
-    \item Constructed by parsingt he source data stream into segments other than 0 and 1 that
+    \item Constructed by parsing the source data stream into segments other than 0 and 1 that
     are shortest subsequences not encountered previously
     \item Segment 0 and 1 are asigned indices 1 and 2
-    \item $N$ stored subsequences are indezed from $3$ to $N+2$
+    \item $N$ stored subsequences are indexed from $3$ to $N+2$
     \item A new sequence can always be composed from an old seubsequence (root subsequence) and a 0
     and a 1 (innovation symbol)
   \end{itemize}
@@ -1372,7 +1372,7 @@
   \end{tcolorbox}
 
   \subsection{Differential Entropy}
-  Idea: Source and channels with cintinuous alphabets.
+  Idea: Source and channels with continuous alphabets.
 
   Differential entropy:
   \begin{empheq}[box=\eqbox]{gather*}
@@ -1477,7 +1477,7 @@
   Multiplying a code word with the parity check matric results in the zero vector.
 
   \subsection{Cyclic Codes}
-  Encodinga nd syndrome calculation with low complexity shift-registers. Practical 
+  Encoding and syndrome calculation with low complexity shift-registers. Practical 
   decoding methods due to algebraic structure. \textbf{Cyclic property}: Any cyclic
   shift of a code word is also a code word. Description of a code via code polynomial:
   \begin{empheq}{gather*}
@@ -1567,7 +1567,7 @@
   the hamming bound with equality.
 
   \subsection{Example: Hamming code}
-  Hamming code are $(n,k)$ lin. block codes with $m\geq3$ and:
+  Hamming code are $(n,k)$ lin. block codes with $m\geq2$ and:
   \begin{empheq}{gather*}
     n=2^m-1\quad k=2^m-m-1=n-m\quad m=n-k
   \end{empheq}
@@ -1584,7 +1584,7 @@
     \right ]
   \end{empheq}
 
-  \textbf{Properties of Hamming codes}: $d_\text{min}=1$ and $t_0=1$. They satisfy
+  \textbf{Properties of Hamming codes}: $d_\text{min}=3$ and $t_0=1$. They satisfy
   the Hamming bound with equality. They are \textul{Hamming codes are single-error
   corercting binary perfect codes}.
 
@@ -1599,7 +1599,7 @@
   \begin{itemize}
     \item The syndrom of $\vect{r}$ depends only on the error pattern $\vect{e}$
     \item All error patterns $\vect{e}_j^i$ that differ by a code word have
-    the same sybdrom $\vect{s}^i$. Thus $2^k$ distinct error patterns lead to the 
+    the same syndrome $\vect{s}^i$. Thus $2^k$ distinct error patterns lead to the 
     same syndrome $\vect{s}^i$.
   \end{itemize}
 
@@ -1614,7 +1614,7 @@
 
   \begin{tabular}{| c | c  c  c | c |}
     \hline
-    $0$ & $c_1$ & $\cdots$ & $c_{n-1}$ \\\hline
+    $c_1=0$ & $c_2$ & $\cdots$ & $c_{n-1}$ \\\hline
     $e_1$&$c_2+e_1$&$\cdots$&$c_{n-1}+e_1$\\
     $e_2$&$c_2+e_2$&$\cdots$&$c_{n-1}+e_2$\\
     $\vdots$&$\vdots$&$\ddots$&$\vdots$\\
@@ -1632,7 +1632,7 @@
     \hat{\vect{c}} = \argmin_{\vect{c}\in C} wt(\vect{e}=\vect{r}+\vect{c})
   \end{empheq}
 
-  Sybdrome decoding is equal to ML decoding, if each coset leader has the largest
+  Syndrome decoding is equal to ML decoding, if each coset leader has the largest
   probability of occurrence among all error patterns in a coset.
 
   \subsection{Error Probabilities}
@@ -1666,7 +1666,7 @@
   $n$ Number of generators
   \cgraphic{1.0}{img/convenc.png}
 
-  \textbf{Example} $(n=3,k=1,K=3)$ $(3,1,3)$ conv. encoder. Rate $R_c=k/n=1/3$. Systenatic: 
+  \textbf{Example} $(n=3,k=1,K=3)$ $(3,1,3)$ conv. encoder. Rate $R_c=k/n=1/3$. Systematic: 
   Coded bit $1$ is information bit. $g2=[1 0 1]=1+0\cdot D+1\cdot D^2$
   \cgraphic{0.7}{img/convexample.png}
 
@@ -1679,10 +1679,10 @@
   and code word aside edge.
   \cgraphic{0.7}{img/convexampletrellis.png}
 
-  Haming weight: Weight of concatenated codewords of path through trellis\\
+  Hamming weight: Weight of concatenated codewords of path through trellis\\
   Free Hamming distance: Minimum weight of codewords.
 
-  \textbf{Transfer function} can be deriveed from state diagram. Transitions labeled with
+  \textbf{Transfer function} can be derived from state diagram. Transitions labeled with
   weight $D^m$ where $m$ is the Hamming weight of the associated coded bits. For
   each state there is an equilibrium condition:
   \begin{empheq}{align*}
@@ -1743,8 +1743,8 @@
   $\vect{r}$ Received sequence \\
   $p(\vect{r} | \vect{v}^{(i)})$ ML metric of trial path
   \begin{empheq}[box=\eqbox]{gather*}
-    \vect{v^{(i)}} = \begin{bmatrix}\vect{v}_0^{(i)} & \hdots & \vect{v}_{n+m-1}^{(i)}\end{bmatrix}\\
-    \vect{r} = \begin{bmatrix}\vect{r}_0 & \hdots & \vect{r}_{n+m-1}\end{bmatrix}\\
+    \vect{v^{(i)}} = \begin{bmatrix}\vect{v}_0^{(i)} & \hdots & \vect{v}_{h+m-1}^{(i)}\end{bmatrix}\\
+    \vect{r} = \begin{bmatrix}\vect{r}_0 & \hdots & \vect{r}_{h+m-1}\end{bmatrix}\\
     p(\vect{r} | \vect{v}^{(i)}) = \prod_k p(\vect{r}_k | \vect{v}_k^{(i)})
   \end{empheq}
   
@@ -1790,7 +1790,7 @@
   % ---------------------------------------------------------------------------
 
   \subsection{Basics of Channel Access}
-  In broadcast networks, one channel is shared by multiple users, therefore coordinatino is required.
+  In broadcast networks, one channel is shared by multiple users, therefore coordination is required.
   The medium access control (MAC) subplayer controls access to the shared channel.
   \cgraphic{0.2}{img/mac.png}
 
@@ -1885,7 +1885,7 @@
   \cgraphic{0.8}{img/csmautil.png}  
 
   \textbf{Throughput}
-  Many stations $m\to\infty$, transmission with fixed duration $d$, channel access
+  Many stations $m\to\infty$, transmission with fixed duration $D$, channel access
   Poisson distributed with rate $g$. Normalized offered load $G=gD$. Possible channel 
   states: Idle, successful Tx, collision.
 
