@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-01-07 10:25:16
+% @Last Modified time: 2020-01-07 11:46:45
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1088,7 +1088,7 @@
 
   \subsection{Noise figure}
   Spot noise figure $F(f)$ ratio of total available output noise power per unit bandwidth to portion thereof due to 
-  source alone. $G$ power gain.
+  source alone. $G$ power gain. \textbf{Lower is better}
   \begin{empheq}[box=\eqbox]{gather*}
     F(f) = \frac{S_{NO}(f)}{G(f)S_{NS}(f)} = \frac{P_S S_{NO}}{P_O S_{NS}} = \frac{\SNR_{\text{Source}}(f)}{\SNR_\text{Output}(f)}
   \end{empheq}
@@ -1120,6 +1120,7 @@
   \end{empheq}
 
   \textbf{Cascade of Two-Port Networks}
+  Use factor not dB!
   \begin{empheq}[box=\eqbox]{gather*}
     F = F_1 + \frac{F_2-1}{G_1} + \frac{F_3-1}{G_1G_2} + \frac{F_4-1}{G_1G_2G_3}+\cdots\\
     T_e=T_{e1}+\frac{T_{e2}}{G_1}+\frac{T_{e3}}{G_1G_2}+\frac{T_{e4}}{G_1G_2G_3}+\cdots
@@ -1488,7 +1489,7 @@
   A cyclic shift is done by multiplication with $X^j$ and modulo $X^n+1$.
   Or take the remainder of $c(X)X^j : (X^n+1)$ with $\mod n$ arithmetic.
   (E.g. with $n=7$, $X^3/X^7=X^{-4}=X^3 \mod 7$).
-  \cgraphic{0.9}{img/shift.png}
+  \cgraphic{0.7}{img/shift.png}
     
   Polynomials and their order:
   \begin{empheq}{align*}
@@ -1497,11 +1498,10 @@
     &c(X)=m\cdot g & &\text{Code polynomial} & &\leq n-1 \\
   \end{empheq}
 
-  If $g(X)$ is a factor of $X^n+1$
+  If $g(X)$ is a factor of $X^n+1$ then the code is cyclic:
   \begin{empheq}{gather*}
     g(X)h(X)=X^n+1
   \end{empheq}
-  then the code is cyclic.
 
   $h(X)$ is the parity check polynomial, as for all $c(X)$:
   \begin{empheq}{gather*}
@@ -1515,14 +1515,15 @@
     g(X) = 1 + \sum_{i=1}^{n-k-1}g_iX^i + X^{n-k} \quad g_i\in \{0,1\}
   \end{empheq}
 
-  \textbf{Parity Check Polynomial} 
+  \textbf{Parity Check Polynomial} $h(X)$ 
   \begin{empheq}{gather*}
     g(X)h(X) = X^n+1
   \end{empheq}
 
   \textbf{Systematic Cyclic Code} 
   Idea: Complement the shifted message polynomial such, that the resulting code
-  word is a mutliple of $g(X)$.
+  word is a mutliple of $g(X)$. 1. Mult message by $X^{n-k}$ 2. divide by $g(X)$ and get remainder
+  $b(X)/g(X)$ 3. get systematic code $\tilde{c}(X)$.
   \begin{empheq}[box=\eqbox]{gather*}
     m(X) = m_0 + m_1X + \dots + m_{k-1}C^{k-1} \\
     \frac{X^{n-k}m(X)}{g(X)} = \tilde{x}(X) + \frac{b(X)}{g(X)} \\
