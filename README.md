@@ -14,6 +14,7 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 | Numerische Methoden (handwritten) | Finished | [link][num] | ![][num-badge] |
 | Wahrscheinlichkeitstheorie und Statistik (handwritten) | Finished | [link][wus] | ![][wus-badge] |
 | VLSI1 (handwritten) | Finished | [link][vlsi1] | ![][vlsi1-badge] |
+| Communication Systems | Finished | [link][comsys] | ![][comsys-badge] |
 
 [le]: https://github.com/noah95/formulasheets/releases/download/v1.0/leistungselektronik.pdf
 [le-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/leistungselektronik.pdf.svg
@@ -37,10 +38,14 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 [vlsi1]: https://github.com/noah95/formulasheets/releases/download/v3.0.0/vlsi1_fosa_huetter.pdf
 [vlsi1-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v3.0.0/vlsi1_fosa_huetter.pdf.svg
 
+[comsys]: https://github.com/noah95/formulasheets/releases/download/v3.0.0/comsys_fosa_huetter.pdf
+[comsys-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v3.0.0/comsys_fosa_huetter.pdf.svg
+
+
 ### Work in Progress
 | Name          | Status | Download      |
 | ------------- |--------|---------------|
-| Communication Systems | WIP | [link][comsys] |
+| None |  |  |
 
 [comsys]: https://github.com/noah95/formulasheets/raw/build/Communication%20Systems/communication_systems.pdf
 
