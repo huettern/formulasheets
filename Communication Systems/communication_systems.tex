@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-01-07 12:21:57
+% @Last Modified time: 2020-01-16 16:11:35
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -153,7 +153,8 @@
       R_{X}(t_{1},t_{2}) = \E[X(t_{1})X(t_{2})] \triangleq \\
       \intinf\intinf x_{1}x_{2}f_{X_{1},X_{2}}(x_{1}, x_{2})\dx_{1}\dx_{2}\\
       R_{XY}(x,y) = \int_{-\infty}^{\infty}\int_{-\infty}^{\infty}xyf_{X,Y}(x, y)dxdy\\
-      C_{X}(t_{1},t_{2}) = R_{X}(t_{1},t_{2}) - m_{X}^{2} =(for WSS) R_{X}(t_{2}-t_{1}) - m_{X}^{2}
+      C_{X}(t_{1},t_{2}) = R_{X}(t_{1},t_{2}) - m_{X}^{2} \\
+      =R_{X}(t_{2}-t_{1}) - m_{X}^{2} \text{(for WSS)}
     \end{gathered}
   \end{empheq}
 
@@ -664,10 +665,10 @@
   \cgraphic{0.8}{img/qpsk.png}
 
   Every QPSK symbol carries 2 bits, hence the symbol energy is twice the energy per information bit: $E=2E_b$.
-  A QPSK system achieves same BER as a BPSK at same $E_b/N_0$ but at \textit{twice the bit rate}.
+  A QPSK system achieves same BER ($P_e$) as a BPSK at same $E_b/N_0$ but at \textit{twice the bit rate}.
 
   \begin{empheq}[box=\eqbox]{gather*}
-    \text{BER} = \frac{1}{2}\erfc\left(\sqrt{\frac{E_b}{N_0}}\right) \\
+    P_e = \frac{1}{2}\erfc\left(\sqrt{\frac{E_b}{N_0}}\right) \\
     S_B(f) = 4E_b\sinc^2(2T_bf)
   \end{empheq}
 
@@ -775,9 +776,9 @@
 
   \textbf{Bit error rate}
   The four points in the signal-space diagram correspond to two symbol, hence the 
-  BER is the same as with QPSK.
+  BER ($P_e$) is the same as with QPSK.
   \begin{empheq}{gather*}
-    \text{BER} = \frac{1}{2}\erfc\left(\frac{d_\text{min}/2}{\sqrt{N_0}}\right) = \frac{1}{2}\erfc\left(\sqrt{\frac{E_b}{N_0}}\right)
+    P_e = \frac{1}{2}\erfc\left(\frac{d_\text{min}/2}{\sqrt{N_0}}\right) = \frac{1}{2}\erfc\left(\sqrt{\frac{E_b}{N_0}}\right)
   \end{empheq}
   
   \cgraphic{0.7}{img/mskpsd.png}
@@ -1093,6 +1094,11 @@
     F(f) = \frac{S_{NO}(f)}{G(f)S_{NS}(f)} = \frac{P_S S_{NO}}{P_O S_{NS}} = \frac{\SNR_{\text{Source}}(f)}{\SNR_\text{Output}(f)}
   \end{empheq}
 
+  Signal to noise ratio after receiver amplifier is
+  \begin{empheq}{gather*}
+    \SNR_\text{in} - F
+  \end{empheq}
+
   If two-port is noise free:
   \begin{empheq}{gather*}
     S_{NO}(f) = G(f)S_{NS}(f)
@@ -1120,7 +1126,7 @@
   \end{empheq}
 
   \textbf{Cascade of Two-Port Networks}
-  Use factor not dB!
+  Use factor not dB! Best if Lowest $F$ first in chain.
   \begin{empheq}[box=\eqbox]{gather*}
     F = F_1 + \frac{F_2-1}{G_1} + \frac{F_3-1}{G_1G_2} + \frac{F_4-1}{G_1G_2G_3}+\cdots\\
     T_e=T_{e1}+\frac{T_{e2}}{G_1}+\frac{T_{e3}}{G_1G_2}+\frac{T_{e4}}{G_1G_2G_3}+\cdots
@@ -1185,6 +1191,11 @@
   % Information Theory
   \section{Information Theory}
   % ---------------------------------------------------------------------------
+  Recap: $p$ Bit error prob. for BNRZ channel and amplitude $A$.
+  \begin{empheq}{gather*}
+    p = \frac{1}{2}\erfc\left(\sqrt{\frac{A^2}{N_0}}\right)
+  \end{empheq}
+
 
   \subsection{Uncertainty, Information and Entropy}
   A source emits a message $S$. $S$ is a r.v. taking values in a finite alphabet $S=\{s_0,\dots,s_{K-1}\}$.
@@ -1315,6 +1326,9 @@
   \textbf{Binary, Symmetric Channel}
   \cgraphic{0.6}{img/bsc.png}
   $J=K=2$, transition probability $p$. Error probability is $p$.
+  \begin{empheq}[box=\eqbox]{gather*}
+    C_\text{BSC} = 1 + p\log_2p + (1-p)\log_2(1-p)
+  \end{empheq}
 
 
   % ---------------------------------------------------------------------------
@@ -1335,7 +1349,8 @@
     I(X;Y)=I(Y;X) \\
     H(X)-H(X|Y)=H(Y)-H(Y|X) \\
     I(X;Y) \geq 0 \\
-    H(X)\geq H(X|Y)
+    H(X)\geq H(X|Y) \\
+    I(X;Y) = 0 \Leftrightarrow X,Y\text{independent}
   \end{empheq}
 
   \textbf{Joint entropy} of $X$ and $Y$ is defined as:
@@ -1354,8 +1369,8 @@
   \end{empheq}
 
   \textbf{Channel capacity} is the maximum mutual information over all possible input distributions:
-  \begin{empheq}[box=\eqbox]{gather*}
-    C \triangleq \max_{\{p(x_j)\}} I(X;Y)
+  \begin{empheq}[box=\eqbox]{align*}
+    C &\triangleq \max_{\{p(x_j)\}} I(X;Y) & C &= B\log_2(1+\SNR)
   \end{empheq}
   \cgraphic{0.9}{img/capacity-binarychannel.png}
 
@@ -1496,6 +1511,7 @@
     &m(X) & &\text{Message polynomial} & &\leq k-1 \\
     &g(X) & &\text{Generator polynomial} & &\leq n-k \\
     &c(X)=m\cdot g & &\text{Code polynomial} & &\leq n-1 \\
+    &s(X)=r \mod g & &\text{Syndrome}
   \end{empheq}
 
   If $g(X)$ is a factor of $X^n+1$ then the code is cyclic:
@@ -1835,12 +1851,12 @@
     &P_0=\e^{-G} &&S=G\e^{-G}\leq\frac{1}{\e} && \text{eqty with} G=1
   \end{empheq}
   
-  Unslotted ALOHA  
+  Unslotted (Pure) ALOHA  
   \begin{empheq}[box=\eqbox]{align*}
     &P_0=\e^{-2G} &&S=G\e^{-2G}\leq\frac{1}{2\e} && \text{eqty with} G=0.5
   \end{empheq}
 
-  Prob. that $k$ frames are transmittied during time $T$ with large number of stations:
+  Prob. that $k$ frames are transmittied during time $T$ with large number of stations is poisson with $\lambda=gT, m_k=\sigma^2_k=gT$:
   \begin{empheq}[box=\eqbox]{align*}
     &P_0(k | T) = \frac{(gT)^k\e^{-gT}}{k!} &&T = \begin{cases}D, \text{slotted},\\2D, \text{unslotted}.\end{cases}\\
     &P_0(k=0|T)=\e^{-gT} && P_0(k=1|T)=gT\e^{-gT}
@@ -1912,18 +1928,60 @@
   
   Normalized throughput per packet duration $D$
   \begin{empheq}[box=\eqbox]{gather*}
-    S=sD=\frac{\e^{-\alpha G}}{\frac{1}{G}+1+\alpha}
+    S=sD=\frac{\e^{-\alpha G}}{\frac{1}{G}+1+\alpha} \\
+    \lim_{\alpha\to 0} S = \frac{G}{G+1} \quad \lim_{G\to \infty} S = 0
   \end{empheq}
   \cgraphic{1}{img/csmathroughput2.png}  
 
   \subsection{CSMA/CD collision detect}
   Detect a collision and stop Tx.
 
+  \subsection{Binary exponential backoff}
+  Based on CSMA/CD, three channel states: idle, contention, success.
+  \begin{itemize}
+    \item After collision, time is divided into discrete slots: length of each slot
+    is equal to worst-case round-trip propagaion time $2\tau$
+    \item After first collision, each station waits either 0 or 1 slo times before
+    trying again
+    \item After each further collision the backoff window is doubled (up to max 1024)
+    \item In general after $i$ collisions, a random number between 0 and $2^i-1$ is chosen, 
+    and that number of slots is skipped
+    \item after 16 collisinos, the controller reports failure to higher layer
+  \end{itemize}
+
+
   \subsection{Collision-Free Protocols}
-  \textbf{Bit-Map Protocol}: Contention slots and frames.
+  \textbf{Bit-Map Protocol}: Contention slots and frames. Each station wanting to send, transmits 1
+  during contention slots. Frames can then be sent in order of address. Addresses
+  can be rotated to prevent starvation.
   \cgraphic{1}{img/bitmapproto.png}  
 
   \subsection{Limited-Contention Protocols}
+  Idea: Use contention at low load (to provide low delay) but use a collision-free technique
+  at high load (to provide good channel efficiency).
+
+  Assumptions:
+  \begin{itemize}
+    \item We allow $k$ stations to contend for channel access
+    \item each station has a probbility $p$ of transmitting during each slot
+  \end{itemize}
+
+  Probability of successful transmission is $\P(\text{success}) = kp(1-p)^{k-1}$.
+  Optimum value for $k=1/p$.
+  \begin{empheq}[box=\eqbox]{gather*}
+    \P(\text{Success with opt. $k$} | p) = (1-p)^{1/p-1}\\
+    \P(\text{Success with opt. $p$} | k) = \left(\frac{k-1}{k}\right)^{k-1}
+  \end{empheq}
+
+  \textbf{Adaptive Tree Walk Protocol}
+  \begin{itemize}
+    \item First, all stations are allowed to tx
+    \item If collision, during slot 1 only stations under node 2 may compete
+    \item If one acquires channel, the slot following the frame is reserved
+    for those statinos under node 3. If collision again, go down to 4
+  \end{itemize}
+  The heavier the load, the farther down the tree the seach should begin
+  \cgraphic{1}{img/tree.png}  
 
 
 
@@ -1994,6 +2052,7 @@
     & \sum_{k=0}^n k^2 &&=&& \frac{n(n+1)(2n+1)}{6} \\
     & \sum_{k=0}^n k^3 &&=&& \frac{n^2(n+1)^2}{4} \\
     & \sum_{k=0}^\infty q^k &&=&& \frac{1}{1-q} \\
+    & \sum_{k=1}^\infty q^k &&=&& \frac{q}{1-q} \\
   \end{empheq}
 
   \subsection{Probability}
