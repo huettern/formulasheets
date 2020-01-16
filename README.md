@@ -13,6 +13,7 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 | Electrodynamics (handwritten) | Finished | [link][em] | ![][em-badge] |
 | Numerische Methoden (handwritten) | Finished | [link][num] | ![][num-badge] |
 | Wahrscheinlichkeitstheorie und Statistik (handwritten) | Finished | [link][wus] | ![][wus-badge] |
+| VLSI1 (handwritten) | Finished | [link][vlsi1] | ![][vlsi1-badge] |
 
 [le]: https://github.com/noah95/formulasheets/releases/download/v1.0/leistungselektronik.pdf
 [le-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/leistungselektronik.pdf.svg
@@ -32,6 +33,9 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 
 [wus]: https://github.com/noah95/formulasheets/releases/download/v2.1.2/wus_fosa_huetter.pdf
 [wus-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v2.1.2/wus_fosa_huetter.pdf.svg
+
+[vlsi1]: https://github.com/noah95/formulasheets/releases/download/v3.0.0/vlsi1_fosa_huetter.pdf
+[vlsi1-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v3.0.0/vlsi1_fosa_huetter.pdf.svg
 
 ### Work in Progress
 | Name          | Status | Download      |
