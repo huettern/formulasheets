@@ -5,10 +5,10 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2019-10-08 10:59:46
+% @Last Modified time: 2020-02-04 09:37:51
 % ---------------------------------------------------------------------------
 
-\documentclass[a4paper, fontsize=8pt, DIV=1]{scrartcl}
+\documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
 \usepackage{lastpage}
 \usepackage{hyperref}
 % Include general settings and customized commands
@@ -114,7 +114,7 @@
 
 \setcounter{page}{0}
 \setcounter{secnumdepth}{2} %no enumeration of sections
-\begin{multicols*}{2}
+\begin{multicols*}{4}
 	\section*{Disclaimer}
 	This summary is part of the lecture ``ETH Advanced Topics in Communication Networks'' (227-0575-00L) by Prof. Dr. Laurent Vanbever (FS19). It is based on the lecture. \\[6pt]
 	Please report errors to \href{mailto:huettern@student.ethz.ch}{huettern@student.ethz.ch} such that others can benefit as well.\\[6pt]	
@@ -131,7 +131,357 @@
   \setcounter{page}{1}
   \thispagestyle{fancy}
 
+
   % ---------------------------------------------------------------------------
+  \section{Motivation}
+  % ---------------------------------------------------------------------------
+  Complexity + Low-level Management = Problems. Human factors are responsible
+  for 50\% to 80\% of network outages. Solving problems used to be hard because
+  network devices tend to be completely locked down.
+
+  % ---------------------------------------------------------------------------
+  \section{Software-Defined Networking}
+  % ---------------------------------------------------------------------------
+  A new approach to networking: Not about architecture (IP, TCP, etc.) but 
+  about design of network control (routing, TE, ...). \textbf{Separates the
+  control-plane from the data-plane}. It doesn't do much but enables a lot.
+
+  \cgraphic{0.8}{img/sdntopo.png}
+
+  \subsection{Advantages}
+  \begin{itemize}
+    \item Simpler management
+    \item Faster pace of innovation
+    \item Easier interoperability
+    \item Simpler, cheaper equipment
+  \end{itemize}
+
+  % ---------------------------------------------------------------------------
+  \section{OpenFlow}
+  % ---------------------------------------------------------------------------
+  OpenFlow is an API to a switch flow table. Match, action, priority.
+  \cgraphic{0.8}{img/openflow.png}
+
+  Enables different kinds of boxes:
+  \begin{itemize}
+    \item Router: Match LPM, Action: forward out a link
+    \item Switch: Match destination MAC, Action: forward of flood
+    \item Firewall: Match: IP, port, Action: permit or deny
+  \end{itemize}
+
+  \subsection{Example Applications}
+  \begin{itemize}
+    \item Dynamic access control
+    \item Seamless mobility/migration
+    \item Server load balancing
+    \item ...
+  \end{itemize}
+
+  \subsection{Challenges}
+  \begin{outline}
+    \1 Heterogeneous Switches
+      \2 Number of packet-handling rules
+      \2 Range of matches and actions
+    \1 Controller Delay and Overhead
+      \2 Controller is much slower than the switch
+      \2 Provessing packets leads to delay and overhead
+      \2 Need to keep most packets n the "fast path"
+    \1 Testing and Debugging
+      \2 OpenFlow makes programming possible
+      \2 Plenty of room for bugs
+    \1 Programming Abstractions
+      \2 OpenFlow is a loq-level API
+      \2 Makes netowrk programming possible, not easy!
+  \end{outline}
+
+  \subsection{Disadvantages}
+  \begin{outline}
+    \1 Protocol is too complex:
+    Switches must support complicated parsers and pipelines
+    \1 The specificatino itself keeps getting more complex
+    \1 Switches vendor end up implementing parts of the spec
+  \end{outline}
+
+  % ---------------------------------------------------------------------------
+  \section{Protocol Independent Switch Architecture}
+  % ---------------------------------------------------------------------------
+  PISA: Protocol Independent Switch Architecture for high-speed programmable
+  packet forwarding. By default PISA doesn't do anything, it's just an "architecture".
+  \cgraphic{1}{img/pisa.png}
+
+  PISA + P4 is strictly more general OpenFlow
+  \cgraphic{1}{img/pisap4.png}
+
+  % ---------------------------------------------------------------------------
+  \section{P4}
+  % ---------------------------------------------------------------------------
+  \subsection{Structure}
+  A P4 program consists of three basic parts: Parser, Match-Action Pipeline and
+  Deparser. 
+
+  \textbf{Parser} Programmer declares the headers that should be recognized and
+  their order in the packet. 
+  \textbf{Match-Action Pipeline} Programmer defines the tables and the processing
+  logic.
+  \textbf{Deparser} Programmer declares how the output packet will look on the wire.
+
+  \subsection{Basic Building Blocks}
+  The control consists of control flow, actions and tables.
+  \textbf{control flow} describes how packets should be processed.
+  \textbf{actions} fragments manipulating headers fields/metadata.
+  \textbf{tables} map user-defined keys with actions.
+
+  \cgraphic{1}{img/matchaction.png}
+
+  \subsection{Environment}
+  P4-16 introduces the concept of an architecture. The P4 Target is a model 
+  of a specific hardware implementation and the P4 Architecture an API to
+  program a target.
+
+  \cgraphic{1}{img/p4env.png}  
+
+  In this course, we'll rely on a simple P4-16 switch architecture \texttt{v1model}.
+  Each architecture defines the \textbf{metadata} it supoprts, including both standard and 
+  intrinsic ones. It also defines a list of "externs", ie. blackbox functions whose interface
+  is known. Examples are:
+  \begin{outline}
+   \1 Registers
+   \1 Random number generators
+   \1 Hash functions
+  \end{outline}
+
+  \subsection{Language}
+  P4-16 is a statically-typed language with base types and operators to derive composed ones.
+  There exist no floating point variables, no division and modulo. Variables have local scope and
+  their values is not maintained across subsequent invocations. They cannot be used to
+  maintain state between different network packets. Instead you use tables or external
+  objects.
+
+  Loops are only possible during the parser stage. Parser contains advanced concepts such as
+  verify (error handling), lokahead (access bits that are not parsed yet) and sub-parsers
+  (like subroutines).
+
+  \subsubsection{Tables}
+  Can match on one or multiple keys in different ways. \texttt{exact}
+  comparison, \texttt{ternary}: compare with mask, \texttt{lpm} longest prefix match.
+  Architectures can add matches such as \texttt{range} in v1model.
+
+  Tabe entries are added through the control plane.
+  \cgraphic{1}{img/p4table.png}  
+  
+  \subsubsection{Actions}
+  Are blocks of statements that possibly modify the packets. Usually take directional
+  parameters indicating how the corresponding value is treated within the block.
+  \texttt{in}: read only inside the action, \texttt{out}: Uninitialized, write inside action,
+  \texttt{inout}: Combination. Actions parameters resulting from a table lookup do not 
+  take a direction as they come from the control plane.
+
+  \subsubsection{Control flow}
+  Apllying a table \texttt{.apply()}, checking if there was a hit \texttt{.hit} and check which action was executed \texttt{.apply().action\_run}. Validating and computing checksums
+  using externals. And more advanced concepts:
+  \begin{outline}
+   \1 Cloning packets
+   \1 Sending packets to control plane
+   \1 Recirculting (send packet through pipeline multiple times)
+  \end{outline}
+
+  \subsection{Keeping State}
+  Registers can be used to store arbitrary data to keep track of state accross
+  packet boundaries.
+
+  Example of stateful firewall:
+  \cgraphic{1}{img/statefulfirewall.png}
+
+  \texttt{counter} can also be used, they cannot be read from the dataplane however.
+  Counters can be attached to tables to count table entry hit count.
+
+  \texttt{meter} can be used for rate-limiting. 
+
+  \texttt{direct\_meter} can be associated with a table to count entries matched.
+
+  \cgraphic{1}{img/statesummary.png}
+
+
+  % ---------------------------------------------------------------------------
+  \section{Probabilistic Data Structures}
+  % ---------------------------------------------------------------------------
+  We are provided with built-in stateful data structures such as arrays of registers, 
+  counters or meters. We need to deal with severe limitations such as a limited
+  number of operations and memory. \textbf{Today}: How can we implement a set with
+  its usual methods? I.e., add an element, membership query, delete an element,
+  lookup, listing.
+
+  \begin{center}
+  \begin{tabular}{l | c | c }
+    {} & strategy 1 & strategy 2 \\ \hline
+    output & Deterministic & Probabilistic \\
+    number of ops & Probabilistic & Deterministic
+  \end{tabular}
+  \end{center}
+
+  \subsection{Separate-chaining}
+  Intuitive impleentation of a set. An input is hashed to yield a index from 0 to
+  register size - 1. \textbf{Pro}: Accurate and fast in average case. \textbf{Con}:
+  only works in hardware if there is a low number of elements (e.g. < 100).
+
+  $N$ elements and $M$ cells.
+  \begin{center}
+  \begin{tabular}{l  c }
+    {} & list size \\
+    average & $N/M$ \\
+    worst-case & $N$
+  \end{tabular}
+  \end{center}
+
+  \subsubsection{Insertions}
+  Hash the input value and set the bit at the hash location to $1$/$0$.
+  \subsubsection{Membership query}
+  Hash the input value and check the bit at the hash location. There could be
+  false positives, if two input words result in the same hash value.
+
+  $N$ elements and $M$ cells.
+  \begin{center}
+  \begin{tabularx}{\columnwidth}{X c}
+  Prob. of element to be maped into particular cell & $\frac{1}{M}$ \\
+  Prob. of element not to be mapped into particular cell & $1-\frac{1}{M}$ \\
+  \textbf{False positive rate (FPR)} & $1 - (1-\frac{1}{M})^N$ \\
+  False negative rate & $0$
+  \end{tabularx}
+  \end{center}
+
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \text{FPR} = 1 - \left(1-\frac{1}{M}\right)^N
+    \end{gathered}
+  \end{empheq}
+
+  E.g. for 1'000 elements into 10'000, FPR = 9.5\%.
+
+  \textbf{Pro}: Simple and only one operation per insertion or query \textbf{Con}:
+  Roughly 100x more cells are required than the number of elements we want to
+  store for a 1\% FPR.
+
+  \subsection{Bloom Filters}
+  A more memory-efficient approach for insertions and membership queries. Use $K$ 
+  hash functions to map $N$ elements into $M$ cells. For insertion set all cells
+  of the $K$ hash values. An element is considered in the set if \textbf{all} the hash
+  values map to a cell with $1$. An element is not in the set if \textbf{at least} one
+  hash value maps to a cell with $0$.
+
+  $N$ elements, $M$ cells and $K$ hash functions.
+  \begin{center}
+  \begin{tabularx}{\columnwidth}{X c}
+  Prob. that one hash fun. returns idx of particular cell & $\frac{1}{M}$ \\
+  Prob. that one hash fun. does not return idx of particular cell & $1-\frac{1}{M}$ \\
+  Prob. of cell to be $0$ & $(1-\frac{1}{M})^{KN}$ \\
+  \textbf{False positive rate (FPR)} & $(1 - (1-\frac{1}{M})^{KN})^K$ \\
+  False negative rate & $0$
+  \end{tabularx}
+  \end{center}
+
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \text{FPR} = \left(1 - \left(1-\frac{1}{M}\right)^{KN}\right)^K
+    \end{gathered}
+  \end{empheq}
+
+  E.g. 1'000 elements, 10'000 cells, 7 hash functions 0.82\% FPR.
+
+  \textbf{Pro}: Consumes roughly 10x less memory than the simple approach \textbf{Con}:
+  Requires slightly more operations than the simple approach
+
+  \subsubsection{Dimensioning}
+  Is a tradeoff between memory, number of operations and false positive rate.
+
+  $N$ elements\\
+  $M$ cells\\
+  $K$ hash functions \\
+  $\text{FP}$ false positive rate
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \text{FPR} \approx \left(1 - e^{-KN/M}\right)^K
+    \end{gathered}
+  \end{empheq}
+
+  There is always a global minimum when $N$, $M$ are given.
+  \cgraphic{1}{img/bloomplot.png}
+
+  \subsubsection{Implementation}
+  Depending on hardware limitations, splitting the bloom filter might be required.
+  $M$ cells are split into $M/K$ disjoint groups. An element is hashed to $K$ cells, 
+  one in each group. One hash function per group. Same performance, may be easier
+  to implement or parallelize.
+
+  \subsubsection{Reset}
+  Because deletions are not possible, the controller may need to regularly reset the
+  bloom filters. Resetting a bloom filter takes some time during which it is not
+  usable. Common trick: Use two bloom filters and use one when the controller resets
+  the other one.
+
+  \subsection{Counting Bloom Filters}
+  Problem with Bloom Filters is that they cannot handle deletions. Counting Bloom
+  Filters \textbf{increment} the corresponding counters on insertion and \textbf{decrement}
+  upon deletion. All of the prior analysis applies to counting bloom filters.
+
+  Counting Bloom Filters do handle deletions at the price of using more memory. Counters
+  must be large enough to avoid overflow or else there are false negatives. Poisson
+  approcimation suggests \textbf{4 bits/counter}.
+
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \text{FPR} = \left(1 - \left(1-\frac{1}{M}\right)^{KN}\right)^K
+    \end{gathered}
+  \end{empheq}
+
+  \subsection{Invertible Bloom Lookup Tables (IBLT)}
+  IBLT store key-value pairs and allow for lookups and a complete listing. Each cell
+  contains three fields: \\
+  \textbf{count} which counts the number of entries mapped to this cell\\
+  \textbf{keySum} is the sum of all keys mapped to this cell\\
+  \textbf{valueSum} is the sum of all values mapped to this cell
+
+  \subsubsection{Add}
+  Assuming it is not in the set.
+  \begin{outline}
+   \1 For each hash function, hash the key to find the index. Then at this index
+    \2 Increment the count by one
+    \2 Add key to keySum
+    \2 Add value to valueSum
+  \end{outline}
+  \cgraphic{0.6}{img/ibltinsert.png}
+
+  \subsubsection{Delete}
+  Assuming it is in the set.
+  \begin{outline}
+   \1 For each hash function, hash the key to find the index. Then at this index
+    \2 Decrement the count by one
+    \2 Subtract key to keySum
+    \2 Subtract value to valueSum
+  \end{outline}
+
+  \subsubsection{Lookup}
+  The value of a key can be found if the key is associated to at least one 
+  cell with a count = 1.
+  \cgraphic{0.6}{img/ibltlookup.png}
+
+  \subsubsection{Listing}
+  \begin{outline}
+   \1 While there is an index for which count = 1
+    \2 Find the corresponding key-value pair and return it
+    \2 Delete the coresponding key-value pair
+  \end{outline}
+  Unless the number of iterations is very low, loops can not be implemeted 
+  in hardware. The listing is done by the controller.
+
+  \subsubsection{Tricks}
+  In many settings, we can use XORs in place of sums for example to avoid
+  overflow issues.
+
+  % ---------------------------------------------------------------------------
+  \vfill\null
+  \pagebreak
+  \end{multicols*}
+  \begin{multicols*}{3}
   \section{P4 language}
   % ---------------------------------------------------------------------------
   \subsection{Data types}

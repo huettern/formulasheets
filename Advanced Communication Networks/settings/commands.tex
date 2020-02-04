@@ -18,7 +18,7 @@
 	\newcommand{\real}{\R}
 	\newcommand{\C}{\mathbb{C}}
 	\newcommand{\complex}{\C}
-	\newcommand{\0}{\mathbb{O}}
+	% \newcommand{\0}{\mathbb{O}}
 	\newcommand{\F}{\mathbb{F}}
 	\newcommand{\K}{\mathbb{K}}
     \newcommand{\angstrom}{\textup{\AA}}
@@ -208,8 +208,8 @@
 
 % equation box        
 % \newcommand{\eqbox}[1]{\setlength{\fboxrule}{1mm}\fcolorbox{\StyleColor}{white}{\hspace{0.5em}$\displaystyle#1$\hspace{0.5em}}}
-\definecolor{orange1}{RGB}{252,234,212}
-\newcommand{\eqbox}[1]{\fcolorbox{black}{orange1}{\parbox{\columnwidth}{\begin{center}#1\end{center}}}}
+\definecolor{eqnBlue}{rgb}{0.87, 0.94, 0.99}
+\newcommand{\eqbox}[1]{\fcolorbox{black}{eqnBlue}{\parbox{\columnwidth}{\begin{center}#1\end{center}}}}
 
 %center equationbox
 \newcommand{\ceqbox}[1]{\vspace*{4pt} \begin{center}\eqbox{#1}\end{center}\vspace*{4pt}}
