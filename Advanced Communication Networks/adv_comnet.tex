@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-04 09:37:51
+% @Last Modified time: 2020-02-04 11:01:20
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -116,12 +116,14 @@
 \setcounter{secnumdepth}{2} %no enumeration of sections
 \begin{multicols*}{4}
 	\section*{Disclaimer}
-	This summary is part of the lecture ``ETH Advanced Topics in Communication Networks'' (227-0575-00L) by Prof. Dr. Laurent Vanbever (FS19). It is based on the lecture. \\[6pt]
+	This summary is part of the lecture ``ETH Advanced Topics in Communication Networks'' (227-0575-00L) by Prof. Dr. Laurent Vanbever (FS19). It is based on the lecture slides 
+  that can be found at \href{https://adv-net.ethz.ch/}{adv-net.ethz.ch}. \\[6pt]
 	Please report errors to \href{mailto:huettern@student.ethz.ch}{huettern@student.ethz.ch} such that others can benefit as well.\\[6pt]	
   The upstream repository can be found at \href{https://github.com/noah95/formulasheets}{https://github.com/noah95/formulasheets}
 	\vfill\null
   \columnbreak
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \setcounter{tocdepth}{2}
   \tableofcontents
   \vfill\null
   %\columnbreak
@@ -476,6 +478,114 @@
   \subsubsection{Tricks}
   In many settings, we can use XORs in place of sums for example to avoid
   overflow issues.
+
+  \subsection{Sketches in General}
+  Problem: Data stream with $n$ elements in totel, in the worst case $n$
+  distinct elements and we want to count \textit{frequencies}, or how many
+  times an element occurs. $n$ counter required would be memory inefficient.
+
+  Sketches provide approximate frequencies of elements in a data stream. More 
+  efficient by allowing mis-counting. Notation:
+  \begin{empheq}{gather*}
+    \vect{x} = \begin{bmatrix}x_1\\x_2\\\vdots\end{bmatrix}
+  \end{empheq}
+  Vector of frequencies (counts) of all distinct elements $x_i$.
+
+  \subsection{CountMin sketch}
+  Uses the same principles as a counting bloom filter, but is designed to have
+  provable L1 error bounds for frequency queries.
+
+  The estimation error exceeds $\norm{x}_1$ with a probability smaller than $\delta$:
+  \begin{empheq}{gather*}
+    \P(\hat{x}_i - x_i \geq \epsilon \norm{x}_1) \leq \delta
+  \end{empheq}
+  $\hat{x}_i$ Estimated frequency\\
+  $x_i$ True frequency\\
+  $\epsilon \norm{x}_1$ sum of frequencies.
+
+  Let $\norm{x}_1=10000$, $\epsilon=0.01$, $\delta=0.05$: The probability for
+  any estimat to be off by more than 100 is less than 5\% after counting 10000 elements.
+
+  \subsubsection{Principle of Operation}
+  $w\times d$ counters where $w$ inices per array is the range of hashes and $d$
+  number of arrays with one hash function per array.
+  \cgraphic{0.6}{img/cms.png}
+
+  Count: Hash stream and increment the corresponding counter in each array.
+
+  Query: Return the minimum value of the counters.
+
+  \subsubsection{Error bounds}
+  The proof is omitted and can be found in the lecture slides.
+  
+  Error bounds per hash/array:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \P(\hat{x}_i^{(h)} - x_i \geq \epsilon^{(h)}\norm{x}_1) \leq \delta^{(h)} \\
+      \P(\hat{x}_i^{(h)} - x_i \geq \frac{c}{w}\norm{x}_1) \leq \frac{1}{c}
+    \end{gathered}
+  \end{empheq}
+  $c$ from Markov inequality\\
+  $w$ hash range\\
+  $\hat{x}_i^{(h)}$ estimate for specific hash
+
+  Error bounds for the minimum:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \P(\hat{x}_i - x_i \geq \frac{c}{w}\norm{x}_1) \leq \frac{1}{c^d}
+    \end{gathered}
+  \end{empheq}
+
+  Optimal size:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \epsilon = \frac{c}{w} \leadsto w = \left\lceil\frac{c}{\epsilon}\right\rceil \\
+      \delta = \frac{1}{c^d} \leadsto d = \left\lceil\log_c\frac{1}{\delta}\right\rceil
+    \end{gathered}
+  \end{empheq}
+  $w$ hash range\\
+  $d$ number of hashes
+
+  Choosing $c=e$ minimizes the total number of counters.
+
+  \subsubsection{Recipe}
+  Choose:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      d = \left\lceil\ln\frac{1}{\delta}\right\rceil \quad w=\left\lceil\frac{e}{\epsilon}\right\rceil
+    \end{gathered}
+  \end{empheq}
+
+  Then $\hat{x}_i-x_i\geq\epsilon\norm{x}_1$ with a probability less than $\delta$.
+
+  \subsubsection{Summary}
+  A CountMin sketch uses the same principles as a counting bloom filter, but is
+  designed to have provable L1 error bounds for frequency queries. It is only one
+  design out of many.
+
+  \subsection{Count sketch}
+  Uses the same principles as a counting bloom filter, but is designed to have 
+  \textbf{provable L2 error bounds} for frequency queries.
+
+  Extends CountMin sketch by $g: U\to\{+1,-1\}$. For count instead of increment,
+  add $g(x_i)$ to the cell. For query instead of minimum, return median of $\text{reg}[h(x_i)]g(x_i)$
+
+  \subsubsection{Recipe}
+  Choose:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      d = \left\lceil\ln\frac{1}{\delta}\right\rceil \quad w=\left\lceil\frac{e}{\epsilon^2}\right\rceil
+    \end{gathered}
+  \end{empheq}
+
+  Then $\hat{x}_i-x_i\geq\epsilon\norm{x}_2$ with a probability less than $\delta$.
+
+  \subsection{Summary}
+  Sketches compute statistiacl summaries, favoring elements with high frequency.
+  Error relative to flow size is larger for smaller flows.
+
+  Regardless of their limitations, sketches provide trade-offs between resources and error, and 
+  provable gurarantees to rely on.
 
   % ---------------------------------------------------------------------------
   \vfill\null
