@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-04 11:01:20
+% @Last Modified time: 2020-02-04 11:36:39
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -586,6 +586,109 @@
 
   Regardless of their limitations, sketches provide trade-offs between resources and error, and 
   provable gurarantees to rely on.
+
+  % ---------------------------------------------------------------------------
+  \section{P4 Hardware Target}
+  % ---------------------------------------------------------------------------
+  How do we build a fast repgrogrammable switch?
+
+  \subsection{Reconfigurable Match Tables (RMT)}
+  Problem> A fixed function switch is compoesd of a (de-)parser and a sequence of
+  processing stages. In such a switch, each stage is particularized to its usage. 
+  This specificity makes it impossible to 
+  \begin{outline}
+   \1 Trade memory size for another
+   \1 Add new tables
+   \1 Support new headers or new actions
+  \end{outline}
+  \cgraphic{0.9}{img/ffs.png}
+
+  SDN requires
+  \begin{outline}
+   \1 Multiple stages of match-action
+   \1 Flexible actions
+   \1 Flexible header fields
+  \end{outline}
+
+  So we need a flexible switch chip. The challendes:
+  \begin{outline}
+   \1 Big chip
+   \1 High frequency
+   \1 Wiring intensive
+   \1 Many crossbars
+   \1 Lots of TCAM (ternary content addressable memory)
+  \end{outline}
+
+  \begin{tabularx}{\columnwidth}{X l}
+    Throughput & 1 Tbps \\
+    Avg. Packet size & 1000 bits \\
+    Avg. \# Operations & 10\\
+    \textbf{Requirements} & \textbf{10 billion op/sec}
+  \end{tabularx}
+
+  Solution: Pipelining
+  \cgraphic{0.9}{img/pipe.png}
+
+  \subsubsection{Parser}
+  The parse graph contains nodes which correspond to a header field and identifies the 
+  next field that follows. We need:
+  \begin{outline}
+   \1 a programmable parser that runs at line-rate (1 packet every 70ns on a 10Gbps link)
+   \1 Involves sequential processing
+   \1 Some require lookahead
+   \1 Many header formats exist that can appear in various orders/locations
+  \end{outline}
+
+  A parser can be divided into two seperate blocks: header identification (implements
+  the parse graphs state machind) and field extraction (extracts the chosen fields from
+  identified headers). In programmable parser, the two modules rely on runtime information instead
+  of hard-coded logic (stored in RAM and/or TCAM). TCAM stores the bit sequences that identify
+  the headers, action RAM stores the next state, fields to extract, etc. 
+  \cgraphic{1}{img/parser.png}
+
+  \subsubsection{Logical Pipeline}
+  A compiler translates a given RMT logical pipeline (specified in P4) into a 
+  physical one. Each physical stage contains dedicated SRAM for exact matches and
+  TCAM for ternary matches. Small tables can share a stage while large tables can
+  span multiple ones.
+  \cgraphic{0.9}{img/memspan.png}
+
+  Each ALU modifies only one word of a header. E.G. a header is composed of 224 words
+  and the pipeline has 24 stages. Each stage contains one ALU per word of the header vector
+  an can execute VLIW instructions (very long instrucion words).
+  \begin{outline}
+  \1 64x10Gb ports
+    \2 960M packets/second
+    \2 1GHz pipeline
+  \1 Programmable parser
+  \1 32 Match/action stages
+  \1 Huge TCAM: 64K TACM words x 640b
+  \1 SRAM hash tables for exact matches: 128K words x 640b
+  \1 224 action processors per stage
+  \end{outline}
+  \cgraphic{0.9}{img/alu.png}
+
+  Building a RMT pipelinei s only 15\% more expensive than building a fixed-function 
+  switching pipeline. The biggest cost is the memory, not the processing logic. Die usage:
+  \begin{outline}
+  \1 30\% SerDes (serializer/deserializer)
+  \1 20\% Processing logic
+  \1 50\% Memory
+  \end{outline}
+
+  \subsection{Example: Barefoot Tofino}
+  A 6.5 Tbps backplane that processes several billion packets per second at line rate.
+  4 Match/Action pipelines that are fully programmable PISA embodiment. Relies on
+  Packet Header Vector (PHV) to pass states between stages. Folded pipeline: Same 
+  stages are used for both ingress an egress pipeline. Follows the RMT pipeline.
+
+  \subsubsection{Parallel Processing}
+  \begin{outline}
+  \1 Multiple tables mean multiple parallel lookups
+  \1 All actinos from all active tables are combined
+  \1 Each PHV container has its own, independent processor
+  \end{outline}
+
 
   % ---------------------------------------------------------------------------
   \vfill\null
