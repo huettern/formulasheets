@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-04 13:35:40
+% @Last Modified time: 2020-02-04 14:19:39
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -60,12 +60,15 @@
 %    columns=[c]fixed,%
     keepspaces=true,%
 %    commentstyle=\itshape,%
+    frame=single,
     keywordstyle=\bfseries,%
     captionpos=b,%
     framerule=0.3pt,%
     firstnumber=0,%
     numbersep=1.5mm,%
     numberstyle=\tiny,%
+    breaklines=true,
+    postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
 }
 
 % \bibliography{semiconductordevices}
@@ -734,7 +737,7 @@
   \subsubsection{Management..}
   How to perform planned maintenance, run multiple applications in the switch and
   share resources amongs applications. Need an operating system for data plane. 
-  
+
   % ---------------------------------------------------------------------------
   \vfill\null
   \pagebreak
@@ -868,7 +871,360 @@ struct standard_metadata_t {
   Port where the packet will be transmitted \\
 \end{tabularx}
 
+\subsection{Operations}
+  \begin{tabularx}{\linewidth}{ l X}
+  \lstinline[style=P4style]!+ - *! &
+  Arithmetics \\
+  \lstinline[style=P4style]!\~ \& \| \^ >> <<! &
+  logical operations (NOT, AND, OR, XOR, SHL, SHR) \\
+  \lstinline[style=P4style]![m:l]! &
+  Bit slicing  \\
+  \lstinline[style=P4style]!++! &
+  Bit concatenation 
+  \end{tabularx}
+
+\subsection{Externs}
+  \subsubsection{Register}
+  Store state.
+  \begin{lstlisting}[style=P4style]
+// create
+register<bit<WIDTH>>(REGISTER_SIZE) my_reg;
+// read
+my_reg.read(meta.value, location);
+// write
+my_reg.write(location, meta.value);\end{lstlisting}
+
+  \subsubsection{Hash}
+  For the five tuple in the hash function use concatenation using curly braces like this:
+  \begin{lstlisting}[style=P4style]
+hash(
+  meta.ecmp_hash, // out
+  HashAlgorithm.crc16, // algo
+  14w0, // base
+  { hdr.ipv4.srcAddr,hdr.ipv4.dstAddr,hdr.ipv4.protocol,hdr.tcp.srcPort,hdr.tcp.dstPort },
+  num_nhops // max
+);\end{lstlisting}
+
+
+\subsection{P4 Program Structure}
+  \subsubsection{Parser}
+  A typical parser up to TCP without UDP looks like this:
+  \begin{lstlisting}[style=P4style]
+parser MyParser(packet_in packet,
+    out headers hdr,
+    inout metadata meta,
+    inout standard_metadata_t standard_metadata) {
+
+  state start {
+    transition parse_ethernet;
+  }
+
+  state parse_ethernet {
+    packet.extract(hdr.ethernet);
+    transition select(hdr.ethernet.etherType) {
+      0x800: parse_ipv4;
+      default: accept;
+    }
+  }
+
+  state parse_ipv4 {
+    packet.extract(hdr.ipv4);
+    transition select(hdr.ipv4.protocol) {
+      0x06: parse_tcp;
+      default: accept;
+    } 
+  }
+
+  state parse_tcp {
+      packet.extract(hdr.tcp);
+      transition accept;
+  }
+}\end{lstlisting}
+
+  \subsubsection{Ingres}
+  Here you define actions and tables and apply them accordingly.
+
+  \subsubsection{Tables}
+  Match types
+
+  \begin{tabularx}{\linewidth}{ l X l}
+  \hline type & behaviour & defined in \\ \hline
+    \lstinline[style=P4style]!exact! &
+    Exact match of the key & \texttt{core.p4} \\
+    \lstinline[style=P4style]!ternary! &
+    Compare with mask & \texttt{core.p4} \\
+    \lstinline[style=P4style]!lpm! &
+    Longest prefix match & \texttt{core.p4} \\
+    \lstinline[style=P4style]!range! &
+    Check if in range & \texttt{v1model.p4} \\ \hline
+  \end{tabularx}
+
+  \begin{lstlisting}[style=P4style]
+table table_name {
+  key = {
+    hdr.ethernet.dstAddr : exact;
+  }
+  actions = {
+    forward;
+    NoAction;
+  }
+  size = 5;
+  default_action = NoAction;
+}\end{lstlisting}
+
+A typical IPv4 lpm L3 switch would look like this:
+  \begin{lstlisting}[style=P4style]
+action ipv4_forward(macAddr_t dstAddr, egressSpec_t port) {
+  hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
+  hdr.ethernet.dstAddr = dstAddr;
+  standard_metadata.egress_spec = port;
+  hdr.ipv4.ttl = hdr.ipv4.ttl - 1;
+}
+table ipv4_lpm {
+  key = {
+    hdr.ipv4.dstAddr : lpm;
+  }
+  actions = {
+    ipv4_forward;
+    drop;
+  }
+  size = 2;
+  default_action = drop;
+}
+apply {
+  ipv4_lpm.apply();
+}\end{lstlisting}
+
+with the table entries:
+\begin{lstlisting}[language=bash]
+table_set_default   ipv4_lpm drop
+table_add           ipv4_lpm ipv4_forward 10.0.2.2/24 => 00:00:0a:00:02:02 1
+table_add           ipv4_lpm ipv4_forward 10.0.1.1/24 => 12:00:00:00:00:00 2\end{lstlisting}
+
+  \subsubsection{Deparser}
+  Deparse from the bottom to the top. Don’t have to check if a header has to be applied, emit only applies header if it is valid.
+  \begin{lstlisting}[style=P4style]
+packet.emit(hdr.ethernet);
+// don't have to check bcs only valid headers are applied
+packet.emit(hdr.ipv4);
+packet.emit(hdr.tcp);\end{lstlisting}
+
   \subsection{Examples}
+
+  \subsubsection{Reflector}
+  This is the most basic p4 design. The dataflow is clearly visible:
+
+  \begin{enumerate}
+    \item Parse the header fields neccessary for later processing
+    \item Apply ingress actions
+    \item Apply egress actions
+    \item Deparse packets, meaning reapplying the headers
+  \end{enumerate}
+
+  Checksum calculation is omited on purpose to shorten the example.
+
+  \begin{lstlisting}[style=P4style]
+/* Define headers, structs and metadata */
+typedef bit<48> macAddr_t;
+header ethernet_t {
+  macAddr_t dstAddr;
+  macAddr_t srcAddr;
+  bit<16>   etherType;
+}
+struct metadata {
+  /* empty */
+}
+struct headers {
+  ethernet_t   ethernet;
+}
+
+/* Define a parser */
+parser MyParser(packet_in packet,
+      out headers hdr,
+      inout metadata meta,
+      inout standard_metadata_t standard_metadata) {
+    state start{
+      // extract the ethernet header
+      packet.extract(hdr.ethernet);
+      transition accept;
+    }
+}
+
+/* Ingress pipeline */
+control MyIngress(inout headers hdr,
+      inout metadata meta,
+      inout standard_metadata_t standard_metadata) {
+  apply {
+    // swap mac addresses
+    bit<48> tmpAddr;
+    tmpAddr = hdr.ethernet.srcAddr;
+    hdr.ethernet.srcAddr = hdr.ethernet.dstAddr;
+    hdr.ethernet.dstAddr = tmpAddr;
+
+    // set output port to input port
+    standard_metadata.egress_spec = standard_metadata.ingress_port;
+  }
+}
+
+/* Egress processing */
+control MyEgress(inout headers hdr,
+     inout metadata meta,
+     inout standard_metadata_t standard_metadata) {
+    apply {  }
+}
+
+/* Deparser */
+control MyDeparser(packet_out packet, in headers hdr) {
+  apply {
+    // Deparse = reapply headers
+    packet.emit(hdr.ethernet);
+  }
+}
+
+/* "main" */
+V1Switch(
+  MyParser(),
+  MyIngress(),
+  MyEgress(),
+  MyDeparser()
+) main;\end{lstlisting}
+
+
+  \subsubsection{Simple table}
+  During ingress, multiple tables can be applied to alter the behaviour of the switch. In this example, no parsing is done. The Ingress port is used as a table key. The table entries can call an action and pass arguments to the action.
+
+  \begin{lstlisting}[style=P4style]
+control MyIngress(inout headers hdr,
+    inout metadata meta,
+    inout standard_metadata_t standard_metadata) {
+
+  // A default drop action should always be present
+  action drop(){
+    mark_to_drop(standard_metadata);
+  }
+  
+  // One action in the table is forward, where the egress port is passed to the action
+  action forward(bit<9> egress_port){
+    // forward to given port
+    standard_metadata.egress_spec = egress_port;
+  }
+
+  // Create the table here
+  table tbl_repeater {
+    key = {
+      // key identify on what the table should match on
+      standard_metadata.ingress_port : exact;
+    }
+
+    // possible actions for this table are
+    actions = {
+      forward;
+      drop;
+    }
+    // the size to allocate for this table, meaning a max of 2 entries can be written
+    size = 2;
+    // the default action if no match
+    default_action = drop;
+  }
+
+  apply {
+    // apply the table
+    tbl_repeater.apply();
+  }
+}\end{lstlisting}
+
+  Using simple switch, the commands to fill this table as mentioned are:
+
+  \begin{lstlisting}[language=bash]
+table_set_default table_nametbl_repeater drop
+table_add tbl_repeater forward 1 => 2
+table_add tbl_repeater forward 2 => 1\end{lstlisting}
+
+  \subsubsection{Flooding to other ports}
+  A switch has to maintain a MAC table for forwarding information. If the destination MAC is not known to the box, it forwrads it to all ports except the port that the packet came from. The multicasting mechanism is described here.
+
+  The switch behaviour is as followed:
+  \begin{enumerate}
+    \item Apply MAC table, if hit, forward
+    \item If miss, apply multicast table to know which multicast group to forward to
+  \end{enumerate}
+
+  \begin{lstlisting}[style=P4style]
+  // default drop action
+  action drop() {
+    mark_to_drop(standard_metadata);
+  }
+
+  // forward action if MAC table hit
+  action forward(egressSpec_t egress_port){
+     // forward to given port
+     standard_metadata.egress_spec = egress_port;
+  }
+
+  // MAC table
+  table t_l2switch {
+    key = { hdr.ethernet.dstAddr : exact; }
+    actions = {
+        forward;
+        drop;
+    }
+    size = 5;
+    default_action = drop;
+  }
+
+  // set multicast group action
+  action set_mgrp(mgrp_t mgrp) {
+    standard_metadata.mcast_grp = mgrp;
+  }
+
+  // ingress port to multicast group table
+  table t_igp_to_mgrp {
+    key = { standard_metadata.ingress_port : exact; }
+    actions = {
+        set_mgrp;
+        drop;
+    }
+    size = 5;
+    default_action = drop;
+  }
+
+  apply {
+    // apply table logic
+    if(!t_l2switch.apply().hit) {
+        t_igp_to_mgrp.apply();
+    }
+  }\end{lstlisting}
+
+  Filling tables in simple switch:
+
+  \begin{lstlisting}[language=bash]mc_mgrp_create 1
+mc_node_create 0 2 3 4
+mc_node_associate 1 0
+
+mc_mgrp_create 2
+mc_node_create 1 1 3 4
+mc_node_associate 2 1
+
+mc_mgrp_create 3
+mc_node_create 2 1 2 4
+mc_node_associate 2 1
+
+mc_mgrp_create 4
+mc_node_create 3 1 2 3
+mc_node_associate 3 2
+
+table_set_default   t_l2switch NoAction
+table_add           t_l2switch forward 00:00:0a:00:00:1 => 1
+table_add           t_l2switch forward 00:00:0a:00:00:2 => 2
+table_add           t_l2switch forward 00:00:0a:00:00:3 => 3
+table_add           t_l2switch forward 00:00:0a:00:00:4 => 4
+
+table_set_default   t_igp_to_mgrp NoAction
+table_add           t_igp_to_mgrp set_mgrp 1 => 1
+table_add           t_igp_to_mgrp set_mgrp 2 => 2
+table_add           t_igp_to_mgrp set_mgrp 3 => 3
+table_add           t_igp_to_mgrp set_mgrp 4 => 4\end{lstlisting}
+
 
   \subsubsection{Multicast group ID}
   For a L2-switch to work, it has to multicast packets. Simple switch has a multicast features that
@@ -879,6 +1235,7 @@ struct standard_metadata_t {
 mc_mgrp_create <mcast_grp_id>
 mc_node_create <replication_id> <port_number> [port_number]
 mc_node_associate <mcast_grp_id> <node_handle_id>\end{lstlisting}
+  
   \texttt{mc\_node\_create} returns the \texttt{node\_handle\_id}. For every \texttt{replication\_id} the \texttt{mc\_node\_create} is incremented.
 
   Example: Mulcicast \texttt{mcast\_grp\_id=1} with \texttt{replication\_id=0} on ports \texttt{1,2,3,4} 
@@ -915,14 +1272,14 @@ clone3<T>(in CloneType type, in bit<32> session, in T data)\end{lstlisting}
   \begin{lstlisting}[style=P4style]
 // Define a struct that is sent to the controller
 struct learn_t {
-    macAddr_t srcAddr;
-    inPort_t  inPort;
+  macAddr_t srcAddr;
+  inPort_t  inPort;
 }
 // Add the struct to the metadata
 struct metadata {
-    /* empty */
-    //TODO 3: delcare one learn_t variable
-    learn_t learn;
+  /* empty */
+  //TODO 3: delcare one learn_t variable
+  learn_t learn;
 }
 // fill in the meatdata fields
 meta.learn.srcAddr = hdr.ethernet.srcAddr;
