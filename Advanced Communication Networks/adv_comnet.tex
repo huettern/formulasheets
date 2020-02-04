@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-04 11:36:39
+% @Last Modified time: 2020-02-04 13:35:40
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -689,7 +689,52 @@
   \1 Each PHV container has its own, independent processor
   \end{outline}
 
+  % ---------------------------------------------------------------------------
+  \section{P4-Based Applications}
+  % ---------------------------------------------------------------------------
+  \begin{outline}
+  \1 Data plane programmability for
+    \2 Performance
+    \2 Monitoring
+    \2 Applications offloading
+  \1 for Data plane programmability
+    \2 Platforms
+    \2 Correctness
+    \2 Management
+  \end{outline}
 
+  \subsection{Data plane programmability for..}
+
+  \subsubsection{..performance}
+  Example of \textbf{load balancing}, CONGA: Leaf switches (top-of-rack) track congestion to other leaves on different
+  paths in real-time. Use greedy decisions to minimize bottleneck uitl. Fast feedback
+  loops between leaf switches, directly in dataplane.
+
+  \subsubsection{..monitoring}
+  In-band Network Telemetry: Mechanism for collecting network state in the dataplane.
+  As close to realtime as possible at current and future line rates. Header that carries
+  path utilization. Scales to arbitrarily large networks.
+
+  \subsubsection{..Applications offloading}
+  NetCache: Balancing Key-Value Stores with Fast In-Network Caching. Solves the problem of
+  load-balancing in key-values stores observing dynamic, skewed workload. Small but
+  very fast cache can provide perfect load-balancing (in theory).
+  \cgraphic{0.9}{img/netcache.png}
+
+  \subsection{.. for data plane programmability}
+
+  \subsubsection{Platforms..}
+  Combining host-based programmability, SmartNICs (FPGA) and programmable switches
+  to get a fully programmable platform.
+
+  \subsubsection{Correctness..}
+  p4v: Practical Verification for Programmable Data Planes. Checks for header validity, 
+  unambiguous forwarding, mutual exclusion of headers, etc.
+
+  \subsubsection{Management..}
+  How to perform planned maintenance, run multiple applications in the switch and
+  share resources amongs applications. Need an operating system for data plane. 
+  
   % ---------------------------------------------------------------------------
   \vfill\null
   \pagebreak
