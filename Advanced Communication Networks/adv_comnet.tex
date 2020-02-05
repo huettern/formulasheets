@@ -189,14 +189,14 @@
       \2 Range of matches and actions
     \1 Controller Delay and Overhead
       \2 Controller is much slower than the switch
-      \2 Provessing packets leads to delay and overhead
-      \2 Need to keep most packets n the "fast path"
+      \2 Processing packets leads to delay and overhead
+      \2 Need to keep most packets in the "fast path"
     \1 Testing and Debugging
       \2 OpenFlow makes programming possible
       \2 Plenty of room for bugs
     \1 Programming Abstractions
       \2 OpenFlow is a low-level API
-      \2 Makes netowrk programming possible, not easy!
+      \2 Makes network programming possible, not easy!
   \end{outline}
 
   \subsection{Disadvantages}
@@ -214,12 +214,14 @@
   packet forwarding. By default PISA doesn't do anything, it's just an "architecture".
   \cgraphic{1}{img/pisa.png}
 
-  PISA + P4 is strictly more general OpenFlow
+  PISA + P4 is strictly more general then OpenFlow
   \cgraphic{1}{img/pisap4.png}
 
   % ---------------------------------------------------------------------------
   \section{P4}
   % ---------------------------------------------------------------------------
+  P4 is a domain specific programming language that specifies how a PISA should
+  process packets.
   \subsection{Structure}
   A P4 program consists of three basic parts: Parser, Match-Action Pipeline and
   Deparser. 
@@ -257,8 +259,8 @@
 
   \subsection{Language}
   P4-16 is a statically-typed language with base types and operators to derive composed ones.
-  There exist no floating point variables, no division and modulo. Variables have local scope and
-  their values is not maintained across subsequent invocations. They cannot be used to
+  There exists no floating point variables, no division nor modulo. Variables have local scope and
+  their values are not maintained across subsequent invocations. They cannot be used to
   maintain state between different network packets. Instead you use tables or external
   objects.
 
@@ -282,12 +284,12 @@
   take a direction as they come from the control plane.
 
   \subsubsection{Control flow}
-  Apllying a table \texttt{.apply()}, checking if there was a hit \texttt{.hit} and check which action was executed \texttt{.apply().action\_run}. Validating and computing checksums
+  Applying a table \texttt{.apply()}, checking if there was a hit \texttt{.hit} and check which action was executed \texttt{.apply().action\_run}. Validating and computing checksums
   using externals. And more advanced concepts:
   \begin{outline}
    \1 Cloning packets
    \1 Sending packets to control plane
-   \1 Recirculting (send packet through pipeline multiple times)
+   \1 Recirculating (send packet through pipeline multiple times)
   \end{outline}
 
   \subsection{Keeping State}
@@ -593,19 +595,19 @@
   Then $\hat{x}_i-x_i\geq\epsilon\norm{x}_2$ with a probability less than $\delta$.
 
   \subsection{Summary}
-  Sketches compute statistiacl summaries, favoring elements with high frequency.
+  Sketches compute statistical summaries, favoring elements with high frequency.
   Error relative to flow size is larger for smaller flows.
 
-  Regardless of their limitations, sketches provide trade-offs between resources and error, and 
+  Regardless of their limitations, sketches provide trade-offs between resources and errors, and 
   provable gurarantees to rely on.
 
   % ---------------------------------------------------------------------------
   \section{P4 Hardware Target}
   % ---------------------------------------------------------------------------
-  How do we build a fast repgrogrammable switch?
+  How do we build a fast reprogrammable switch?
 
   \subsection{Reconfigurable Match Tables (RMT)}
-  Problem> A fixed function switch is compoesd of a (de-)parser and a sequence of
+  Problem: A fixed function switch is compoesd of a (de-)parser and a sequence of
   processing stages. In such a switch, each stage is particularized to its usage. 
   This specificity makes it impossible to 
   \begin{outline}
@@ -622,7 +624,7 @@
    \1 Flexible header fields
   \end{outline}
 
-  So we need a flexible switch chip. The challendes:
+  So we need a flexible switch chip. The challenges:
   \begin{outline}
    \1 Big chip
    \1 High frequency
@@ -896,7 +898,7 @@ struct standard_metadata_t {
 \end{lstlisting}
 
   \subsubsection{Tuple}
-  Unordered collection of unnamed members.
+  Ordered collection of unnamed members.
 
 \begin{lstlisting}[style=P4style]
 tuple<bit<32>, bool> x;
