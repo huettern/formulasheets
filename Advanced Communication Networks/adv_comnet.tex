@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-04 14:19:39
+% @Last Modified time: 2020-02-05 10:38:13
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -195,7 +195,7 @@
       \2 OpenFlow makes programming possible
       \2 Plenty of room for bugs
     \1 Programming Abstractions
-      \2 OpenFlow is a loq-level API
+      \2 OpenFlow is a low-level API
       \2 Makes netowrk programming possible, not easy!
   \end{outline}
 
@@ -203,7 +203,7 @@
   \begin{outline}
     \1 Protocol is too complex:
     Switches must support complicated parsers and pipelines
-    \1 The specificatino itself keeps getting more complex
+    \1 The specification itself keeps getting more complex
     \1 Switches vendor end up implementing parts of the spec
   \end{outline}
 
@@ -304,7 +304,16 @@
 
   \texttt{direct\_meter} can be associated with a table to count entries matched.
 
-  \cgraphic{1}{img/statesummary.png}
+  \begin{tabularx}{\linewidth}{l c c c c}
+    \\ \hline
+    {} & \multicolumn{2}{c}{Data plane} & \multicolumn{2}{c}{Control plane} \\ 
+    Object & read & modify & read & modify \\
+    \hline
+    Table & \texttt{apply()} & \texttt{-} & yes & yes \\
+    Register & \texttt{read()} & \texttt{write()} & yes & yes \\
+    Counter & \texttt{-} & \texttt{count()} & yes & reset \\
+    Meter & \multicolumn{2}{c}{\texttt{execute()}} & \multicolumn{2}{c}{config. only}
+  \end{tabularx}
 
 
   % ---------------------------------------------------------------------------
@@ -738,6 +747,76 @@
   How to perform planned maintenance, run multiple applications in the switch and
   share resources amongs applications. Need an operating system for data plane. 
 
+
+  % ---------------------------------------------------------------------------
+  \section{Example Exam Questions}
+  % ---------------------------------------------------------------------------
+  \subsubsection{What is P4 and what does it enable?}
+  P4 is a domain-specific programming language for controlling packet forwarding
+  planes in networking devices. It enables target and protocol independent configuration
+  of switches.
+
+  \subsubsection{What are the main differences between OpenFlow and P4?}
+  OpenFlow assumes the switches have a fixed, well-known behaviour. You can't change
+  their behaviour and add new protocols. This would need to be done in hardware. OpenFlow
+  lets you add and delete forwarding entries of about 50 different header types.
+
+  P4 however, lets us define what headers a switch will recognize (or "parse"), 
+  how to match on each header, and what actions we would like the switch to perform
+  on each header
+
+  \subsubsection{What role tables, actions and control flow play in P4?}
+  Tables are used to lookup values or actions based upon the content of some header
+  or metadata field. Match types are exact, longest prefix, ternary and others. 
+  Actions can modify header contents and execute conditional logic. The control 
+  flow defines the sequence of actions taken to modify a packet.
+
+  \subsubsection{What different memory structures exist in P4 switches? How do they differ?}
+  There are tables, registers, counters and meters. They differ mainly in where they
+  can be read and/or written to.
+  \begin{tabularx}{\linewidth}{l c c c c}
+    \\ \hline
+    {} & \multicolumn{2}{c}{Data plane} & \multicolumn{2}{c}{Control plane} \\ 
+    Object & read & modify & read & modify \\
+    \hline
+    Table & \texttt{apply()} & \texttt{-} & yes & yes \\
+    Register & \texttt{read()} & \texttt{write()} & yes & yes \\
+    Counter & \texttt{-} & \texttt{count()} & yes & reset \\
+    Meter & \multicolumn{2}{c}{\texttt{execute()}} & \multicolumn{2}{c}{config. only}
+  \end{tabularx}
+
+  \subsubsection{What types of constructs do we need to maintain state across packets?}
+  To identify flows for examples, hash functions and registers can be used to keep
+  track of the flow's five-tuple (destination/source IP, protocol, source/destination port).
+
+  \subsubsection{What is a bloom filter and how do you dimension one?}
+  A bloom filter in general is a memory-efficient, probabilistic data structure for
+  insertions and membership queries.
+
+  \subsubsection{Explain what is a counter and the different ways it can be used.}
+  Can be modified by the dataplane but only read by control plane. Can be configured to
+  count packets, bytes or both. Can be used for statistics.
+
+  \subsubsection{Describe the role of the 'register' extern and how it can be used}
+  Can be read and written by data plane. Used to keep state accross packets.
+
+  \subsubsection{Explain which additions we needed to make a traceroutable P4 network}
+  Map egress port to the source IP address of the switch for that port which is populated 
+  by the controller depending on the topology. This source IP is then used for the ICMP
+  packet. Create the ICMP header that contains the 'old' IP header and the new IP header.
+  If TTL value is equal to 1:
+  \begin{outline}
+  \1 Set additional headers to valid
+  \1 Set egress port
+  \1 Swap source and destination mac
+  \1 Set source IP
+  \1 Set values for IPv4 and icmp header
+  \1 Truncate packet to dismiss TCP and other stuff
+  \1 Compute checksums
+  \end{outline}
+
+
+
   % ---------------------------------------------------------------------------
   \vfill\null
   \pagebreak
@@ -880,7 +959,9 @@ struct standard_metadata_t {
   \lstinline[style=P4style]![m:l]! &
   Bit slicing  \\
   \lstinline[style=P4style]!++! &
-  Bit concatenation 
+  Bit concatenation \\
+  \lstinline[style=P4style]!truncate((bit<32>)N)! &
+  Truncate current packet to N bytes \\
   \end{tabularx}
 
 \subsection{Externs}
@@ -904,6 +985,92 @@ hash(
   { hdr.ipv4.srcAddr,hdr.ipv4.dstAddr,hdr.ipv4.protocol,hdr.tcp.srcPort,hdr.tcp.dstPort },
   num_nhops // max
 );\end{lstlisting}
+
+  \subsubsection{Counter}
+  Can be modified by dataplane but read only by the control plane.
+  \begin{lstlisting}[style=P4style]
+control MyIngress(...) {
+  counter(512, CounterType.packets_and_bytes) port_counter;
+  apply {
+    // use ingress port as counter index
+    port_counter.count((bit<32>)standard_metadata.ingress_port);
+  }
+}\end{lstlisting}
+
+  \subsubsection{Direct Counter}
+  Counters that are attached to tables.
+  \begin{lstlisting}[style=P4style]
+control MyIngress(...) {
+  direct_counter(CounterType.packets_and_bytes) direct_port_counter;
+  table count_table {
+    key = {
+      standard_metadata.ingress_port: exact;
+    }
+    actions = {
+      NoAction;
+    }
+    default_action = NoAction;
+    // attach counter to table
+    counters = direct_port_counter;
+    size = 512;
+  }
+  apply {
+    counter_table.apply();
+  }
+}\end{lstlisting}
+
+
+  \subsubsection{Meter}
+  Like registers and counters, meters are assigned in arrays. Used for rate-limiting.
+  \begin{lstlisting}[style=P4style]
+control MyIngress(...) {
+  meter(32w16384, MeterType.packets) my_meter;
+  action m_action(bit<32> meter_index) {
+    // execute meter
+    my_meter.execute_meter<bit<32>>(meter_index, meta.meter_tag);
+  }
+  table m_read {
+    key = { hdr.ethernet.srcAddr: exact; }
+    actions = { m_action; NoAction; }
+    // ...
+  }
+  table m_filter {
+    // handle packets depending on meter tag
+    key = { meta.meter_tag: exact; }
+    actions = { drop; NoAction; }
+    // ...
+  }
+  apply {
+    m_read.apply();
+    m_filter.apply();
+  }
+} \end{lstlisting}
+
+
+  \subsubsection{Direct Meter}
+  Meters that are attached to a table.
+  \begin{lstlisting}[style=P4style]
+control MyIngress(...) {
+  direct_meter<bit<32>>(MeterType.packets) my_meter;
+  action m_action(bit<32> meter_index) {
+    // read meter
+    my_meter.read(meta.meter_tag);
+  }
+  table m_read {
+    key = { hdr.ethernet.srcAddr: exact; }
+    actions = { m_action; NoAction; }
+    // attach meter to table
+    meters = my_meter;
+    // ...
+  }
+  table m_filter {
+    // ...
+  }
+  apply {
+    m_read.apply();
+    m_filter.apply();
+  }
+} \end{lstlisting}
 
 
 \subsection{P4 Program Structure}
