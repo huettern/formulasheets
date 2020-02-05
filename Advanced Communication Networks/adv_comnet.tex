@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-05 10:38:13
+% @Last Modified time: 2020-02-05 10:48:47
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -964,6 +964,10 @@ struct standard_metadata_t {
   Bit concatenation \\
   \lstinline[style=P4style]!truncate((bit<32>)N)! &
   Truncate current packet to N bytes \\
+  \lstinline[style=P4style]!drop()! &
+  Drop a packet \\
+  \lstinline[style=P4style]!packet.emit(hdr.tcp)! &
+  Add a header to the outgoing packet \\
   \end{tabularx}
 
 \subsection{Externs}
