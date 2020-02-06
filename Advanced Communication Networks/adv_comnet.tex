@@ -942,7 +942,7 @@
   \subsubsection{Problem} Detect sources that generate lots of traffic.
 
   \subsubsection{Idea} Use counting Bloom filter by hashing some packet fields (e.g., source IP)
-  multiple times and increment all counter. If at least one counter exceeds a limit, report
+  multiple times and increment all counter. If all the counter exceed a limit, report
   this flow as heavy hitter.
 
   \subsubsection{Tables} 
