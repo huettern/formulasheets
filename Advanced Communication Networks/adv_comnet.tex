@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-05 10:48:47
+% @Last Modified time: 2020-02-06 11:13:21
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -214,7 +214,7 @@
   packet forwarding. By default PISA doesn't do anything, it's just an "architecture".
   \cgraphic{1}{img/pisa.png}
 
-  PISA + P4 is strictly more general then OpenFlow
+  PISA + P4 is strictly more general than OpenFlow
   \cgraphic{1}{img/pisap4.png}
 
   % ---------------------------------------------------------------------------
@@ -753,27 +753,28 @@
   % ---------------------------------------------------------------------------
   \section{Example Exam Questions}
   % ---------------------------------------------------------------------------
-  \subsubsection{What is P4 and what does it enable?}
+  \subsection{What is P4 and what does it enable?}
   P4 is a domain-specific programming language for controlling packet forwarding
   planes in networking devices. It enables target and protocol independent configuration
-  of switches.
+  of switches. Enables cnofiguration of PISA (Protocol Independent Switch Architectures).
 
-  \subsubsection{What are the main differences between OpenFlow and P4?}
+  \subsection{What are the main differences between OpenFlow and P4?}
   OpenFlow assumes the switches have a fixed, well-known behaviour. You can't change
   their behaviour and add new protocols. This would need to be done in hardware. OpenFlow
   lets you add and delete forwarding entries of about 50 different header types.
+  P4 is strictly more general than openflow
 
   P4 however, lets us define what headers a switch will recognize (or "parse"), 
   how to match on each header, and what actions we would like the switch to perform
   on each header
 
-  \subsubsection{What role tables, actions and control flow play in P4?}
+  \subsection{What role tables, actions and control flow play in P4?}
   Tables are used to lookup values or actions based upon the content of some header
   or metadata field. Match types are exact, longest prefix, ternary and others. 
   Actions can modify header contents and execute conditional logic. The control 
   flow defines the sequence of actions taken to modify a packet.
 
-  \subsubsection{What different memory structures exist in P4 switches? How do they differ?}
+  \subsection{What different memory structures exist in P4 switches? How do they differ?}
   There are tables, registers, counters and meters. They differ mainly in where they
   can be read and/or written to.
   \begin{tabularx}{\linewidth}{l c c c c}
@@ -787,22 +788,23 @@
     Meter & \multicolumn{2}{c}{\texttt{execute()}} & \multicolumn{2}{c}{config. only}
   \end{tabularx}
 
-  \subsubsection{What types of constructs do we need to maintain state across packets?}
+  \subsection{What types of constructs do we need to maintain state across packets?}
   To identify flows for examples, hash functions and registers can be used to keep
   track of the flow's five-tuple (destination/source IP, protocol, source/destination port).
 
-  \subsubsection{What is a bloom filter and how do you dimension one?}
+  \subsection{What is a bloom filter and how do you dimension one?}
   A bloom filter in general is a memory-efficient, probabilistic data structure for
   insertions and membership queries.
 
-  \subsubsection{Explain what is a counter and the different ways it can be used.}
+  \subsection{Explain what is a counter and the different ways it can be used.}
   Can be modified by the dataplane but only read by control plane. Can be configured to
   count packets, bytes or both. Can be used for statistics.
+  It can be attached to a table to count the number of times an specific entry is called.
 
-  \subsubsection{Describe the role of the 'register' extern and how it can be used}
+  \subsection{Describe the role of the 'register' extern and how it can be used}
   Can be read and written by data plane. Used to keep state accross packets.
 
-  \subsubsection{Explain which additions we needed to make a traceroutable P4 network}
+  \subsection{Explain which additions we needed to make a traceroutable P4 network}
   Map egress port to the source IP address of the switch for that port which is populated 
   by the controller depending on the topology. This source IP is then used for the ICMP
   packet. Create the ICMP header that contains the 'old' IP header and the new IP header.
@@ -818,6 +820,179 @@
   \end{outline}
 
 
+  % ---------------------------------------------------------------------------
+  \section{Example Problems}
+  % ---------------------------------------------------------------------------
+  \subsection{Learning Switch}
+  \subsubsection{Problem}
+  Implement a L2 switch. 
+
+  \subsubsection{Idea}
+  If a destination MAC is not known, send packet to the controller and broadcast
+  it to all ports. Create multicast groups, nodes and associate them to broadcast
+  a packet on all ports expect the incomming one if dest MAC is unknown.
+
+  \subsubsection{Tables} 
+  \begin{outline}
+  \1 \texttt{dmac}
+    \2 Match exact on destination MAC and return egress port to \texttt{forward} action
+  \1 \texttt{smac}
+    \2 Match exact on source MAC, if no match call \texttt{mac\_learn} without arguments
+  \1 \texttt{broadcast}
+    \2 Match exact on ingress port and return multicast group ID to \texttt{set\_mcast\_grp}
+  \end{outline}
+  
+  \subsubsection{Actions}
+  \begin{outline}
+  \1 \texttt{forward}
+    \2 Called by \texttt{dmac} table, sets egress port
+  \1 \texttt{mac\_learn}
+    \2 Store source MAC and igngress port in struct and send it as digest to controller
+  \1 \texttt{set\_mcast\_grp}
+    \2 Sets \texttt{standard\_metadata.mcast\_grp} field according to table return
+    
+  \end{outline}
+
+  \subsubsection{Ingress} 
+  Apply \texttt{smac} table then \texttt{dmac}. If miss on \texttt{dmac}, apply \texttt{broadcast}
+  table.
+
+
+  \subsection{ECMP}
+  \subsubsection{Problem} When a packet with multiple candidate paths arrives, our switch should 
+  assign the next-hop by hashing some fields from the header and compute this 
+  hash value modulo the number of possible equal paths. To prevent out of order 
+  packets, ECMP hashing is done on a per-flow basis, which means that all packets
+  with the same source and destination IP addresses and the same source and destination
+  ports always hash to the same next hop.
+
+  \subsubsection{Idea} If destination IP is a candidate for ECMP (e.g. if it is not directly
+  connected), assign it to a ECMP group. This way one can split flows to ports but this is
+  optional. Then hash the packets five-tuple to a value from 0 to number of ports that have
+  equal cost. This ensures packets from one flow to go the same path. Then assign the group
+  ID and hash value to an egress port.
+
+  \subsubsection{Tables} 
+  \begin{outline}
+  \1 \texttt{ipv4\_lpm} Match on IP address lpm
+    \2 If IP directly connected, call \texttt{set\_nhop}
+    \2 If load balancing should be made, call \texttt{ecmp\_group}
+  \1 \texttt{ecmp\_group\_to\_nhop} Match on ecmp group ID and hash value
+    \2 Maps flows from ecmp group and hash value to output port and MAC, call \texttt{set\_nhop}
+  \end{outline}
+  
+  \subsubsection{Actions} 
+  \begin{outline}
+  \1 \texttt{set\_nhop} Takes dst MAC and port
+    \2 Set packet egress port, dst MAC and decr. TTL
+  \1 \texttt{ecmp\_group} Takes ECMP group ID and number of next hops (nhops)
+    \2 Hashes flow five-tuple to metadata with range 0..nhops
+    \2 Store ECMP group ID in meta
+  \end{outline}
+  
+  \subsubsection{Ingress} First apply lpm table. If action is \texttt{ecmp\_group}, apply
+  \texttt{ecmp\_group\_to\_nhop}.
+  
+  \subsubsection{Downside} ECMP suffers from hash collisions in real traffic because heavy 
+  flows can get mapped to same link. Solution: Flowlet switching.
+
+
+  \subsection{Flowlet switching}
+  \subsubsection{Problem} Flowlet switching leverages the burstness of TCP flows to achieve a better load balancing. 
+  TCP flows tend to come in bursts (for instance because
+  a flow needs to wait to get window space). Every time there is gap which is big enough (i.e., 50ms) 
+  between packets from the same flow, flowlet switching
+  will rehash the flow to another path (by hashing an ID value together with the 5-tuple).
+
+  \subsubsection{Idea} Extend ECMP by flowlet ID to change flow hash values after
+  a certain amount of time the flow exists.
+
+  \subsubsection{Tables} 
+  Same as for ECMP
+
+  \subsubsection{Registers}
+  \begin{outline}
+  \1 \texttt{flowlet\_to\_id}
+    \2 Keeps IP (a random number) of each flowlet that is added to the hash
+    for output port calculation. Port does not change if this ID stays the same
+  \1 \texttt{flowlet\_time\_stamp}
+    \2 Keeps timestamp of the last observerd packet belonging to a flow
+  \end{outline}
+
+  \subsubsection{Actions}
+  \begin{outline}
+  \1 \texttt{read\_flowlet\_registers}
+    \2 Hashes five-tuple to read flowlet ID and flowlet timestamp and stores them
+    in metadata
+    \2 Updates timestamp using the \texttt{standard\_metadata.ingress\_global\_timestamp} field
+  \1 \texttt{update\_flowlet\_id}
+    \2 Updates flowlet ID with a new random number on the location of the hash value from 
+    \texttt{read\_flowlet\_registers}
+  \1 \texttt{ecmp\_group}
+    \2 Change hash input data to five-tuple plus flowlet ID
+  \1 \texttt{set\_nhop} Takes dst MAC and port
+    \2 Set packet egress port, dst MAC and decr. TTL
+  \end{outline}
+
+  \subsubsection{Ingress} Read flowlet registers and compute time difference. If bigger than 
+  a timeout value update the flowlet ID. Apply lpm table, if action is \texttt{ecmp\_group}, apply
+  \texttt{ecmp\_group\_to\_nhop}.
+
+  \subsection{Heavy-Hitter Detection}
+  \subsubsection{Problem} Detect sources that generate lots of traffic.
+
+  \subsubsection{Idea} Use counting Bloom filter by hashing some packet fields (e.g., source IP)
+  multiple times and increment all counter. If at least one counter exceeds a limit, report
+  this flow as heavy hitter.
+
+  \subsubsection{Tables} 
+  \begin{outline}
+  \1 \texttt{ipv4\_lpm} Match on IP address lpm
+    \2 If IP known, call \texttt{ipv4\_forward}
+    \2 Else, drop
+  \end{outline}
+  
+
+  \subsubsection{Registers}
+  \begin{outline}
+  \1 \texttt{bloom\_filter}
+    \2 Keeps count of packets
+  \end{outline}
+
+  \subsubsection{Actions}
+  \begin{outline}
+  \1 \texttt{update\_bloom\_filter}
+    \2 Hashes five-tuple two times and store both values in metadata
+    \2 Read \texttt{bloom\_filter} register twice and store in meta
+    \2 Increment counters and write back    
+  \end{outline}
+
+  \subsubsection{Ingress} 
+  Apply ip table and if TCP header is valid, call \texttt{update\_bloom\_filter} and drop the
+  packet if both counters exceeded a threshold.
+
+
+  \subsection{Packet Loss Detection}
+  \subsubsection{Problem}
+  Losses can be caused by many reasons: congestion, blackholes, faulty links or corrupted
+  forwarding tables. Even if small, losses can have a significant impact on the network 
+  performance and thus detecting and localizing them fast is fundamental. Furthermore, being 
+  able to get information (i.e header fields) of the packets that get dropped can be 
+  extremely useful when trying to find the root cause of the drop.
+
+  \subsubsection{Idea}
+  Use IBLT to store key values pairs where the key is a packet's five-tuple and the values are
+  a counter and packet signature. For each link there is a upstream meter UM at the transmitting
+  switch and a downstream meter at the receiving switch. Count is incremented for every packet
+  tx'ed/rx'ed at both UM and DM. The packet signature is XOR'ed to the signature field. 
+
+  The controller can now pull both meters, calculate the difference and extract the signature
+  where count=1. Then using the signature calculate the five-tuple hash, subtract and XOR
+  the values to get the next lost packet and so on.
+
+  For synchronization, two batches can be used. The switches change batch every N seconds
+  during which the contorller can pull the batch that is currently not in use.
+    
 
   % ---------------------------------------------------------------------------
   \vfill\null
