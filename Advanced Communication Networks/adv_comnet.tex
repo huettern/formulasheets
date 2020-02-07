@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2019-09-24 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-06 11:13:21
+% @Last Modified time: 2020-02-07 09:09:33
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -858,6 +858,8 @@
   table.
 
 
+  \vfill\null
+  \columnbreak
   \subsection{ECMP}
   \subsubsection{Problem} When a packet with multiple candidate paths arrives, our switch should 
   assign the next-hop by hashing some fields from the header and compute this 
@@ -897,6 +899,8 @@
   flows can get mapped to same link. Solution: Flowlet switching.
 
 
+  \vfill\null
+  \columnbreak
   \subsection{Flowlet switching}
   \subsubsection{Problem} Flowlet switching leverages the burstness of TCP flows to achieve a better load balancing. 
   TCP flows tend to come in bursts (for instance because
@@ -938,6 +942,8 @@
   a timeout value update the flowlet ID. Apply lpm table, if action is \texttt{ecmp\_group}, apply
   \texttt{ecmp\_group\_to\_nhop}.
 
+  \vfill\null
+  \columnbreak
   \subsection{Heavy-Hitter Detection}
   \subsubsection{Problem} Detect sources that generate lots of traffic.
 
@@ -948,8 +954,7 @@
   \subsubsection{Tables} 
   \begin{outline}
   \1 \texttt{ipv4\_lpm} Match on IP address lpm
-    \2 If IP known, call \texttt{ipv4\_forward}
-    \2 Else, drop
+    \2 If IP known, call \texttt{ipv4\_forward}, else, drop
   \end{outline}
   
 
@@ -963,7 +968,7 @@
   \begin{outline}
   \1 \texttt{update\_bloom\_filter}
     \2 Hashes five-tuple two times and store both values in metadata
-    \2 Read \texttt{bloom\_filter} register twice and store in meta
+    \2 Read \texttt{bloom\_filter} registers and store in meta
     \2 Increment counters and write back    
   \end{outline}
 
@@ -995,8 +1000,8 @@
     
 
   % ---------------------------------------------------------------------------
-  \vfill\null
-  \pagebreak
+  % \vfill\null
+  % \pagebreak
   \end{multicols*}
   \begin{multicols*}{3}
   \section{P4 language}
