@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2020-02-18 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-18 17:13:08
+% @Last Modified time: 2020-02-18 18:40:54
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -111,7 +111,212 @@
   % ---------------------------------------------------------------------------
   \section{Architecture review, MCUs}
   % ---------------------------------------------------------------------------
+  \subsection{Datacenters}
+  \subsubsection{Cloud Service Models}
+  \begin{outline}
+    \1 Software as a Service (Saas)
+      \2 Provider licenses applications to users as a service
+      \2 Avoid costs of installation, maintenance, patches, ...
+    \1 Platform as a Service (Paas)
+      \2 Provider offers software platform for building applications
+      \2 e.g. Google's App-Engine
+      \2 Avoid worrying about scalability of platform
+    \1 Infrastructure as a Service (Iaas)
+      \2 Povider offers raw computing, storage and network
+      \2 e.g. Amazon AWS
+      \2 Avoid buying servers and estimating resource needs
+  \end{outline}
 
+  \subsubsection{Building blocks of moden data centers}
+  \begin{outline}
+    \1 Network Switch
+    \1 Rack
+    \1 Server Racks
+    \1 Cluster Switch
+  \end{outline}
+  Rack of servers (so called commodity servers) consist of a modular design with
+  top-of-rack switch, power, network and storage. The ToR is the link aggregate to 
+  the next level.
+
+  A data center is not just a collectino of servers, it's a "small internet". It is
+  administered as a single domain that does not have to be compatible with the "outside
+  world". No need for international standards.
+
+  There exists specialized machine learning cloud hardware.
+
+  \subsubsection{Performance Metrics}
+  \begin{outline}
+    \1 Throughput
+      \2 Requests per second
+      \2 Concurrent users
+      \2 Gbytes/sec processed
+    \1 Latency
+      \2 Execution time
+      \2 Per request latency
+  \end{outline}
+
+  \subsubsection{Tail Latency}
+  Output depends on all servers finishing. Probability of a slow server $P_\text{slow}$.
+  Job on $N$ servers finishes when the last server is done. Even if $P_\text{slow}$ is
+  very small, $P_\text{jobFsat}$ is small if $N$ is large.
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      P_\text{jobFast} = (1-P_\text{slow})^N
+    \end{gathered}
+  \end{empheq}
+  \cgraphic{1.0}{img/tail.jpg}
+
+  \subsubsection{TCO: Total Cost of Ownership}
+  TCO = capital (CapEx) + operational (OpEx) expenses. CapEx: building, generators, HW.
+  OpEx: Elec., repairs, insurance. Users perspective: CapEx: cost of long term leases on HW and
+  services. OpEx: Pay per use cost on HW and services
+
+  \subsubsection{Reliability}
+  \begin{outline}
+    \1 Failure in time (FIT)
+      \2 Failures per billion hours of operation
+    \1 Mean time to failure (MTTF)
+      \2 Time to produce first incorrect output
+    \1 Mean time to repair (MTTR)
+      \2 Time to detect and repair a failure
+  \end{outline}
+
+  Steady state availability = MTTF/(MTTF + MTTR).
+
+  \subsubsection{Multicore}
+   \begin{tabularx}{\linewidth}{l c c c}
+    \hline
+    {} & Single & Dual & Quad \\ \hline
+    Core area & $A$ & $\approx A/2$ & $\approx A/4$ \\
+    Core power & $W$ & $\approx W/2$ & $\approx W/4$ \\
+    Chip power & $W+O$ & $W+O'$ & $W+O''$ \\
+    Core performance & $P$ & $0.9P$ & $0.8P$ \\
+    Chip performance & $P$ & $1.8P$ & $3.2P$ \\ \hline
+  \end{tabularx}
+
+  \subsubsection{Amdahl's Law}
+  Not all operations can run in parallel, hence speedup is limited. $f$ fraction 
+  that can run in parallel.
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{align}
+      \text{Speedup} &= \frac{1}{(1-f)+\frac{f}{n}} & \lim_{n\to\infty}&\frac{1}{1-f+\frac{f}{n}}=\frac{1}{1-f}
+    \end{align}
+  \end{empheq}
+  Amdahl's Law ignores power cost of $n$ cores. More cores resupts in each core being slower. 
+  Parallel speedup $< n$. Seiral portion takes longer, also, inerconnect and scaling overhead.
+  Fixed power budget forces slow cores, serial code quickly dominates.
+  \cgraphic{1.0}{img/amdahl.png}
+
+  \subsection{Computing Systems Performance}
+  \subsubsection{Instruction Count and CPI}
+  CPI: Cycles per instruction. CPU time = instruction count x CPI x clock cycle time.
+  CPI is determined by program, ISA and compiler. Different instructions have diferent CPI.
+
+  \subsubsection{Performance}
+  IC: Instruction count.
+  Depends on
+  \begin{outline}
+    \1 Algorithm: affects IC, possibly CPI
+    \1 Programming language, affects IC, CPI
+    \1 Compiler: affects IC, CPI
+    \1 Instruction set architecture: affects IC, CPI, Tc
+  \end{outline}
+
+  \subsubsection{Power}
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      \text{Power} = \text{Capactivice load} \times \text{Voltage}^2 \times \text{Frequency}
+    \end{gathered}
+  \end{empheq}
+
+  \subsubsection{Multiprocessors}
+  More than one processor per chip. Requires explicitly parallel programming.
+  Hard to rogramm for performance, balance load and optimize synchronization.
+
+  \subsection{Processor Architecture}
+  CPU performance factors are determined by instruction count, CPI and cycle time.
+
+  \subsubsection{Instruction Execution}
+  Programm counter (PC) points to instruction memory to fetch instructions. Register
+  numbers point to the register file to read registers. Depending on instruction class,
+  use the ALU for arithmetic results, memory address calculation or branch compare. 
+  Access data memory for load/store and increment PC by target address of 4 (4 byte instruction
+  words).
+  \cgraphic{1.0}{img/archoverview.png}
+
+  \subsubsection{R-format instructions}
+  Read two register from register file, perform arithmetic/logical operation and
+  write back to register.
+
+  \subsubsection{Load/Store Instructions}
+  Read register operands, calculate address using offset, load memory to register
+  or vice versa.
+
+  \subsubsection{Branch Instructions}
+  Read register, compare operands, calculate target address.
+
+  \subsubsection{Pipelining}
+  RISC-V is designed for pipelining: All instructions 32-bit, few regular instruction
+  format, load/store addressing.
+
+  \subsubsection{Hazards}
+  Situations that precent starting the next instruction in the next cycle.
+  \begin{outline}
+    \1 Structure hazard
+      \2 A required resource is busy
+      \2 Fix: requires separate instruction/data memories
+    \1 Data hazard
+      \2 Need to wait for precious instruction to complete its data read/write
+      \2 Fix: Forward data to next op without storing in register
+      \2 Fix: Code scheduling to avoid stalls
+    \1 Control hazard
+      \2 Deciding on control action depends on precious instruction
+      \2 Fix: Branch prediction
+  \end{outline}
+
+  \subsubsection{Branch Prediction}
+  Predict outcome of branch and only stall if prediction is wrong. RISC-V can predict branches
+  not taken. Static prediction based on typical branch behaviour. Dynamic measures actual branch
+  behaviour, e.g. record recent history of each branch. Assume future behav. will continue the trend,
+  when wrong, stall while re-fetching. 2-Bit predictor changes prediction only on two successive
+  mispredictions.
+  \cgraphic{1.0}{img/pipeline.png}
+
+  \subsection{Exploiting Memory Hieararchy}
+  Programs access a small portion of their address space at any time. Temporal locality aims at items
+  that are accessed recently to be likely accessed again soon (e.g. loop). Spatial locality towards
+  items near recently accessed (e.g. sequential instructions, array data).
+
+  \subsubsection{Locality}
+  Copy recently accessed (and nearby) items from disk to smaller DRAM (main memory) and from there 
+  to smaller SRAM (cache attahched to CPU). If accessed data is present, \textbf{hit}, else \textbf{miss}.
+  Hit ratio: hits/accesses.
+
+  \subsubsection{Cache Memory}
+  \begin{outline}
+    \1 Direct Mapped Cache
+      \2 Location determined by address
+      \2 Direct mapped: only one choice
+      \2 Store tags (high order bits of source data) and valid flag if there is data at that location
+    \1 Larger block size
+      \2 Store tag, index and offset
+      \2 Larger blocks should reduce miss rate but larger miss penalty
+    \1 Associative Cache
+      \2 Allow a given block to go in any cache entry
+      \2 Requires all entries to be searched at once
+    \1 $n$-way set associative
+      \2 Each set contains $n$ entries
+      \2 Blcok number determines which set
+      \2 Search all entries in a given set at once
+  \end{outline}
+
+  \subsubsection{AMAT: Average memory access time}
+  AMAT = Hit time + miss rate x miss penalty
+
+  \subsubsection{Replacement Policy}
+  Direct mapped: no choice. Set associative: Prefer non-valid entry, if there is one. Otherwise,
+  choose among entries in the set. Least recently used (LRU): Choose the one unused for the longest time.
+  Random: Gives approx. same performance as LRU.
 
   % ---------------------------------------------------------------------------
   \section{ML Concepts, ML Hardware}
