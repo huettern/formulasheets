@@ -1,6 +1,6 @@
 # LaTeX Makefile
  
-PROJECT=formulasheet
-OUTPUT=formulasheet
+PROJECT=template
+OUTPUT=template
 
 include ../Makefile.make
