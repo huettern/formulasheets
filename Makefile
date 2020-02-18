@@ -8,6 +8,8 @@ all: revision */*.tex
 	cd Semiconductor\ Devices && make && cd ..
 	cd Communication\ Networks && make && cd ..
 	cd Communication\ Systems && make && cd ..
+	cd Advanced\ Communication\ Networks && make && cd ..
+	cd SoC\ for\ Data\ Analytics\ and\ Machine\ Learning/ && make && cd ..
 
 
 docker:
@@ -29,3 +31,5 @@ clean:
 	cd Semiconductor\ Devices && make clean && cd ..
 	cd Communication\ Networks && make clean && cd ..
 	cd Communication\ Systems && make clean && cd ..
+	cd Advanced\ Communication\ Networks && make clean && cd ..
+	cd SoC\ for\ Data\ Analytics\ and\ Machine\ Learning/ && make clean && cd ..

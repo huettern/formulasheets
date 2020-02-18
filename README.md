@@ -48,9 +48,9 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 ### Work in Progress
 | Name          | Status | Download      |
 | ------------- |--------|---------------|
-| None |  |  |
+| SoC for Data Analytics | WIP  | [link][socdaml] |
 
-[comsys]: https://github.com/noah95/formulasheets/raw/build/Communication%20Systems/communication_systems.pdf
+[socdaml]: https://github.com/noah95/formulasheets/raw/build/SoC%20for%20Data%20Analytics%20and%20Machine%20Learning/soc_for_da_ml_huetter.pdf
 
 ## Build documentation
 
