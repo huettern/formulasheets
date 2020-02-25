@@ -1,8 +1,8 @@
 # SoC for Data Analytics and Machine Learning
 
 ## Progress
-- [ ] Architecture review, MCUs
-- [ ] ML Concepts, ML Hardware
+- [x] Architecture review, MCUs
+- [ ] 2nd lecture: Machine Learning: NN, DNN Workloads
 - [ ] Out of Order Processors
 - [ ] Multicore Processors
 - [ ] Vector Processors, Multithreading, Virtualizing

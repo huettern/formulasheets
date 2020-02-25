@@ -5,12 +5,13 @@
 % @Author: Noah Huetter
 % @Date:   2020-02-18 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-18 18:40:54
+% @Last Modified time: 2020-02-25 21:48:31
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
 \usepackage{lastpage}
 \usepackage{hyperref}
+\usepackage{dirtytalk}
 % Include general settings and customized commands
 \input{settings/general}
 \input{settings/commands}
@@ -319,13 +320,311 @@
   Random: Gives approx. same performance as LRU.
 
   % ---------------------------------------------------------------------------
-  \section{ML Concepts, ML Hardware}
+  \section{(Deep) NN Workloads}
   % ---------------------------------------------------------------------------
 
+  \subsection{Artificial Intelligence}
+  John McCarthy: \say{The science and engineering of creating intelligen machines}
+  \cgraphic{0.7}{img/aicloud.png}
+
+  \subsection{Linear Classifier}
+  If we want to classify an $32\times32$ image into $10$ classes we can use the 
+  linear classifier:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      f(x,W) = Wx + b
+    \end{gathered}
+  \end{empheq}
+   \begin{tabularx}{\linewidth}{c c l}
+    \hline
+    {} & Dimension & Description \\ \hline
+    $W$ & $10 \times 3072$ & parameters or weights \\
+    $b$ & $10 \times 1$ & bias or offset \\
+    $x$ & $3072 \times 1$ & Input, e.g. 32x32x3 image pixels \\ \hline
+  \end{tabularx}
+  Every column in $W$ defines a plane. One side of this plane corresponds to images
+  belonging to this class, the other side meaning it does not belong to this class.
+
+  To evaluate a linear classifier, a loss function $L_i$ is defined. Given a dataset
+  of examples $\{(x_i,y_i)\}_{i=1}^N$ the loss over the dataset is a sum of losses:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      L = \frac{1}{N}\sum_i L_i\left(f(x_i,W), y_i\right)
+    \end{gathered}
+  \end{empheq}
+  $x_i$ image \\
+  $y_i$ is (integer) label
+
+  \subsubsection{Multiclass SVM loss}
+  The SVM (support vector machine) loss function with the shorthand $s=f(x_i,W)$:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{align}
+      L_i &= \sum_{j\neq y_i} \begin{cases}
+          0 & s_{y_i}\geq s_j+1 \\ 
+          s_j-s_{y_i}+1 & \text{otherwise}
+        \end{cases} \\
+      &=\sum_{j\neq y_i}\max(0, s_j-s_{y_i}+1)
+    \end{align}
+  \end{empheq}
+
+  \cgraphic{0.5}{img/linlossex.png}
+
+  \subsubsection{Other cost functions}
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{align}
+      \text{Softmax} &&& -\log\left(\frac{e^{sy_i}}{\sum_je^{sy_j}}\right) \\
+      \text{SVM} &&& \sum_{j\neq y_i}\max(0, s_j-s_{y_i}+1) \\
+      \text{Full loss} &&& \frac{1}{N}\sum_{i=1}^NL_i+R(W)
+    \end{align}
+  \end{empheq}
+
+  \subsubsection{Regularization}
+  Model should be "simple", so it works on test data.
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      L(W) = L + \lambda R(W)
+    \end{gathered}
+  \end{empheq}
+
+  \subsection{Training Linear Classifier}
+  How do we find the best $W$ using a dataset, a score function ($s=f(x,W)$) and a
+  loss function? Enter \textbf{gradiend-based optimization}: The slope in any direction
+  is the dot product of the direction with the gradient.
+
+  \begin{lstlisting}[language=Python]
+while True:
+  weights_grad = eval_gradient(loss_fun, data, weights)
+  weights += -step_size*weights_grad\end{lstlisting}
+
+  \subsubsection{Stochastic Gradient Descent (SGD)}
+  The full sum in the cost function is expensive. Aprroximate it using a \textbf{minibatch}
+  of randomly selected data (32/64/128 common).
+  \begin{lstlisting}[language=Python]
+while True:
+  data_batch = sample_train_dat(data, 64)
+  weights_grad = eval_gradient(loss_fun, data_batch, weights)
+  weights += -step_size*weights_grad\end{lstlisting}
+
+  \subsubsection{Hard cases}
+  Most data are not linearly seperable.
+  \cgraphic{1.0}{img/linclassfail}
+
+  \subsection{From linear to non-linear classifiers}
+  Instead of feeding the classifier with raw data, perform a non-linear transformation
+  beforehand so that the data becoms linearly seperable. This is called the \textbf{Kernel Trick}.
+  
+  Later we will see that convolutional netowrks can work on raw data so that no
+  effort has to be made on pre-processing.
+
+  \subsection{Neural Networks}
+  Consists of interconnected cells. Each cells has multiple inputs that are weighted
+  and added (like a linear classifier), but then put through a non-linear activation
+  function.
+  \cgraphic{0.7}{img/neuralcell.png}
+
+  Multiple cells are connected in several layers.
+  \cgraphic{0.7}{img/layers.png}
+
+  \subsection{Deep Learning}
+  A deep neural network is a neural network with a lot of hidden layers.
+
+  \subsection{Training Neural Networks}
+  Neural nets are trained based on gradient descent using backpropagation. To compute the
+  gradient, input values are propagated from front to back through the network and then
+  the partial derivatives calculated during backpropagation.
+  \cgraphic{0.7}{img/backprop.png}
+
+   \begin{tabularx}{\linewidth}{l l}
+    \hline
+    \textbf{add} gate & gradient distributor \\
+    \textbf{max} gate & gradient router \\
+    \textbf{mul} gate & gradient switcher \\ \hline
+  \end{tabularx}
+
+  \subsubsection{Mini-batch SGD}
+  \begin{enumerate}
+    \item \textbf{Sample} a batch of data
+    \item \textbf{Forward} propagate it through the graph, get loss
+    \item \textbf{Backward} propagate to calculate the gradients
+    \item \textbf{Update} the parameters using the gradient
+  \end{enumerate}
+
+  \subsubsection{Non-linearity}
+  The simplest is the so called \textbf{ReLU} (rectified linear unit).
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      f(x) = \max(0,x)
+    \end{gathered}
+  \end{empheq}
+  \begin{outline}
+    \1 Does not saturate
+    \1 Very computationally efficient
+    \1 Converges much faster than sigmoid/tanh in practice
+    \1 Actually more biologically plausible than sigmoid
+  \end{outline}
+
+
+  \subsection{Convolutional Neural Networks}
+  Convolutional Neural Networks are neural networks with feed forward and sparsely-connected
+  with weight sharing. They are trainedusing supervised learning (training set has inputs and
+  outputs, i.e., labeled). The main two layers are \textbf{convolutional layers}
+  and \textbf{fully connected} layers.
+  \cgraphic{1.0}{img/cnntop.png}
+
+  The convolution layer can further be dissected into convolution, non-linearity,
+  norm and pooling.
+
+  \subsubsection{Convolution}
+  The input fmap (feature map) is element-wise multiplied with filter coefficient and
+  partially summed to get one entry of the output fmap. The filter is then shifted
+  one entry to get the next output value and so on.
+  \cgraphic{0.85}{img/conv.png}
+
+  There can be many input channels $C$, filters $M$ and output channels $M$.
+  \cgraphic{0.85}{img/batching.png}
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{align}
+      &O[n][m][x][y] = \text{Activation}(\vect{B}[m]) + \\
+      &\sum_{i=0}^{R-1}\sum_{j=0}^{S-1}\sum_{k=0}^{C-1}\vect{I}[n][k][Ux+i][Uy+j]\times\vect{W}[m][k][i][j]
+    \end{align}
+  \end{empheq}
+  \begin{empheq}[]{equation*}
+    \begin{gathered}
+      0\leq N, -\leq m < M, 0 \leq y < E, 0\leq x < F\\
+      E=(H-R+U)/U, F=(W-S+U)/U
+    \end{gathered}
+  \end{empheq}
+  \begin{tabularx}{\linewidth}{c l}
+    \hline
+    Sym & Description \\ \hline
+    $\vect{B}$ & Biases \\
+    $\vect{I}$ & Input fmaps \\
+    $\vect{W}$ & Filter weights \\
+    $U$ & Convolution stride \\
+    \hline
+  \end{tabularx}
+
+  \begin{tabularx}{\linewidth}{c l l}
+    \hline
+    Sym & Name & Description \\ \hline
+    $N$ & batch size & number of in/out fmaps \\
+    $C$ & channels & number of 2D in maps/filters \\
+    $H$ & activations & Height of input fmap \\
+    $W$ & activations & Width of input fmap \\
+    $R$ & weights & Height of 2D filter \\
+    $S$ & weights & Width of 2D filter \\
+    $M$ & channels & Number of 2D output fmaps\\
+    $E$ & activations & Height of output fmap \\
+    $F$ & activations & Width of output fmap \\ 
+    \hline
+  \end{tabularx}
+
+  \subsubsection{Non-linearity}
+  \cgraphic{0.85}{img/tradnonlin.png}
+  \cgraphic{0.85}{img/modnonlin.png}
+
+  \subsubsection{Fully connected (FC) layer}
+  Height and width of output fmaps are 1 ($E=F=1$), filters as large as input
+  fmaps ($R=H,S=W$). Implementation using matrix multiplication.
+  \cgraphic{0.85}{img/fcl.png}
+
+  \subsubsection{Norm}
+  \textbf{Batch normalization (BN)} normalizes activations towards mean=0, sigma=1
+  based on statistics of training dataset. Put in between CONV and activation. Believed
+  to be key to getting high accuracy and faster training on very deep neural nets.
+
+  \subsubsection{Pooling}
+  Reduce resolution of each channel independently. Overlapping or non-overlapping, 
+  depending on stride.
+  \cgraphic{0.85}{img/pooling.png}
+
+  \subsection{Example nets}
+  \subsubsection{AlexNet}
+  The AlexNet has 5 conv layers, 3 FC, 61M weights, 724M MACs and uses ReLU as non-lin.
+  \cgraphic{0.85}{img/alexnet.png}
+   \begin{tabularx}{\linewidth}{c c c c c}
+    \hline
+    L\# & Filter & \#Filters & \#Chan & Stride \\ \hline
+    1&$11\times11$ & 96 & 3 & 4 \\
+    2&$5\times5$ & 256 & 48 & 1 \\
+    3&$3\times3$ & 384 & 256 & 1 \\
+    4&$3\times3$ & 384 & 192 & 1 \\
+    5&$3\times3$ & 256 & 192 & 1 \\ \hline
+  \end{tabularx}
+  Altough layers 1 and 3 have approx. same number of MACs (120M), L3 is significantly
+  more complex to compute because it has 26x more parameters (memory usage).
+
+  \subsubsection{Summary}
+  \cgraphic{1.0}{img/dnnsummary.png}
+  \cgraphic{1.0}{img/moarnets.png}
+
+  \subsection{Kernel Computations}
+  Convolutions can be reshaped to form standard matrix multiplications. GPUs are 
+  very good in matrix multiplications. Problem is that data is repeated.
+  \cgraphic{1.0}{img/convmatrix.png}
+
+  Likewise linear classifiers can be reshaped to form matrix multiplications.
+
+  \subsection{Computational Transforms}
+  Goal: Bitwise same result, but reduce number of operatinos. Focuses
+  mostly on compute.
+
+  \subsubsection{Strassen}
+  Uses partial products to reduce the number of multiplications. Reduces matrix 
+  multiplication complexity from $\mathcal{O}(N^3)$ to $\mathcal{O}(N^{2.807})$. Comes at the
+  price of reduced numerical stability and requires significantly more memory. 
+  Performance gain only for large matrices.
+
+  \subsubsection{Winograd}
+  1D Winograd targets convolutions instead of matrix multiply. Reduces number of multiplications
+  from, e.g., 36 to 16 for 3 by 3 filter and 4 by 4 input fmap. Winograd works on small regions
+  of output at a time, and therefore uses inputs repeatedly.
+  \begin{outline}
+    \1 Optmized computation for convolutions
+    \1 Can significantly reduce multiplies
+    \1 Each filter size is a different computation
+  \end{outline}
+
+  \subsubsection{FFT}
+  Convolution in time domain becomes multiplication in frequency domain. Reduces convolution
+  complexity from $\mathcal{O}(N_{O_2}N_{f_2})$ to $\mathcal{O}(N_{O_2}\log_2N_{O})$. Comes
+  at the cost of more memory space and bandwidth.
+
+  \subsubsection{More compute reduction approaches}
+  \begin{outline}
+    \1 Reduce size of operands
+      \2 Floating point to fixed point
+      \2 Bit-width reduction
+      \2 Non-linear quantization
+    \1 Reduce number of operations
+      \2 Exploit activation statistics
+      \2 Network pruning
+      \2 Compact network architectures
+  \end{outline}
+
+
+  \subsection{HW-centric View}
 
   % ---------------------------------------------------------------------------
   \section{Out of Order Processors}
   % ---------------------------------------------------------------------------
+
+  \cgraphic{1.0}{img/archoverview.png}
+
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{gathered}
+      U=RI
+    \end{gathered}
+  \end{empheq}
+
+  \begin{outline}
+    \1 adf
+  \end{outline}
+
+   \begin{tabularx}{\linewidth}{l c c c}
+    \hline
+    {} & Single & Dual & Quad \\ \hline
+  \end{tabularx}
 
 
   % ---------------------------------------------------------------------------
