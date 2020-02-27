@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2020-02-18 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-25 21:48:31
+% @Last Modified time: 2020-02-27 14:56:21
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -604,6 +604,74 @@ while True:
 
 
   \subsection{HW-centric View}
+  Most operations are based on multiply-accumulate (MAC).
+  \cgraphic{1.0}{img/memloc.png}
+
+  \subsubsection{Opportunities}
+  \begin{outline}
+    \1 Data reuse
+    \1 Partial sum accumulation does not have to access RAM
+  \end{outline}
+
+  \subsubsection{Types of data reuse}
+  Data reuse can reduce DRAM reads  of filter/fmap by up to 500x (for AlexNet)
+
+  \textbf{Convolutional Reuse} CONV layers only: reuse activations and filter weights.
+  \cgraphic{0.4}{img/convreuse.png}
+
+  \textbf{Fmap Reuse} For CONV and FC layers: can reuse activations.
+  \cgraphic{0.4}{img/fmapreuse.png}
+
+  \textbf{Filter Reuse} CONV and FC layers with bacht size $> 1$: Reuse filter weights.
+  \cgraphic{0.4}{img/filterreuse.png}
+
+  \subsubsection{Tuning Processors for CNNs}
+  Single issue, in order is the most energy efficient.
+  \begin{outline}
+    \1 Memory is always critical: 1 full stage for fetch, 2 full stages for load+writeback
+    \1 Single stage decode
+    \1 Single stage execute+WB
+  \end{outline}
+  \cgraphic{0.8}{img/cnnproc.png}
+
+  \subsubsection{ISA extensions}
+  \begin{outline}
+    \1 HW loops and post modified LD/ST
+    \1 Bit manipulations
+    \1 Packed-SIMD ALU operations with dot product
+    \1 Rounding and Normalization
+    \1 Shuffle operations for vectors
+  \end{outline}
+
+  RISC-V3 implements all these features.
+  \textbf{HW loops} mitigate counter increments and branch overheads by specifying the
+  number of iterations in the loop instruction.
+  
+  \textbf{Bit manipulations} E.g. extract N bits starting from M from a word and extend
+  with sign or find first bit set, count bumbers of 1, rotate, ...
+
+  \textbf{Packed-SIMD} NN inference does not need 32 bit precission. Back e.g. 4 8 bit
+  values into one 32 bit register and run operation on all simultaneous (SIMD=single 
+  instruction, multiple data). Can run 4 8-bit MAC in one cycle.
+
+  \subsubsection{MMUL on serial, parallel, systolic}
+  MMUL = matric multiplication.
+
+  \textbf{Serial} calculation is done by a standard CPU. Load activations and fmaps
+  from memory, perform single MAC, store back in memory. Very slow.
+
+  \textbf{Parallel} is easily implemented in GPUs. Large number of small processing units
+  have their own small memory. Each performs serial computation. Better than serial
+  but still slow.
+
+  \textbf{Systolic Arrays}
+  Load weights and fmaps once and propagate through the array to compute MMUL. This is how
+  modern NN accelerators work (e.g. Google TPU). Con: if array is too small, partial sums
+  have to be stored and the array behaves like a standard CPU.
+  \cgraphic{0.8}{img/systolicarray.png}
+
+  \textbf{MMUL in memory} Single memory cell used to store data (binary or multi-level voltage).
+  By word line activation, bits get added or multiplied and result can be measured.
 
   % ---------------------------------------------------------------------------
   \section{Out of Order Processors}
