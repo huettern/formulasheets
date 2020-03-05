@@ -3,7 +3,7 @@
 ## Progress
 - [x] Architecture review, MCUs
 - [x] 2nd lecture: Machine Learning: NN, DNN Workloads
-- [ ] Out of Order Processors
+- [ ] 3rd lecture: Out of Order Processors
 - [ ] Multicore Processors
 - [ ] Vector Processors, Multithreading, Virtualizing
 - [ ] GP-GPUs

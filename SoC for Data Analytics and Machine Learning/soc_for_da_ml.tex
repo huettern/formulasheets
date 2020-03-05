@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2020-02-18 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-02-27 14:56:21
+% @Last Modified time: 2020-03-05 16:49:46
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -45,6 +45,24 @@
     postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
 }
 
+
+\lstnewenvironment{algorithm}[1][] %defines the algorithm listing environment
+{   
+  \lstset{ %this is the stype
+    mathescape=true,
+    frame=tB,
+    numbers=none, 
+    numberstyle=\tiny,
+    basicstyle=\scriptsize, 
+    keywordstyle=\color{black}\bfseries\em,
+    keywords={,input, output, return, datatype, function, in, if, else, foreach, while, begin, end, } %add the keywords you want, or load a language as Rubens explains in his comment above.
+    numbers=left,
+    xleftmargin=.0\textwidth,
+    #1 % this is to add specific settings to an usage of this environment (for instnce, the caption and referable label)
+  }
+}
+{}
+
 % \bibliography{semiconductordevices}
 % \bibliographystyle{ieeetr}
 \medmuskip=1mu
@@ -69,6 +87,27 @@
 \else
 \fi
  
+
+% Outlines configurations
+\makeatletter
+% the outline environment provides commands \1..\4 for
+% introducing items at level 1..4, and \0 for normal paragraphs
+% within the outline section.
+\renewenvironment{outline}[1][]{%
+  \ifthenelse{\equal{#1}{}}{}{\renewcommand{\ol@type}{#1}}%
+  \ol@z%
+  \newcommand{\0}{\ol@toz\ol@z}%
+  \newcommand{\1}{\vspace{\dimexpr\outlinespacingscalar\baselineskip-\baselineskip}\ol@toi\ol@i\item}%
+  \newcommand{\2}{\vspace{\dimexpr\outlinespacingscalartwo\baselineskip-\baselineskip}\ol@toii\ol@ii\item}%
+  \newcommand{\3}{\vspace{\dimexpr\outlinespacingscalar\baselineskip-\baselineskip}\ol@toiii\ol@iii\item}%
+  \newcommand{\4}{\vspace{\dimexpr\outlinespacingscalar\baselineskip-\baselineskip}\ol@toiiii\ol@iiii\item}%
+}{%
+  \ol@toz\ol@exit%
+}
+\makeatother
+\def\outlinespacingscalar{0.5}
+\def\outlinespacingscalartwo{0.5}
+
 % -----------------------------------------------------------------------
 \IfFileExists{../build/revision.tex}{
   \input{../build/revision.tex}
@@ -674,7 +713,274 @@ while True:
   By word line activation, bits get added or multiplied and result can be measured.
 
   % ---------------------------------------------------------------------------
-  \section{Out of Order Processors}
+  \section{Advanced Processors}
+  % ---------------------------------------------------------------------------
+
+  \subsection{Terms}
+  \begin{outline}
+    \1 Instruction parallelism
+      \2 Number of instructions being worked on
+    \1 Operation Latency
+      \2 Time (in cycles) until the result of an instruction is available for use as
+      an operand in a subsequent instruction
+    \1 Peak IPC
+      \2 maximum sustainable number of instructions executed per clock cycle
+  \end{outline}
+
+  \subsection{Instruction-Level Parallelism}
+   \begin{tabularx}{\linewidth}{l X}
+    IF & Instruction Fetch \\
+    DE & Decode \\
+    EX & Execute \\
+    WB & Write Back
+  \end{tabularx}
+  \cgraphic{0.8}{img/pipe.png}
+
+  \subsubsection{Superscalar Machine}
+  A \textbf{superscalar machine} is able to execute multiple operations during a
+  single clock cycle.
+   \begin{tabularx}{\linewidth}{l l}
+    {Instrucion parallelism} & $D\times N$ \\
+    Operation latency & 1 \\
+    Peak IPC & N
+  \end{tabularx}
+  \cgraphic{0.8}{img/superscalarpipe.png}
+
+  \subsubsection{Pipeline problems}
+  The pipeline can \textbf{stall} due to a raw hazard (because data dependence) or
+  due to pipeline hazard (because of stuck pipeline). Here, \texttt{subf} can't proceed
+  into D because \texttt{mulf} is there. 
+  \cgraphic{0.8}{img/stall.png}
+
+  An \textbf{in-order pipeline}, often written as F, D, X, W, is vulnerable to such harards.
+  \textbf{Out-of-order pipeline} implements "passing" funcionality by removing structural hazards.
+
+  \subsubsection{Instrucion-Level Parallelism (ILM)}
+  ILM is a measure of the amount of inter-dependencies between instructions. Average ILP =
+  number of instructions / number of cycles required. Code 1 has ILP = 1, code 2 has ILP = 3.
+  All three instructions could be executed simultaneously.
+  \cgraphic{0.8}{img/ilp.png}
+  Takeaway: Out-of-order execution exposes more ILP.
+
+  \subsection{Out of Order Execution}
+  Or dynamic scheduling, uses a window of instructions, reorders them at runtime to exploit
+  maximum pipeline usage.
+  \begin{outline}
+    \1 Dynamic scheduling
+      \2 Totally in hardware
+    \1 Fetch many instructions into instruction window
+      \2 Use branch prediction to speculate past
+      \2 Flush pipeline on branch misprediction
+    \1 Rename to avoid false dependencies (WAW and WAR)
+    \1 Execute instructions as soon as possible
+      \2 Register dependencites are known
+      \2 Handing memory dependencies more tricky
+    \1 Commit instructions in order
+      \2 Any strange happens before commig, just flush pipeline
+    \1 Current machines: 100+ instructino scheduling window
+  \end{outline}
+
+  Motivation: Execute instructinos in non-sequential order but make it appear
+  like sequential execution. Reduce RAW stalls, increase pipeline and funcional
+  unit utilization, epose more opporunities for parallel issue.
+
+  \subsubsection{Big picture}
+  Fill instruction buffer with ready to execute instructions. \textbf{Dispatch}: first part of decode.
+  Allocate slow in insn buffer, stall back-propagates to youger insns. \textbf{Issue}: second
+  part of decode. Sends insns from ins buffer to execution units. Out-of-order: wait doesn't
+  back-propagate to younger insns.
+  \cgraphic{0.8}{img/ooobp.png}
+  Issue: If multiple insns are ready, which one to choose? Most project use random.
+
+  \subsubsection{Data dependencies}
+  Definition: If insn 1's result is needed for insn 1000, there is a dependency. It is only a
+  hazard, if the hardware has to deal with it. 
+
+  True data dependency: \textbf{RAW} (read after write)
+  prevents reordering. False dependency: \textbf{WAW} (write after write) and \textbf{WAR} (write after read)
+  use same CPU register, but reordering is not possible because they use same reg. This can be made
+  reorderable by \textbf{renaming}.
+
+  \subsubsection{Register Renaming}
+  Concept: The register names are arbitraty and only nneds to be consistent between writes.
+
+  Approach: Every time an architected reg is written, we assign it to a physical register. Until the arch
+  reg is written again, we continue to translate it to the physical reg. Leaves RAW dependencies intact.
+  Free ROB at commit. Two key data structures: \texttt{map\_tbl} maps from arch register to physical reg,
+  free list keeps track of allocated and free registers, implemented as a queue.
+\begin{algorithm}
+i.phys_i1 $\gets$ map_tbl[i.arch_i1]
+i.phys_i2 $\gets$ map_tbl[i.arch_i2]
+i.old_phys_o $\gets$ map_tbl[i.arch_o]
+
+new_r $\gets$ new_phys_reg()
+map_tbl[i.arch_o] $\gets$ new_r
+
+i.phys_o $\gets$ new_r
+\end{algorithm}
+  
+  At commit, once all older ins have committed, free register.
+\begin{algorithm}
+free_phys_reg(i.old_phys_o)
+\end{algorithm}
+
+  Example:
+  \cgraphic{0.8}{img/renaming.png}
+
+  Pipeline:
+  \cgraphic{0.8}{img/ooopipe.png}
+
+  \subsubsection{Reorder Buffer}
+  Architectural registers and memory may only be changed if all previous operations are
+  also written. Arch regs \& mem writes are always executed \textbf{in order}. This leads
+  to the reorder buffer ROB. Any instructions in ROB whose RAW hazards have been satisfied
+  can be dispatched. 
+  \cgraphic{0.8}{img/rob.png}
+  \begin{outline}
+    \1 ROB managed circularly
+      \2 exec bit set when ins begins execution
+      \2 When an ins completes, its use bit is marked free
+      \2 ptr2 is inc only if the use bit is marked free
+    \1 Ins slot is candidate for execution when:
+      \2 It holds a valid ins (use bit set)
+      \2 It has not already started exec (exec bit clear)
+      \2 Both operands are acailable (p1 and p2 set)
+  \end{outline}
+
+  Buffer size: Big enough to host average age of instruction. Approximately execution
+  time of instruction. In practice 10..100.
+
+  \subsubsection{Interrupts and Exceptions}
+  \begin{outline}
+    \1 Hold exection flags in pipeline unti commit point
+    \1 Exceptions in earlier pipe stages override later exceptions
+    \1 Inject external interrupts at commit point
+    \1 If exception at commit, update cause and EPC reg, kill all stages,
+    inkect halder PC into fetch stage
+  \end{outline}
+  \cgraphic{1.0}{img/int.png}
+
+  \subsubsection{Commit}
+  Because of exceptions, temporary storage is needed to hold results before commit
+  (shadow registers and store buffers). 
+  \begin{outline}
+    \1 Add pd, dest, data, cause fields in ins template
+    \1 Commit ins to reg file and memory in program order, buffers can be maintained 
+    circularly
+    \1 On exception, clear reorder buffer by resetting ptr1=ptr2 (stores must wait
+    for commit before updating memory)
+  \end{outline}
+  \cgraphic{1.0}{img/robnew.png}
+  Register file does not contain renaming tags anymore, how does the decode stage
+  find the tag of a source reg? Search the "dest" field in the ROB.
+
+  \subsubsection{Branching and Prediction}
+  With that many pipeline stages, branching becoms a challenge. Next operation is
+  result of branch operation, which is a heavy dependency. If high speed has to be
+  achieved, multiple branches need to be speculated correctly. 
+  \cgraphic{1.0}{img/insexphases.png}
+  Branch prediction can be divided into:
+  \begin{outline}
+    \1 Target address generation (Target speculation)
+      \2 Access reg: PC, general purpose reg, link reg
+      \2 Perform calculation: +/- offset, autoincrement
+    \1 Condition reolution (Condition speculation)
+      \2 Acces reg: Condition code reg, general purpose reg
+      \2 Perform calculation: Comparison of data reg(s)
+  \end{outline}
+  \cgraphic{1.0}{img/bpred.png}
+  The branch target buffer (BTB) keeps track of taken branches. Branch predictor
+  logic takes usually more area than FPU.
+
+  In case of branch miss, ROB is rolled back.
+  \begin{outline}
+    \1 ROB entry holds all info for recovery/commit
+      \2 All ins \& in order
+      \2 Arch reg names, physical reg names, ins type
+      \2 Not removed until very last thing (commit)
+    \1 Operation
+      \2 Fetch: insert at tail (if full, stall)
+      \2 Commit: Remove from head (if not yet done, stall)
+    \1 Tracking for in-order commit
+      \2 Maintain appearance of in-order execution
+      \2 Used also to support misprediction recovery
+  \end{outline}
+
+  \subsubsection{Trace Cache}
+  Based on branch predictions, the trace cache stores blocks of instructions of streaming
+  instructions considering also jumps and function calls to allow high-bandwidth fetch.
+
+  \subsubsection{Loads and Stores}
+  As already mentioned, no instruction is allowed to modify memory out of order. Nothing
+  may change until ready to commit. A speculative store buffer is a structure introduced to hold
+  speculative store data. 
+  \begin{outline}
+    \1 During decode, store buffer slot allocated in program order
+    \1 Soters plit into "store adr" and "store data" micro-ops
+    \1 "Store adr" execute writes tag
+    \1 "Store data" execute writes data
+    \1 Store commits when oldest ins and both adr and data avail
+      \2 Clear speculative bit and eventually move data to cache
+    \1 On store abort
+      \2 Clear valid bit
+  \end{outline}
+  \cgraphic{0.8}{img/ldsdbuf.png}
+  On load: check if adr is in store buf and/or cache. Do store buffered and cache request
+  at same time for performance. If >1 entry in buf with matching adr, use the youngest entry.
+  \cgraphic{0.5}{img/sdld.png}
+  Another problem with loads and stores is the one above. If the address is not known, any
+  load coult conflict with any previous store. We therefore can't load if a store is outstanding.
+  \begin{outline}
+    \1 Execute all loads and stores in program order
+      \2 Load and store cannot leave ROB for ecevution until all previous loads and stores
+      have completed execution
+    \1 Can still execute loads and stores speculatively, and out-of-order with respect to other
+    insns
+    \1 Need a structure to handle memory ordering
+    \1 Conservative OoO load execution
+      \2 Can execute load before store, if adr known and not equal (x4!=x2)
+      \2 Each load adr compared with adr of all prev. uncommitted stores
+      \2 Don't exec load if any prev store adr not known
+    \1 Address speculation
+      \2 Guess that x4 != x2
+      \2 Execute load before store adr known
+      \2 Need to hold all completed but uncommitted ld/sd adr in program order
+      \2 If subsequently find x4 == x2, squash ls nd all following instructions
+      \2 Large penalty for inaccurate adr speculation
+    \1 Memory Dependence Prediction
+      \2 Guess that x4 != x2
+      \2 Execute load before store adr
+      \2 If later find x4 == x2, squash ld and all following ins, but mark ld ins as store-wait
+      \2 Subsequent exec of same ld ins will wait for all prev sd to complete
+      \2 Preiodically clear store-wait bits
+
+  \end{outline}
+
+  \subsubsection{Summary}
+  \begin{outline}
+    \1 Dynamic scheduling
+      \2 Totally in hardware
+      \2 Also called out-of-order execution
+    \1 Fetch many instructions into instruction window
+      \2 Use branch prediction to speculate past branches
+      \2 Flush pipeline on branch misprediction
+    \1 Rename registers to avoid false dependencies
+    \1 Execute instructions as soon as possible
+      \2 Register dependencies are known
+      \2 Handling memory dependencies is harder
+    \1 commit instructions in order
+      \2 Anything strange happens before commit, flush pipeline
+  \end{outline}
+
+  \subsection{Virtual and Advanced Memory}
+
+  \subsubsection{Virtualizing}
+  \subsubsection{Address Translation}
+  \subsubsection{Fast Translation}
+  \subsubsection{Cache}
+
+  % ---------------------------------------------------------------------------
+  \section{Multicore Processors}
   % ---------------------------------------------------------------------------
 
   \cgraphic{1.0}{img/archoverview.png}
@@ -686,7 +992,7 @@ while True:
   \end{empheq}
 
   \begin{outline}
-    \1 adf
+    \1 
   \end{outline}
 
    \begin{tabularx}{\linewidth}{l c c c}
@@ -694,10 +1000,6 @@ while True:
     {} & Single & Dual & Quad \\ \hline
   \end{tabularx}
 
-
-  % ---------------------------------------------------------------------------
-  \section{Multicore Processors}
-  % ---------------------------------------------------------------------------
 
 
   % ---------------------------------------------------------------------------
