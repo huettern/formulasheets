@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2020-02-18 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-03-05 16:49:46
+% @Last Modified time: 2020-03-14 11:33:03
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -975,9 +975,171 @@ free_phys_reg(i.old_phys_o)
   \subsection{Virtual and Advanced Memory}
 
   \subsubsection{Virtualizing}
+  Problem when running multiple apps and the OS: How do they share memory?
+  \textbf{Goal}: Each application thinks it has infinite memory. 
+  \begin{outline}
+    \1 Treat memory as a "cache" and store overflowed blocks in "swap" space on disk
+    \1 Add a level of indirection (address translation)
+  \end{outline}
+
+  Virutual Memory (VM):
+  \begin{outline}
+    \1 Level of indirection
+    \1 App generated adresses are virtual addr. (VA)
+      \2 Each proc can act as if has its own $2^N$ B adr space
+    \1 Mem accessed usin physical adr (PA)
+    \1 VA translated to PA at some coarse granularity (page)
+    \1 OS contorls VA to PA mapping for itself and all other proc
+    \1 Logically: translate performed before ecery insn fetch, ld, sd
+    \1 Physicallu: HW acceleration remoces translation overhead
+  \end{outline}
+  \cgraphic{1}{img/virtmeml.png}
+
+  \begin{outline}
+    \1 programs use virtual adr (VA)
+      \2 VA size (V) aka V-bit ISA (e.g., 64-bit x86)
+    \1 Memory uses physical adr (PA)
+      \2 $2^M$ is most phy mem machine supports
+    \1 VA $\to$ PA at page granulariy (VP$\to$PP)
+      \2 Mapping need not preserve contiguity
+      \2 VP need not be mapped to any PP
+      \2 Unmapped VPs live on disk (swap) or nowhere (if not yet touched)
+  \end{outline}
+
+  Uses: \\
+  \textbf{Isolation}: Each app thinks it has its own memory. Apps can't address another program's
+  memory.\\
+  \textbf{Protection}: Each page with a r/w/ex permission set by OS. Enforced by hardware.\\
+  \textbf{Inter-process com}: Map sampe phys pages into multiple virtual adr spaces. Or share files
+  via UNIX \lstinline[language=C]!mmap()!
+
   \subsubsection{Address Translation}
+  VA$\to$PA mapping called address translation. Split VA into virtual page number (VPN) and
+  page offset (POFS). Translace VPN into physical page number (PPN). POFS is not translated.
+  Translation is done in software (for now) with HW acceleration. OS has a page table (PT)
+  that maps VPs to PPs ot to disk (swap) adr. Translation is table lookup.
+  \cgraphic{1}{img/adrtranslate.png}
+
+  Replacements and writes:
+  \begin{outline}
+    \1 To reduce page fault rate, prefer least recently used (LRU) replacement
+      \2 Reference bit (aka use bit) in PT set to 1 on access to page
+      \2 Periodically cleared to 0 by OS
+      \2 A page with reference but = 0 has not been used recently
+    \1 Disk writes take millions of cycles
+      \2 Block at once, not individual locations
+      \2 Write through is impractical
+      \2 Use write-back
+      \2 Dirty bit in PT set when page is written
+  \end{outline}
+
+  \textbf{Problem}: Page tables can get big. One solution is multi-level page tables. A 
+  trie of pages, lowest level tables hold PTEs. VPN is split into $N$ levels.
+  \cgraphic{0.8}{img/hierpt.png}
+
   \subsubsection{Fast Translation}
-  \subsubsection{Cache}
+  Problem with virtual memory is that a ld/sd op would first have to access PT then
+  the actual memory access. But this access has good locality. Therefore use a fast
+  cache of PTEs within the CPU called \textbf{Translation Look-aside Buffer (TLB)}
+  Typically 16-512 PTEs , 0.5-1 cycle for hit, 10-100 for miss, 0.01-1\% miss rate.
+  Misses can be handled by HW or SW.
+  \cgraphic{1}{img/tlb.png}
+
+  TLB misses load PTE from memory and retry. If page not in memory, OS handles fetching and update
+  of table. TLB miss indicates page present, but PTE not in TLB or page not present. Must recognize TLB
+  miss before destination register overwritten $\to$raise exception.
+  \cgraphic{0.7}{img/tlbcpu.png}
+
+  \subsubsection{Summary}
+  TLB should "cover" the size of on-chip caches.
+   \begin{tabularx}{\linewidth}{l X}
+    \hline
+    Abbr. & Text \\ \hline
+    VM & Virtual Memory \\
+    PA & Physical address \\
+    VP & Virtual page \\
+    PP & Physical page \\
+    VPN & Virtual page number \\
+    POFS & Page offset \\
+    PPN & Physical page number \\
+    PT(E) & Page table (entry)\\
+    LRU & Least recently used \\
+    TLB & Translation Look-aside Buffer\\
+    \hline
+  \end{tabularx}
+
+  \vfill\null
+  \columnbreak
+  \subsection{Cache}
+  \subsubsection{Direct mapped}
+  In a direct-mapped cache structure, the cache is organized into multiple sets with a single 
+  cache line per set. Based on the address of the memory block, it can only occupy a single cache 
+  line.
+  \cgraphicc{1.0}{img/dmcache.png}{Direct mapped \$}
+  \begin{outline}
+    \1 Place block in cache
+      \2 Set determined by idx bit derived from mem adr
+      \2 Place mem block and set tag
+      \2 If cache line previousy occupied, new data replaces
+    \1 Search word in cache
+      \2 Set is identified by idx bit of adr
+      \2 If tag match hit, else miss
+    \1 Advantages
+      \2 Placement is power efficient as it avoids search
+      \2 Place and replace is simple
+      \2 Cheap HW as only one tag needs to be checked at a time
+    \1 Disadvantages
+      \2 Lower cache hit rate
+  \end{outline}
+
+  \vfill\null
+  \columnbreak
+  \subsubsection{Fully associative}
+  n a fully associative cache, the cache is organized into a single cache set with multiple 
+  cache lines. A memory block can occupy any of the cache lines.
+  \cgraphicc{1.0}{img/facache.png}{Fully associative \$}
+  \begin{outline}
+    \1 Place block in cache
+      \2 Mem block can be placed if valid bit = 0
+      \2 If cache is completely occupied, a block is evicted and mem is placed in that line
+    \1 Search word in cache
+      \2 Tag field of mem adr is compared with tag in all cache lines. If match, block is present in cache
+      and is a hit.
+      \2 Based on offset, byte is selected and returned
+    \1 Advantages
+      \2 Any mem block can be placed in any cache line, full cache utilization
+      \2 better hit rate
+    \1 Disadvantages
+      \2 placement is slow and power inefficient
+      \2 High cost due to comparison HW
+  \end{outline}
+
+  \vfill\null
+  \columnbreak
+  \subsubsection{Set associative}
+  Set-associative cache is a trade-off between direct-mapped cache and fully associative cache.
+  A set-associative cache can be imagined as a ($n\times m$) matrix. The cache is divided into $n$
+  sets and each set contains $m$ cache lines. A memory block is first mapped onto a set and then
+  placed into any cache line of the set. The range of caches from direct-mapped to fully associative 
+  is a continuum of levels of set associativity. (A direct-mapped cache is one-way set-associative 
+  and a fully associative cache with $m$ cache lines is $m$-way set-associative.) 
+  \cgraphicc{1.0}{img/sacache.png}{Set associative \$}
+  \begin{outline}
+    \1 Place block in cache
+      \2 Set is determined by index bits derived from memory adr
+      \2 Place memory block and store tag with associated set
+      \2 If cache line occupied, new data replaces old
+    \1 Search word in cache
+      \2 Set is determined by index bit from memory adr
+      \2 Compare tag bits with all tags of selected set. If match then hit, else miss
+    \1 Advantages
+      \2 Placement is trade-off between direct map and fully associative
+      \2 Offers flexibility of replacement algos if a cache miss occurs
+    \1 Disadvantages
+      \2 Placement will not effectively use all availabe cache lines
+  \end{outline}
+
+
 
   % ---------------------------------------------------------------------------
   \section{Multicore Processors}
