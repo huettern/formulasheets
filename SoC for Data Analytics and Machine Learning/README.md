@@ -6,7 +6,9 @@
 - [x] 3rd lecture: Out of Order Processors
 Skipped all slides after *Optimization: basic* but added own chapter on caches.
 
-- [ ] Multicore Processors
+- [x] 4th lecture: Multicore Processors
+Thanks to Jovins notes
+
 - [ ] Vector Processors, Multithreading, Virtualizing
 - [ ] GP-GPUs
 - [ ] Heterogeneous SoCs

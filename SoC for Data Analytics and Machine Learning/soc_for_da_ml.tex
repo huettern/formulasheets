@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2020-02-18 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-03-14 11:33:03
+% @Last Modified time: 2020-03-19 15:22:56
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1141,9 +1141,193 @@ free_phys_reg(i.old_phys_o)
 
 
 
+  \vfill\null
+  \columnbreak
   % ---------------------------------------------------------------------------
   \section{Multicore Processors}
   % ---------------------------------------------------------------------------
+  \subsection{Today's Chips}
+  \begin{outline}
+    \1 Multiple Cores per chip yields higher performance
+    \1 Multiple memory hierarchy
+      \2 L1 private to processor
+      \2 L2 private to processor
+      \2 L3 distributed and shared across procesor
+    \1 Up to 200W TPU
+  \end{outline}
+
+  \subsection{Classification}
+  \cgraphic{1.0}{img/mchier.png}
+  \begin{outline}
+    \1 On energy constrained devices with varying task load big LITTLE architecture is best
+    \1 Task scheduling is a big deal for heterogenous architectures in orde to
+    decide on which hardware a task runs
+  \end{outline}
+
+  \cgraphicc{0.8}{img/mchomo.png}{Skylake Intel 14nm, high performance, GPU, IO}
+  \cgraphicc{0.5}{img/amdchiplet.png}{AMD chiplet, cores on different dies, one main die for IO, L3\$}
+
+  \subsection{Parallel Architectures}
+  \cgraphic{0.8}{img/comnet.png}
+  
+  \subsubsection{Shared Memory}
+  \cgraphic{0.8}{img/sharedmem.png}
+  \begin{outline}
+    \1 To commuicate from one proc to the other, write to specific memory
+    \1 Key problems
+      \2 Cherence problem: copy to all processors local cache
+      \2 Memory consistency issue: modify all copies
+      \2 Synchronization problem: Only read if data is ready
+    \1 Two variants
+      \2 Physical shared (SMP)
+      \2 Distributed shared (DSM)
+  \end{outline}
+
+  \subsubsection{Symmetric Multi-Processors SMP}
+  Memory: Centralized with uniform access time \textbf{UMA} and bus interconnect, IO
+  \cgraphic{0.8}{img/smp.png}
+
+  \subsubsection{Distributed Shared Memory DSM}
+  Nonuniform acces time \textbf{NUMA} and scalable interconnect (distributed memory)
+  \cgraphic{0.8}{img/dsm.png}
+
+  \subsubsection{Message Passing}
+  Is a communication model using communication primitives, e.g, send, receive library calls.
+  Message passing can be built on top of shared memory and vice versa.
+  \cgraphic{0.8}{img/mp.png}
+
+  \begin{outline}
+    \1 DMA reads from memory, wraps message, sends on network
+    \1 DMA listens on network parses message, writes to memory and inform processor
+    \1 There is no linear speedup due to sequential program and communication overhead
+    \1 Latency hiding: do something while waiting
+    \1 Easier scalable
+  \end{outline}
+  \cgraphic{0.8}{img/mpdma.png}
+
+  \subsubsection{Shared memory programming}
+  \begin{outline}
+    \1 OpenMP compiles code to multiple independant threads
+    \1 Process consists of multiple parallel threads
+    \1 Two threads can have same variable name, but allocated in two different private space
+    \1 If allocated in shared mem, all procs can read/write
+    \1 OS decides which thread to run
+    \1 Fork/join parallelism
+  \end{outline}
+  \cgraphic{0.8}{img/seqpara.png}
+
+  \subsubsection{Pragma}
+  Use pragmas to tell compiler infos about data and parallelism.
+  \begin{lstlisting}[language=C]
+int main() {
+  #pragma omp parallel {
+    printf("Hello World\n");
+  }
+}\end{lstlisting}
+  \begin{lstlisting}[language=C]
+int main() {
+  omp_parallel_start(&parfun, ...);
+  parfun();
+  omp_parallel_end();
+}
+int parfun(...)
+{
+  printf("Hello world\n");
+}\end{lstlisting}
+
+  \begin{outline}
+    \1 Use \lstinline[language=C]!shared()! and \lstinline[language=C]!private()! to indicate variables
+    \1 For loop can be executed in parallel using \lstinline[language=C]!#pragma omp for!
+  \end{outline}
+
+  \begin{lstlisting}[language=C]
+#pragma omp for schedule(static)\end{lstlisting}
+  Static: Usefule for simple, regular loops with equal duration iterations. 
+  \begin{lstlisting}[language=C]
+#pragma omp for schedule(dynamic)\end{lstlisting}
+  Dynamic: A thread is generated for a single iteration. Thds are moved to work queue, work is fetched from
+  queue dynamically.
+
+  \begin{outline}
+    \1 Fine-grain parallelism
+      \2 Good for load balancing
+      \2 Small amounts of computational work between parallelism computaiton stages
+      \2 Low computaiton to parallelization ratio, high overhead
+    \1 Coarse-grain parallelism
+      \2 Harder to load balance efficiently, but
+      \2 Large amounts of computational work between parallelism computation stages
+      \2 High computation to parallelization ratio, low overhead
+  \end{outline}
+
+  \begin{lstlisting}[language=C]
+#pragma omp for schedule(dynamic, 2)\end{lstlisting}
+  Reduces overhead by making bigger chunks (always queue 2 iterations on same core).
+  
+  \begin{lstlisting}[language=C]
+#pragma omp critical\end{lstlisting}
+  Critical section: a portion of code that only one thread at a time may execute. Stops race concidions.
+  
+  \begin{lstlisting}[language=C]
+#pragma omp reduction(+:area)\end{lstlisting}
+  Instructs the compiler to create private copies of \texttt{area} for every thread. At the end of loop, 
+  partial sums are combined on the shared variable.
+
+
+  \subsection{Threading \& Shared Memory Programming Model}
+  \begin{outline}
+    \1 Software thread
+      \2 Per thread state: PC \& registers
+      \2 Shared state: global variables, heap
+      \2 Different registers in memory
+    \1 OS manages threads
+      \2 Thread scheduling and time multiplexing
+  \end{outline}
+
+  \subsubsection{Shared Memory}
+  \begin{outline}
+    \1 Programmer explicitly creates multiple threads
+    \1 All ld, sd to a single share memory space
+    \1 A thread switch can occur at any time
+      \2 Pre-emptive multithreading by OS
+    \1 Issues
+      \2 Cache coherency
+      \2 Synchronization
+      \2 Memory consistency
+  \end{outline}
+
+  \subsubsection{Shared Cache}
+  \cgraphic{1.0}{img/sharedcache.png}
+  No cache coherency problems because only one cache. But shared cache becomes
+  bottleneck.
+
+  \subsubsection{Private Cache}
+  \cgraphic{1.0}{img/privcache.png}
+  Faster access, lower power. Coherency problem: Snooping solves this.
+
+  \subsubsection{Snooping}
+  \begin{outline}
+    \1 Send all requests for data to all procs
+    \1 Procs snoop to see if they have a copy and respond accordingly
+    \1 Requires broadcast, since caching information is at processors
+    \1 Works well with bus
+    \1 Dominates for small scale machines
+    \1 Write invalidates all caches and main memory
+  \end{outline}
+
+  % ---------------------------------------------------------------------------
+  \section{Vector Processors, Multithreading, Virtualizing}
+  % ---------------------------------------------------------------------------
+
+
+  % ---------------------------------------------------------------------------
+  \section{GP-GPUs}
+  % ---------------------------------------------------------------------------
+
+
+  % ---------------------------------------------------------------------------
+  \section{Heterogeneous SoCs}
+  % ---------------------------------------------------------------------------
+
 
   \cgraphic{1.0}{img/archoverview.png}
 
@@ -1161,22 +1345,6 @@ free_phys_reg(i.old_phys_o)
     \hline
     {} & Single & Dual & Quad \\ \hline
   \end{tabularx}
-
-
-
-  % ---------------------------------------------------------------------------
-  \section{Vector Processors, Multithreading, Virtualizing}
-  % ---------------------------------------------------------------------------
-
-
-  % ---------------------------------------------------------------------------
-  \section{GP-GPUs}
-  % ---------------------------------------------------------------------------
-
-
-  % ---------------------------------------------------------------------------
-  \section{Heterogeneous SoCs}
-  % ---------------------------------------------------------------------------
 
 
 
