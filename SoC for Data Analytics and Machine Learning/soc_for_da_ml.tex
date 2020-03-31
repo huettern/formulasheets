@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2020-02-18 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-03-19 15:22:56
+% @Last Modified time: 2020-03-31 11:55:16
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1314,10 +1314,293 @@ int parfun(...)
     \1 Write invalidates all caches and main memory
   \end{outline}
 
+  % --- Week 5+ ---------------------------------------------------------------
+
+  \subsubsection{Optimized Snoop with L2\$}
+  Snooping on L2 does not affect CPU-L1 bandwidth. Only small amount of invalidations
+  is forwarded to L1: Cache lines included in L1 that need to be invalidated. Most
+  is filtered at L2 level. Inclusion property: We have to make sure, that if an entry 
+  is in L1, it must bee in L2.
+  \cgraphic{0.8}{img/optsnoop.png}
+
+  \begin{outline}
+    \1 Improves performance and complexity
+    \1 New interaction between L1 and L2 (Inclusion property)
+    \1 Reduces traffic of invalidates to L1
+  \end{outline}
+
+  \textbf{Write-back cache}: Modified chache line is only written back to memory, if cache
+  line is removed.
+
+  \textbf{Write-through cache}: Modified cache line is immediately written back to main
+  memory.
+
+  \subsubsection{Multi-Core Shared Cache}
+  Private L1\$, shared L2\$, bus between L1s and single L2 controller, snooping-based
+  coherence between L1s. Todays CPUs have shared L3.
+  \cgraphic{0.5}{img/mcsco.png}
+
+  \subsubsection{Multi-Core Cache}
+  Private L1, shared but physically distributed L2. Bus connecting the four L1s
+  and four L2 bankds. Snooping-based coherence between L1s.
+  \cgraphic{0.5}{img/mcco.png}
+
+  \subsubsection{False Sharing}
+  A cache line contains more than one word. Cache-coherence is done at the line-level
+  and not word-level. Suppose $M_1$ writes $w_1$ and $M_2$ writes $w_2$ and both
+  have same line address, what can happen?
+
+  \subsubsection{Performance of Symmetric Multiprocessors SMP}
+  Cache performance is combination of 
+  \begin{outline}
+    \1 Uniprocessor cache miss traffic
+    \1 Traffic caused by communication
+      \2 Results in invalidations and subsequent cache misses
+    \1 Coherence misses
+      \2 Also called communication miss
+      \2 4th C of cache misses along with Compulsory, Capacity \& Conflict
+  \end{outline}
+
+  \subsubsection{Coherency miss}
+  Also called communication miss
+  \begin{outline}
+    \1 True sharing misses areise from the communication of data through the cache 
+    coherence mechanism
+    \1 False shring misses when a line is invalidated because some word in the line,
+    other than the one being read, is written into
+  \end{outline}
+  Example: x1, x2 in same cache line. P1 and P2 both read x1 and x2 before.
+  \cgraphic{1}{img/coherencymiss}
+
+
+  \subsubsection{Directory Cache Protocol}
+  Every memory line has associated directory information that
+  \begin{outline}
+    \1 Keeps track of copies of cached lines and their states
+    \1 On a miss, find directory entry, look it up and communicate only with the
+    nodes that have copies if necessary
+    \1 In scalable networks, communicate with directory and copies is through network
+    transactions
+  \end{outline}
+  Many alternatives for organizing directory information.
+
+  Assumptions: Reliable network, Fifo message delivery between any given source-destination
+  pair.
+  \cgraphic{1}{img/directorycache.png}
+
+  Direcotry bit is set to 1, if the selected CPU has line in its own cache. 1 bit per CPU.
+  On write, if multiple bits are set, send invalidates \textbf{only} to CPUs that have
+  the line in cache. Broadcast becomes multicast. 
+
+  Each cache line has 4 possible states:  
+  \begin{outline}
+    \1 C-invalid (Nothing): The accessed data is not resident in the cache
+    \1 C-shared (Sh): Accessed data is resident in the cache, and possibly also cached at
+    other sites. Data in memory is valid
+    \1 C-modified (Ex): Data exclusiverly resident in this cache, and has been modified. Memory
+    does not have most up-to-date data
+    \1 C-transient (Pending): Data is in a transient state (e.g., site has just issued a
+    protocol request, but has not received the corresponding reply)
+  \end{outline}
+
+  Each cache line has 4 possible directory states:
+  \begin{outline}
+    \1 R(dir): Mem line is shared by the sites specified in dir, data in mem is valid
+    in this state. If dir is empty, memory line is not cached by any site
+    \1 W($id$): Mem line is exlusively cached at site $id$, and has been modified at that
+    site. Mem does not have the most up-to-date data
+    \1 TR(dir): The mem line is in a transient state, waiting for the ack to the invalidation req 
+    that the home site has issued
+    \1 TW($id$): The mem line is in a transient state waiting for a line exclusively cached at site
+    $id$ (i.e., in C-modified state) to make mem line at home site up-to-date
+  \end{outline}
+
+  \subsubsection{Alternatives to cache coherence}
+  Coherence keeps cahces "coherent", Load returns the most recent stored value by any processor
+  and thus keeps caches transparent to software.
+
+  Alternatives:
+  \begin{outline}
+    \1 No caching of shared data (slow)
+    \1 Requiring software to explicitly "flush" data (hard to use), use some new instrucitons
+    \1 Message passing (programming witout shared memory), used in clusters of machines for 
+    high-performance computing
+  \end{outline}
+
+  Directory-based coherence protocol scales well, perhaps to 1000s of cores.
+
+  \subsection{Shared memory issue: Synchronization}
+  How to regulate access to shared data? How to implement "locks"?
+
+  \subsubsection{Problem}
+  Thread level parallelism on shared data must be synchronized.
+
+  \subsubsection{Synchronization}
+  Regulate access to shared data (mutual exclusion). Low-level primitive: lock
+  \begin{outline}
+    \1 \texttt{acquire} and \texttt{release}
+    \1 Region between \texttt{acquire} and \texttt{release} is a critical section
+    \1 Must interleave \texttt{acquire} and \texttt{release}
+    \1 Interfering \texttt{acquire} will block
+  \end{outline}
+
+  \subsubsection{Strawman Lock (incorrect)}
+  Spin lock: software lock implementation
+  \begin{lstlisting}[language=C]
+acquire(lock): while (lock != 0) {} lock = 1;\end{lstlisting}
+  In assembly:
+  \begin{lstlisting}[language={[x86masm]Assembler}]
+A0: ld r6 <- 0(&lock)
+A1: bnez r6,A0
+A2: addi r6 <- 1,r6
+A3: st r6 -> 0(&lock)\end{lstlisting}
+
+  \textbf{Problem}: Can and will go wrong:
+  \cgraphic{1.0}{img/falselock.png}
+
+  \subsubsection{Correct Spin Lock}
+  Compare and Swap: Single atomic operation, e.g. \texttt{cas r3 <- r1,r2,0(\&lock)} performs atomically:
+  \begin{lstlisting}[language={[x86masm]Assembler}]
+ld r3 <- 0(&lock)
+if r3 == r2:
+  st r1 -> 0(&lock)\end{lstlisting}
+  New acquire sequence:
+  \begin{lstlisting}[language={[x86masm]Assembler}]
+A0: cas r3 <- 1,0,0(&lock)
+A1: bnez r3,A0\end{lstlisting}
+  Ensures that lock is held by at most one thread.
+
+  \subsubsection{RICS implementation}
+  CAS: Load+branch+store in one instruction is not very "RISC". Broken up into 
+  micro-ops: load-link and store-conditional pairs.
+  \begin{lstlisting}[language={[x86masm]Assembler}]
+label:
+  load-link r1 <- 0(&lock)
+  // potentially other insns
+  store-conditional r2 -> 0(&lock)
+  vranch0not0zero label // check for failure
+A1: bnez r3,A0\end{lstlisting}
+  On \texttt{load-link}, processor remembers address, looks for writes by other processors,
+  if write is detected, next \texttt{store-conditional} will fail, sets failure condition.
+
+  Used by ARM, PowerPC, MIPS, Inanium.
+
+  \subsubsection{Fine-grain locks}
+  Multiple locks, one per record. Fast: critical sections to different records, can
+  proceed in parallel. But easy to make mistakes. 
+
+  \textbf{Deadlock}: If two threads need mutliple locks, they acquire one lock
+  and the other thread acquires the other lock, both threads are stuck in a deadlock.
+  \cgraphic{0.8}{img/deadlock.png}
+
+  \subsubsection{Coffman Conditions for Deadlock}
+  4 necessary conditions: Break any one of these conditions to get deadlock freedom.
+  \begin{outline}
+    \1 Mutual exclusion
+    \1 Hold and wait
+    \1 No preemption
+    \1 Circular waiting
+  \end{outline}
+
+  \subsubsection{Lock order}
+  Always acquire multiple locks in same order, yet another thing to keep in mind when
+  programming.
+  \cgraphic{0.8}{img/lockorder.png}
+
+  \subsubsection{More problems..}
+  What if:
+  \begin{outline}
+    \1 Some actions require 1 or 2 locks and others require all of them?
+    \1 There are locks for global variables? Then should operations grab this lock?
+  \end{outline}
+
+  Research: Transactional memory (TM). Goals:
+  \begin{outline}
+    \1 Programming simplicity of coarse-grain locks
+    \1 Higher concurrency (parallelism) of fine-grain locks
+    \1 Lower overhead than lock acquisition
+  \end{outline}
+
+  Idea: No locks, just shared data, optimistic (speculative) concurrency. Execute
+  critical section speculatively, abort on conflicts. Detect conflicts via coherence protocol.
+  "Better to ask for forgiveness than permission".
+
+  \subsection{Memory consistency models}
+  How to keep programmer sane while letting hardware optimize? How to reconcile
+  shared memory with compiler optimiztions, store buffers, and out-of-order exec?
+  \cgraphic{0.8}{img/memcons.png}
+  Observation: If write are immediately, it is impossible that both if-statements 
+  evaluate to true. But what if write invalidate is delayed?
+
+  \subsubsection{Sequential Consistency (SC)}
+  A multiprocessor is sequentially consistent, if the result of any execution is the same
+  as if the (mem) ops of all procs were executed in seq. order. All procs see all ld and sd
+  happening in same order.
+
+  Implementation:
+  \begin{outline}
+    \1 Delay completino of any mem access until all invalidations caused by that access
+    are completed
+    \1 Delay next mem access until precious one is completed
+  \end{outline}
+
+  Enforcing SC can be quite expensive. Solutions: Exploit latency-hiding techniques,
+  employ relaxed consistency.
+
+  \subsubsection{Hih-Performance SC}
+  Load queue records all speculative loads. Bus write/upgrades are checked againts LQ.
+  Any mathicn load gets marked for replay. At commit, loads are checked and replayed if necesary.
+  \cgraphic{0.8}{img/hpsc.png}
+
+  \subsubsection{Relaxed concistency models}
+  Key insight: only synchronizatino references need to be ordered. Hence, relax memory
+  for all other references. Require programmer to label synchronization references.
+  Ofte: Fence ops cause pipeline drain in moden OOO machine.
+
   % ---------------------------------------------------------------------------
+  % Chapter 6 slide ff
   \section{Vector Processors, Multithreading, Virtualizing}
   % ---------------------------------------------------------------------------
+  Performance beyond single thred instruction level parallelism: Data level
+  parallelism: Perform identical operations on data, and lots of data.
 
+  \subsection{Multithreading (MT)}
+  Performing multiple threads of execution in parallel: Replicate registeres, PC, etc.
+  Fast switching between threads. \textbf{Fine-Grain MT} switch threads after each cycle, 
+  interleave instruction execution, if one thread stalls, others are executed.
+  \textbf{Coarse-gran MT} only switch on long stall (eg. L2\$-miss). Simplifies
+  hardware, but doesn't hide short stalls.
+
+  \subsubsection{Simultaneous MT (SMT)}
+  In multiple-issue dynamically scheduled processor. 
+  \begin{outline}
+    \1 Schedule insns from multiple thds
+    \1 Insn from independent thds execute when function units are available
+    \1 Within thds, dependencies handler by scheduling and reg nenaming
+  \end{outline}
+
+  Example: Intel P4 HT. Two thds, duplicated registers, shared function units and
+  caches.
+
+  \subsubsection{Example MT}
+  \textbf{CMT}: Switches between threads on each instruction causing the exec to be interleaved.
+  Usually tone in a round-robin fashion. Pro: can hide short and long stalls. Con: Slows
+  down exec of individual thds, since a thd rdy to exec wo stalls will be delayed by insns 
+  from other thds.
+
+  \textbf{FMT}: Switches thds only on costly stalls. Pro: Relieves need to have very fast 
+  thd switching. Con: Hard to overcome throughput losses from shorter stals, due to pipeline
+  startup costs
+
+  \cgraphic{0.8}{img/mtex.png}
+
+  \subsubsection{SMT Design Challenges}
+  SMT makes sense only with fine-grained implementation. Larger resgister file
+  needed to hold multiple contexts. Ensure that cache and tLB conflicts generated
+  by SMT do not degrade performance.
+
+  \subsubsection{Future of Multithreading}
+  Multiple simple cores might share resources more effectively.
 
   % ---------------------------------------------------------------------------
   \section{GP-GPUs}
