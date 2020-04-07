@@ -8,7 +8,8 @@ Skipped all slides after *Optimization: basic* but added own chapter on caches.
 
 - [x] 4th lecture: Multicore Processors
 Thanks to Jovins notes
-
+- [x] 5th lecture: Multithreading
+- [x] 6th lecture: Vector Processors
 - [ ] Vector Processors, Multithreading, Virtualizing
 - [ ] GP-GPUs
 - [ ] Heterogeneous SoCs

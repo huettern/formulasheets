@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2020-02-18 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-03-31 11:55:16
+% @Last Modified time: 2020-04-07 10:41:46
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1601,6 +1601,252 @@ A1: bnez r3,A0\end{lstlisting}
 
   \subsubsection{Future of Multithreading}
   Multiple simple cores might share resources more effectively.
+
+  \subsection{Vector Processing}
+  An alternative classification:
+  \cgraphic{0.8}{img/vecclass.png}
+
+  \subsection{SIMD Processing}
+  Single instruction operates on multiple data elements, in time or in space. 
+  \begin{outline}
+    \1 Array processor: Insn operates on multiple data elements at the same time using
+    different spaces
+    \1 Vector processor: Insn operates on multiple data elements in consecutive time steps
+    using the same space
+  \end{outline}
+  \cgraphic{0.8}{img/arrayvsvector.png}
+
+  \subsubsection{VLIW: vector HW without vector ISA}
+  Multiple independent operations packed together by the compiler.
+  \cgraphic{0.8}{img/vliw.png}
+  Problem: Register file needs $3n$ ports, 2 read and 1 write per issue slot.
+
+  \subsubsection{Vector Processors}
+  A vector is a 1D array of numbers. Many scientific/commervial programs use vectors.
+  A vector processor is one whose insns operate on vectors rather than scalar values.
+
+  Basic requirements
+  \begin{outline}
+    \1 load/store vectors $\to$ vector registers
+    \1 Operate on vectors of different lengths $\to$ vector len reg \texttt{VLEN}
+    \1 Elements of a vector might be stored apart from each other in memory $\to$ 
+    vector stride register \texttt{VSTR}
+  \end{outline}
+  Stride: distance in memory between two elements of a vector.
+
+  A vector insn performs an operation on each element in sonecutive cycles. Vectir functional units
+  are pipelined, each pipeline stage operates on a different data element.
+
+  Vector instructions allow deeper pipelines
+  \begin{outline}
+    \1 Non intra-vector dependencies
+    \1 No control flow within a vector
+    \1 Known stride allows easy address calculation for all vector elements
+  \end{outline}
+
+  \subsubsection{Vector Processors Advantages}
+  No dependencies within a vector, each insn generates a lot of work, highly regular
+  memory access pattern, no need to explicitly code loops.
+
+  \subsubsection{Vector Processors Disadvantages}
+  Works (only) if parallelism is regular (data/SIMD parallelism). 
+
+
+  \subsubsection{Cray-1}
+  The first vector processor.
+  \cgraphic{0.8}{img/cray1.png}
+
+  \subsubsection{Vector programming model}
+  \cgraphic{0.8}{img/vpm.png}
+  
+  Vector instrucion set advantages
+  \begin{outline}
+    \1 Compact
+    \1 Expressive, tells HW that theses $N$ operations are
+      \2 Independent
+      \2 Use the same functional unit
+      \2 ...
+    \1 Scalable
+  \end{outline}
+
+  \cgraphic{0.8}{img/vectorcodeexample.png}
+
+  \subsubsection{Vector Instruction Execution}
+  By one heavily pipelined ALU or multple.
+  \cgraphic{0.8}{img/vecpara.png}
+  \cgraphic{0.8}{img/veclane.png}
+
+  \subsubsection{Vector Chaining}
+  Vector version of register bypassing. Introduced with Cray-1. With chaining, can 
+  start dependent insn as soon as first result appears.
+  \cgraphic{0.8}{img/vchain.png}
+
+  \subsubsection{Vector Startup}
+  Two components of vector startup penalty. Functional unit latency (time through pipeline),
+   dead time or recovery time (time before another vector insn can start down pipeline).
+  \cgraphic{0.8}{img/vstartup.png}
+  \cgraphic{0.4}{img/vdt1.png}
+  \cgraphic{0.4}{img/vdt2.png}
+
+  \subsubsection{Vector Stripmining}
+  If large vectors don't fit in \texttt{VLEN}, do $N$ operations with 64 elements
+  and the remainder with $x$ elements.
+
+  \subsubsection{Automatic Code Vectorization}
+  Vectorization is a massive compile-time reordering of operation sequencing and
+  requires extensive loop dependence analysis.
+
+  \subsubsection{Memory operations}
+  Load/Store operations move groups of data between registers and memory. Three types
+  of addressing:
+  \begin{outline}
+    \1 Unit stride
+      \2 congiuous block of information in mem
+      \2 Fastest: always possible to optimize
+    \1 Non-unit (constant) stride
+      \2 Harder to optimize mem system for all possible strides
+      \2 Prime number of data banks makes it easier to support different
+          strides at full BW
+    \1 Indexed (gather-scatter)
+      \2 Vector equivalent of register indirect
+      \2 Good for sparse arrays of data
+      \2 Increases number of programs that vectorize
+  \end{outline}
+
+  \subsubsection{Vector Scatter/Gather}
+  Want to vectorize loops with indirect accesses:
+  \begin{lstlisting}[language=C]
+for (i=0; i<N; i++)
+  a[i] = b[i] + c[d[i]]\end{lstlisting}
+
+  \begin{lstlisting}[language={[x86masm]Assembler}]
+ld vD, rD # ld indices in D vect
+lvi vC, rC, vD # ld indirect from rC base
+lv vB, rB #ld B vect
+ADDV.D vA, vB, vC # do add
+sv vA, rA # store result\end{lstlisting}
+
+  \subsubsection{Vector Conditional Execution}
+  Want ro vectorize loops with conditional code:
+  \begin{lstlisting}[language=C]
+for (i=0; i<N; i++)
+  if (a[i] > 0) 
+    a[i] = b[i];\end{lstlisting}
+
+  Solution: Add vector mask (or flag) registers and maskable vector instructions.
+  \cgraphic{0.8}{img/vcond.png}
+
+  \subsubsection{Vector Reductions}
+  Operations that reduce a vector to a scalar (e.g. sum of all elements).
+  \begin{lstlisting}[language=C]
+sum = 0;
+for (i=0; i<N; i++)
+  sum += a[i];\end{lstlisting}
+
+  Solution: Re-associate operations if possible, use binary tree to perform reduction.
+  \begin{lstlisting}[language=C]
+sum[0:VL-1] = 0;
+for (i=0; i<N; i+=VL)
+  sum[0:VL-1] += a[i:i+VL-1];
+// now have VL partial sums in 1 vec reg
+do {
+  VL = VL/2;
+  sum[0:VL-1] += sum[VL:2*VL-1];
+} while (VL>1);\end{lstlisting}
+
+  \subsubsection{Novel Matric Multiply Solution}
+  Consider a matrix multiplication: 3 loops. Do need to do a bunch of reductions?
+  No. Calculate multiple indep. sums within one vector register. Vectorize
+  the second loop to perform 32 dot-products at the same time.
+  \cgraphic{0.8}{img/vmtx.png}
+  \begin{lstlisting}[language=C]
+// multiply a[m][k] * b[k][n] to get c[m][n]
+for (i=1; i<m; i++) {
+  for (j=1; j<n; j+=32) {
+    sum[0:31] = 0; // init vector
+    for (t=1; t<k; t++) {
+      a_scal = a[i][t]; // get scalar
+      b_vec[0:31] = b[t][j:j+31]; // get vec
+      // do vect-scal mul
+      prod[0:31] = b_vec[0:31]*a_scal;
+      // Vector-vector add into res
+      sum[0:31] += prod[0:31];
+    }
+    // unit stride store of vec of res
+    c[i][j:j+31] = sum[0:31];
+  }
+}\end{lstlisting}
+
+  \subsection{Vector Processing in Modern ISAs}
+  \subsubsection{The rise of SIMD}
+  SIMD is good for applying identical computations across many data elements. It is
+  energy efficient and tend to be bandwidth-efficient and latency-tolerant.
+
+  \subsubsection{Multimedia (SIMD) Extensions}
+  MMX follows a packed-SIMD execution model. A la array processing, yet much more limited.
+  Other examples include ARM NEON, Intel MMX/SSE/AVX, RISC-V P (DSP) Extension.
+  \begin{outline}
+    \1 Single insn acs on multiple pieces of data at once
+    \1 Common application: graphics
+    \1 Perform short arithmetic operations (also packed arithmetic)
+  \end{outline}
+  \cgraphic{0.6}{img/simdadd.png}
+
+  \textbf{Packed-SIMD is no Vector-SIMD}. Limited instruction set, limited
+  vector register length, vector length is set in stone. Very short vectors, e.g., ARM NEON 
+  has a VLEN of 128 bits (Cray-1 in 1976 had 1024 bits). VLEN is encoded
+  in the instruction itself. Widest extension to date: \texttt{Intel AVX-512}.
+
+  \subsubsection{Renaissance of Vector Processing}
+  Cray-like vector processing is currently expierencing a renaissance during the last 
+  few years. Main ISAs now include a vector processing extension: ARM SVE (scalabe vector
+  extension) or RISC-V vector extension.
+
+  \subsubsection{ARM SVE}
+  No preferred vector length: VL is a hardware choice, 128-2048b in 128b increments. 
+  Vector length agnostic (VLA) programming model: Write once, compile once, vectorize more loops.
+
+  \begin{outline}
+    \1 Aarch64 (scalar)
+      \2 Ten iterations over an 8-byte register
+    \1 NEON (128-bit vector engine)
+      \2 Fout it. over a 16-byte reg + two it of a drain loop over a 8-byte reg
+    \1 SVE (VLA vector engine)
+      \2 Three it over a 32-byte VLA register with an adjustable predicate
+  \end{outline}
+
+  \subsection{RISC-V Vector Extension}
+  Being added as a standard extension to the RISC-V ISA. An updated form of Cray-style
+  vectors for moden microporessors. Still a WIP.
+
+  \begin{outline}
+    \1 32 vector registers, \texttt{v0-v31}
+    \1 Each vector reg has an associated type, including
+      \2 Number of bits in each element
+      \2 Representation (signed, unsigned, floating)
+      \2 Shape (scalar, 1D)
+    \1 Number of vec regs and their type are configured with special insns before
+    using the vector unit
+    \1 Vect insns are \textit{polymorphic}, operation depends on the opcode and on the
+    vector register operand types
+    \1 Vec len reg \texttt{v1} controls the num of elements executed by each insn
+    \1 Instructions can be \textit{predicated} by a mask
+  \end{outline}
+  \cgraphic{0.8}{img/rvvus.png}
+
+  \subsubsection{Vector configuration}
+  Can be done writing a number of control regs. Requested regs are zeroed. \texttt{MAXVL}
+  depends on the number of vector regs and type. It should be possible to writea assembly
+  code without knowing \texttt{MAXVL}.
+  
+  \begin{lstlisting}[language={[x86masm]Assembler}]
+setvl xdst, xsrc\end{lstlisting}
+  \texttt{vl} is set to \texttt{min(MAXVL, xrc)} also copied to \texttt{xdst}.
+
+  \cgraphic{1.0}{img/riscvecadd.png}
+
+  Important property: Minimal changes in data types, operation and length are also
+  only minor changes in assembler code.
 
   % ---------------------------------------------------------------------------
   \section{GP-GPUs}
