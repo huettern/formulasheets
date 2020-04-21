@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2020-02-18 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-04-07 10:41:46
+% @Last Modified time: 2020-04-21 11:59:43
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -1851,6 +1851,175 @@ setvl xdst, xsrc\end{lstlisting}
   % ---------------------------------------------------------------------------
   \section{GP-GPUs}
   % ---------------------------------------------------------------------------
+  \subsection{GPU Memory}
+  \subsubsection{HBM2 GPU Memory}
+  High bandwidth memory on same chip as GPU substrate. Mutliple DRAM dice on top
+   of each other with vertical connections.
+  \cgraphic{1.0}{img/hbm2.png}
+  
+  \subsubsection{Access to system memory}
+  If GPU wants to access more memory, it can do so using PCIe to system DRAM.
+  \cgraphic{1.0}{img/typgpu.png}
+  
+  \subsection{GPU Processing Cores}
+  Basic element of GPU is a simple scalar core, consisting of floating point and
+  integer ALU (onwards also tensor core). Receive data from very large register
+  file.
+  \cgraphic{0.5}{img/cudacore.png}
+
+  \textbf{SM} streaming multiprocessor houses a number of CUDA cores. (Tesla V100
+  has 64 FP32 cores / SM). Register file holds insns for all cores inside SM (shared
+  among cores). Also share a dispatch and scheduler unit. 
+
+  \cgraphic{0.9}{img/cudasm.png}
+
+  The tensor core performs $D=A\times B +C$ on $4\times 4$ matrices. $A,B$ are FP16,
+  $C,D$ FP16 or FP32.
+
+  \subsection{Using the GPU}
+  CPUs and Accelerators are used together. GPUs cannot be used instead of CPUs. 
+  GPUs perform compute heavy parts. Communication is via PCIe bus, up to 8GB/s
+  throughput. 
+  Can also have multiple CPUs and GPUs in same share memory node.
+  \cgraphic{0.9}{img/multicpugpu.png}
+
+  New GPU allos inter-GPU-connections.
+  \cgraphic{0.9}{img/dgx2.png}  
+  
+  \subsubsection{Summit supercomputer}
+  Fully connected quad, 150Gb/s per GPU bidirectional for peer traffic. 50 GB/s
+  per GPU bidirectional to CPU. Direct ls/sd access to CPU memory. High speed copy
+  engines for bulk data movement.
+  \cgraphic{0.9}{img/summitnode.png}  
+
+  \subsection{Why GPU?}
+  Graphics workloads are embarrassingly parallel (linear transformations are tensor
+  operations). Shared cores are what cuda cores are today.
+  \cgraphic{0.9}{img/oldgpu.png}
+  A single shader program is executed thousend times in parallel for different input 
+  data.
+
+  \subsubsection{Slimming down shaders} \label{sec:slimdownshader}
+  First, remove components that help a single instruction stream run fast.
+  \cgraphic{1.0}{img/slim1.png}
+
+  Second, amortize cost/complexity of managing an instrucion stream across many ALUs.
+  SIMD processing, loose some flexibility.
+  \cgraphic{0.7}{img/slim2.png}
+
+  \subsubsection{Branching in shaders}
+  Since all ALUs share register file ld/sd, branching can cause stalls. Clarification:
+  \textbf{SIMD processing does not imply SIMD instructions}. Option 1: Explicit vector insns (
+  x86 SSe, AVX, Intel Larrabee). Option 2: Scalar insns, implicit HW vectorization: HW
+  determines insn stream sharing across ALUs, NVIDIA GeForce (SIMT warps), ATI Radeon 
+  wavefronts.
+  \cgraphic{0.7}{img/gpubranch.png}
+
+  \subsubsection{Memory stalls}
+  Data are stored in textures. Access latency is 100-1000 cycles. We removed the cache
+  that avoids stalls in \ref{sec:slimdownshader}. Idea: Interleave processing of many
+  fragments on a single core to avoid stalls caused by high latency operations.
+  \cgraphic{1.0}{img/hidingshaderstalls.png}
+  Latency can be hidden using latency hiding. More small contexts resul in maximal latency
+  hiding, few large context in low latency hiding ability.
+  \cgraphic{0.8}{img/latencyhiding.png}
+
+  \textbf{Clarification}: Interleaving between contexts can be managed by HW or SW (or both).
+  GPUs: HW schedules/manages all contexts (lots of them). Special on-chip storage holds
+  fragment state. Intel Larrabee: HW manages four x86 (big) contexts at fine granularity,
+  SW scheduling interleaves many groups of fragments on each HW context, L1-L2 cache holds fragment
+  state.
+
+  \subsubsection{Example Chip}
+  16 cores, 8 mul-add ALUs per core, 16 simultaneous insn streams, 64 concurrent (but
+  interleaved) insn streams, 512 concurrent fragments: \textbf{256 FLOPs at 1GHz}.
+  \cgraphic{0.8}{img/exgpuchip.png}
+
+  \subsection{GP-GPU more in depth}
+  Different programming models for different architectures.
+  \cgraphic{0.4}{img/procmodel.png}
+  
+  \subsubsection{C and RISC}
+  Most CPUs have vector SIMD units. Programmer's view of a vector SIMD:
+  \cgraphic{0.5}{img/criscsimd.png}
+  
+  \subsubsection{GPU}
+  CUDA programmer's view of GPUs: A GPU contains multiple SIMD units. All of them
+  can access global memory. Important difference: GPUs use threads instead of vectors, 
+  GPUs have the shared memory spaces.
+  \cgraphic{0.8}{img/gpuarchmodel.png}
+  Thread hierarchy in CUDA: Grid contains thread blocks. Thread block contains threads.
+\begin{lstlisting}[language=C]
+int A[2][4];
+for(i=0;i<2;i++){
+  for(j=0;j<4;j++){
+    A[i][j]++;
+  }
+}\end{lstlisting}
+Converted to cuda:
+\begin{lstlisting}[language=C]
+int A[2][4];
+// define threads
+kernelF<<<(2,1),(4,1)>>>(A); 
+// all thds run same kernel
+__device__ kernelF(A) {
+  // each thd block has its id
+  i = blockldx.x;
+  // each thd has its id
+  j = threadldx.x;
+  // each thd has a different i,j
+  A[i][j]++;
+}\end{lstlisting}
+  \cgraphic{1.0}{img/cudaexample.png}
+  Each thread block will be scheduled on a different srteaming multiprocessor (SM).
+  \cgraphic{1.0}{img/cudasched.png}
+  \cgraphic{0.8}{img/cudaexgrid.png}
+
+  \subsubsection{GPU memory access}
+  Example: convolution (3x3) win over (16x16) array.
+  With a naiive implementation, each thread loads 9 elements
+  from global memory. Utilizing shared memory: First load 16x16 to shared memory before
+  computing filter in local memory. Each thread will load one element but erquires the 
+  elements that the neighboring threads have loaded. Need barrier before computation.
+\begin{lstlisting}[language=C]
+kernelF<<<(1,1),(16,16)>>>(A); 
+__device__ kernelF(A) {
+  __shared__ smem[16][16];
+  i = threadld.x;
+  j = threadldx.x;
+  smem[i][j] = A[i][j];
+  __sync(); // barrier
+  A[i][j] = (smem[i-1][j-1] + ...) / 9;
+}\end{lstlisting}
+
+  \subsubsection{Review}
+  We write scalar code that is SIMT (single instruction multiple threads).
+
+  \subsection{Warps and Branching}
+  Programmer converts data level parallelism (DLP) into thread level parallelism (TLP).
+  Hardware groupd threads into wraps, each warps holds so many threads the HW can execute
+  in parallel = number of processing elements (PE).
+  Switching warps on each cycle, altough not needed. Conditional part (blue, purple)
+  gets interleaved. Create warp 3(4) from warp 0(0) and warp 1(1).
+  \cgraphic{0.999}{img/dynamicwarp.png}
+
+  \subsection{Memory Hierarchy}
+  Cuda specific: RW per-thread: registers and local memory. RW per-block: shared memory.
+  RE per-grid: global memory. RO per-grid constant memory and texture memory. The host
+  can RW global, constant and texture memory.
+  \cgraphic{0.8}{img/cudamem.png}
+  Single cycle: register and shared memory. DRAM, no cache: local and global memory (slow).
+  DRAM, cached: constant and texture memory (1..100s of cycles)
+
+  \textbf{Important} Make sure to organize data structure, such that in a warp, accessed are made
+  to data that is continuous in memory and properly aligned to get full bus bandwidth when
+  accessing global memory. If not properly aligned, scattered transactions are required.
+
+  \subsubsection{Shared Memory}
+  On-chip on each SM. Order of magnitude lower latency and 10x higher bandwidth than global
+  memory. Organized in multiple banks, one bank per thread. Each thread can access each bank.
+  Can result in bank conflicts.
+  \cgraphic{0.8}{img/gpusharedmem.png}
 
 
   % ---------------------------------------------------------------------------
