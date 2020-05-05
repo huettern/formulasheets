@@ -5,7 +5,7 @@
 % @Author: Noah Huetter
 % @Date:   2020-02-18 17:26:28
 % @Last Modified by:   noah
-% @Last Modified time: 2020-04-21 11:59:43
+% @Last Modified time: 2020-05-05 11:39:21
 % ---------------------------------------------------------------------------
 
 \documentclass[a4paper, fontsize=8pt, landscape, DIV=1]{scrartcl}
@@ -2021,13 +2021,128 @@ __device__ kernelF(A) {
   Can result in bank conflicts.
   \cgraphic{0.8}{img/gpusharedmem.png}
 
+  \subsection{Atomics}
+  Race conditions can occur if multiple threads want to modify the same memory location at once. 
+  Atomics are used to ensure correctness when concurrently reading and writing to a memory location
+  (global or shared). 
+\begin{lstlisting}[language=C]
+__global__ void max_kernel(int *a)
+{
+  __shared__ int max;
+  int my_local = a[threadIdx.x + blockIdx.x*blockDim.x];
+  if (my_local > max)
+    max = atomicMax(&max, my_local); // built-in
+}\end{lstlisting}
+
+  For the atomic instrucion access to the shared variable is serialised. Different ops are supported
+  such as \texttt{atomicCAS} (compare and swap), \texttt{atomicInc}, \texttt{atomicAdd}, etc. .
+
+  \subsection{Reductions}
+  A reductino is where all elements of a set have a common binary associative operator (e.g. add)
+  applied to them to "reduce" the set to a single value. Order in which ops is performed on set does
+  not matter.
+  \cgraphic{0.8}{img/reduction.png}
+  Each row could be a launch of several kernels but this is inefficient in memory access and launch overhead.
+  A better way is \textbf{Block Level Recursive Reduction}:
+  \cgraphic{0.8}{img/blocklevelreduction.png}
+\begin{lstlisting}[language=C]
+for (int stride = 1; stride < blockDim.x; stride *=2) {
+  unsigned int strided_i = threadIdx.x*2*stride;
+  if(strided_i < blockDim.x) {
+    sdata[strided_i] += sdata[strided_i+stride];
+  }
+  __syncthreads();
+}\end{lstlisting}
+  
+  Even better if sequential addressing is used so memory banking can be exploited.
+  \cgraphic{0.8}{img/addseqadr.png}
+
+  % ---------------------------------------------------------------------------
+  \section{CPU + GPU computing}
+  % ---------------------------------------------------------------------------
+  Basic flow: copy data to GPU, run kernel, copy back. Bandwidth between CPU and GPU is the bottleneck. 
+
+  \subsection{PCI as Memory Mapped IO}
+  PCI device registers are mapped into the CPUs physical addrss space. Addresses are assigned to
+  the PCI devices at boot time.
+
+  \subsubsection{Links and Lanes}
+  Each lane is 1-bit wide (4 wires, each 2-wire pair can transmit 2.5Gb/s in one direction). Each link
+  can combine 1, 2, 4, .., 16 lanes: x1, x2, etc. Data is 8b/10b encoded: net data rate is 2 Gb/s per lane
+  each way.
+
+  \subsubsection{PCIe 3}
+  8 Giga tranfers per second in each direction. No 8/10 but polynomials. 985MB/s per lane.
+
+  \subsubsection{PCIe Data Transfer using DMA}
+  DMA (Direct Memory Access) is used to fuly utilize the bandwidth of an IO bus. Needs pinned memory in DRAM:
+  DMA uses physical addresses, the OS could accidentally page out the data. Pinned memory cannot be
+  paged out to swap. 
+  \cgraphic{0.8}{img/gpudma.png}
+  
+  \subsubsection{NVLink}
+  16 lamce PCIe3.0 has 16GB/s which is hardly adequate vs. 250GB/s of memory bandwidth available within
+  a single card. NVLink is faster. Proprietary by NVIDIA.
+
+  \subsection{Speeding Things Up}
+  Simultaneously run a host-to-device transfer, a kernel and a device-to-host transfer. Requires buffers, 
+  concurrent kernels, two copy engines. \texttt{cudaMemcpyAsync} can do this.
+
+  \subsubsection{Unified Virtual Adressing/Memory}
+  "Smart pinned memory". Driver is allowed to cache memory on host or any GPU. Developer sees only one memory.
+  OS keeps a page at fixed location (pinning). Directly access physical memory on host from GPU. 
+
+  If memory is mapped to the GPU, migration can be triggered by access counters. with access counters
+  migration only hot pages will be moved to the GPU.
 
   % ---------------------------------------------------------------------------
   \section{Heterogeneous SoCs}
   % ---------------------------------------------------------------------------
 
+  Amdahl's law:
+  \begin{empheq}[box=\eqbox]{equation*}
+    \begin{align}
+      \text{Speedup} &= \frac{1}{(1-f)+\frac{f}{n}}
+    \end{align}
+  \end{empheq}
 
-  \cgraphic{1.0}{img/archoverview.png}
+  In terms of resource limits
+    \begin{empheq}[box=\eqbox]{equation*}
+    \begin{align}
+      \text{Speedup} &= \frac{1}{\frac{1-f}{perf(r)}+\frac{f}{perf(r)\cdot \frac{n}{r} }}
+    \end{align}
+  \end{empheq}
+  $f$ fraction of program that is parallelizable, $n$ total processing resources, 
+  $t$ resources dedicated to each processing core, each of the $n/r$ cores has
+  sequential performance. Assume $perf(1)=1$.
+
+  \cgraphic{1.0}{img/speedup.png}
+
+  Most "real world" applicatinos have complex workload characteristcs. Idea: the most efficient
+  processor is a heterogeneous mixture of resources. 
+
+  \section{big.LITTLE}
+  Aims at power reduction. Idea is taht power consumption of the chip could be reduced when high
+  intensit tasks would run on suitable powerfull but power hungry cores, whereas low intensity
+  tasks on less powerful and less power hungry cores.
+
+  \section{CAPI}
+  Coherent Accelerator Processor Interface. Provides a high-performance interface for the implementation
+  of software-specific, computation-heavy algorithms based on FPGAs.
+
+  \section{AMBA}
+  AMBA is the interface used by ARM. Physical memory is shared amongs all cores.
+  \cgraphic{1.0}{img/snap800.png}
+
+  \section{CPU and FPGA}
+  Zynq-7000 as example for a chip with CPU and FPGA. IO coherency with ACP and ACE: Whenever the
+  accelerator does writes, these writes are captured by the cache logic and are invalidated. Asymmetric:
+  Invalidates come from FPGA to CPU, not otherwise.
+  \cgraphic{1.0}{img/mpsoc.png}
+
+  % ---------------------------------------------------------------------------
+  \section{Sandbox}
+  % ---------------------------------------------------------------------------
 
   \begin{empheq}[box=\eqbox]{equation*}
     \begin{gathered}

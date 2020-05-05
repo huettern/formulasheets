@@ -11,4 +11,4 @@ Thanks to Jovins notes
 - [x] 5th lecture: Multithreading
 - [x] 6th lecture: Vector Processors
 - [x] 7th lecture: GP-GPUs
-- [ ] Heterogeneous SoCs
+- [x] 8th lecture: Heterogeneous SoCs
