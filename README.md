@@ -16,6 +16,7 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 | VLSI1 (handwritten) | Finished | [link][vlsi1] | ![][vlsi1-badge] |
 | Communication Systems | Finished | [link][comsys] | ![][comsys-badge] |
 | Advanced Communication Networks | Finished | [link][advnet] | ![][advnet-badge] |
+| Signal Analysis, Models and Machine Learning (handwritten) | Finished | [link][sml] | ![][sml-badge] |
 
 [le]: https://github.com/noah95/formulasheets/releases/download/v1.0/leistungselektronik.pdf
 [le-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/leistungselektronik.pdf.svg
@@ -44,6 +45,10 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 
 [advnet]: https://github.com/noah95/formulasheets/releases/download/v3.1.0/advnet_fosa_huetter.pdf
 [advnet-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v3.1.0/advnet_fosa_huetter.pdf.svg
+
+[sml]: https://github.com/noah95/formulasheets/releases/download/v3.1.1/sml_summary_huetter.pdf
+[sml-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v3.1.1/sml_summary_huetter.pdf.svg
+
 
 ### Work in Progress
 | Name          | Status | Download      |
