@@ -5,21 +5,21 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 
 ### Completed
 
-| Name                                                    | Type                 | Status   | Download       | Statistics        |
-|:--------------------------------------------------------|:---------------------|:---------|:---------------|:------------------|
-| Leistungselektronik                                     | Fosa                 | Finished | [link][le]     | ![][le-badge]     |
-| Analysis III - PDE                                      | Fosa                 | Finished | [link][an3]    | ![][an3-badge]    |
-| Communication Networks                                  | Fosa                 | Finished | [link][comnet] | ![][comnet-badge] |
-| Semiconductor Devices                                   | Fosa                 | Finished | [link][semi]   | ![][semi-badge]   |
-| Electrodynamics                                         | Fosa, Handwritten    | Finished | [link][em]     | ![][em-badge]     |
-| Numerische Methoden                                     | Fosa, Handwritten    | Finished | [link][num]    | ![][num-badge]    |
-| Wahrscheinlichkeitstheorie und Statistik                | Fosa, Handwritten    | Finished | [link][wus]    | ![][wus-badge]    |
-| VLSI1                                                   | Summary, Handwritten | Finished | [link][vlsi1]  | ![][vlsi1-badge]  |
-| Communication Systems                                   | Fosa                 | Finished | [link][comsys] | ![][comsys-badge] |
-| Advanced Communication Networks                         | Summary              | Finished | [link][advnet] | ![][advnet-badge] |
-| Signal Analysis, Models and Machine Learning            | Summary, Handwritten | Finished | [link][sml]    | ![][sml-badge]    |
-| Systems-on-Chip for Data Analytics and Machine Learning | Summary, Handwritten | Finished | [link][soc]    | ![][soc-badge]    |
-| VLSI2                                                   | Summary, Handwritten | Finished | [link][vlsi2]  | ![][vlsi2-badge]  |
+| Name                                                    | Type                 | Status   | Download                    |
+|:--------------------------------------------------------|:---------------------|:---------|:----------------------------|
+| Leistungselektronik                                     | Fosa                 | Finished | [![][le-badge]][le]         |
+| Analysis III - PDE                                      | Fosa                 | Finished | [![][an3-badge]][an3]       |
+| Communication Networks                                  | Fosa                 | Finished | [![][comnet-badge]][comnet] |
+| Semiconductor Devices                                   | Fosa                 | Finished | [![][semi-badge]][semi]     |
+| Electrodynamics                                         | Fosa, Handwritten    | Finished | [![][em-badge]][em]         |
+| Numerische Methoden                                     | Fosa, Handwritten    | Finished | [![][num-badge]][num]       |
+| Wahrscheinlichkeitstheorie und Statistik                | Fosa, Handwritten    | Finished | [![][wus-badge]][wus]       |
+| VLSI1                                                   | Summary, Handwritten | Finished | [![][vlsi1-badge]][vlsi1]   |
+| Communication Systems                                   | Fosa                 | Finished | [![][comsys-badge]][comsys] |
+| Advanced Communication Networks                         | Summary              | Finished | [![][advnet-badge]][advnet] |
+| Signal Analysis, Models and Machine Learning            | Summary, Handwritten | Finished | [![][sml-badge]][sml]       |
+| Systems-on-Chip for Data Analytics and Machine Learning | Summary, Handwritten | Finished | [![][soc-badge]][soc]       |
+| VLSI2                                                   | Summary, Handwritten | Finished | [![][vlsi2-badge]][vlsi2]   |
 
 [le]: https://github.com/noah95/formulasheets/releases/download/v1.0/leistungselektronik.pdf
 [le-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/leistungselektronik.pdf.svg
@@ -48,6 +48,9 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 
 [advnet]: https://github.com/noah95/formulasheets/releases/download/v3.1.0/advnet_fosa_huetter.pdf
 [advnet-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v3.1.0/advnet_fosa_huetter.pdf.svg
+
+[sml]: https://github.com/noah95/formulasheets/releases/download/v3.1.1/sml_summary_huetter.pdf
+[sml-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v3.1.1/sml_summary_huetter.pdf.svg
 
 [soc]: https://github.com/noah95/formulasheets/releases/download/v4.0.0/soc_summary_huetter.pdf
 [soc-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v4.0.0/soc_summary_huetter.pdf.svg
