@@ -20,6 +20,8 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 | Signal Analysis, Models and Machine Learning            | Summary, Handwritten | [![][sml-badge]][sml]       |
 | Systems-on-Chip for Data Analytics and Machine Learning | Summary, Handwritten | [![][soc-badge]][soc]       |
 | VLSI2                                                   | Summary, Handwritten | [![][vlsi2-badge]][vlsi2]   |
+| Analog Signal Processing and Filtering                  | Summary, Handwritten | [![][asf-badge]][asf]       |
+| Angewandte Computer Architekturen                       | Summary, Handwritten | [![][angew-badge]][angew]   |
 
 [le]: https://github.com/noah95/formulasheets/releases/download/v1.0/leistungselektronik.pdf
 [le-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v1.0/leistungselektronik.pdf.svg
@@ -57,6 +59,12 @@ Most recent builds from `v0.0` tag. Statistics are reset after each push to `v0.
 
 [vlsi2]: https://github.com/noah95/formulasheets/releases/download/v4.0.0/vlsi2_summary_huetter.pdf
 [vlsi2-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v4.0.0/vlsi2_summary_huetter.pdf.svg
+
+[asf]: https://github.com/noah95/formulasheets/releases/download/v5.0.0/asf_summary_huetter.pdf
+[asf-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v5.0.0/asf_summary_huetter.pdf.svg
+
+[angew]: https://github.com/noah95/formulasheets/releases/download/v5.0.0/angew_summary_huetter.pdf
+[angew-badge]: https://img.shields.io/github/downloads/noah95/formulasheets/v5.0.0/angew_summary_huetter.pdf.svg
 
 
 ### Work in Progress
